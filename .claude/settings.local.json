@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__astro__search_astro_documentation",
+      "mcp__astro__search_astro_code",
+      "mcp__web-search-prime__webSearchPrime",
+      "mcp__astro__fetch_generic_url_content"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
