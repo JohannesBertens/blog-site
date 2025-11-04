@@ -199,7 +199,7 @@ if (Astro.url.searchParams.has('tag')) {
 
 <style>
   .blog-main {
-    min-height: 100vh;
+    min-height: 80vh;
     background: var(--bg-primary);
   }
 
@@ -687,7 +687,7 @@ const { content } = Astro.props;
 
 <style>
   .blog-post {
-    min-height: 100vh;
+    min-height: 80vh;
     background: var(--bg-primary);
   }
 

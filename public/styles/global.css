@@ -6,6 +6,10 @@
 /* Import the main CSS entry point */
 @import './main.css';
 
+/* Import Phase 5 advanced features styles */
+@import './scrollbars.css';
+@import './animations.css';
+
 /*
    This file now serves as the main entry point for all CSS.
    The architecture is organized as follows:

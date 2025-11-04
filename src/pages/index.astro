@@ -81,7 +81,7 @@ if (Astro.url.searchParams.has('tag')) {
               </h3>
               <div class="tags-filter">
                 <a
-                  href="/blog"
+                  href="/"
                   class={`tag-filter ${currentTag === 'all' ? 'active' : ''}`}
                 >
                   <span class="tag-prefix">all</span>
@@ -93,7 +93,7 @@ if (Astro.url.searchParams.has('tag')) {
                   ).length;
                   return (
                     <a
-                      href={`/blog?tag=${tag}`}
+                      href={`/?tag=${tag}`}
                       class={`tag-filter ${currentTag === tag ? 'active' : ''}`}
                     >
                       <span class="tag-prefix">#{tag}</span>
@@ -170,7 +170,7 @@ if (Astro.url.searchParams.has('tag')) {
 
 <style>
   .blog-main {
-    min-height: 100vh;
+    min-height: 80vh;
     background: var(--bg-primary);
   }
 

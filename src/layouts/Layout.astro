@@ -2,6 +2,7 @@
 // Main Layout Component
 // Provides consistent structure and styling for all pages
 import Navigation from '../components/Navigation.astro';
+import LoadingScreen from '../components/LoadingScreen.astro';
 
 interface Props {
   title: string;
@@ -55,6 +56,9 @@ const { title, description, currentPage = '' } = Astro.props;
   </head>
 
   <body class="performance-optimize">
+    <!-- Loading Screen (shows on initial load only) -->
+    <LoadingScreen />
+
     <!-- Terminal-style Navigation -->
     <Navigation currentPage={currentPage} />
 
@@ -79,23 +83,6 @@ const { title, description, currentPage = '' } = Astro.props;
 
     <!-- Scripts for enhanced functionality -->
     <script>
-      // Add keyboard navigation support
-      document.addEventListener('keydown', (e) => {
-        // Alt + G + H for Home
-        if (e.altKey && e.key === 'g') {
-          e.preventDefault();
-          const handleSecondKey = (secondEvent) => {
-            if (secondEvent.key === 'h') {
-              window.location.href = '/';
-            } else if (secondEvent.key === 'b') {
-              window.location.href = '/';
-            }
-            document.removeEventListener('keydown', handleSecondKey);
-          };
-          document.addEventListener('keydown', handleSecondKey, { once: true });
-        }
-      });
-
       // Add smooth scroll behavior for anchor links
       document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {

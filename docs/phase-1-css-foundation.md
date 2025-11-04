@@ -162,7 +162,7 @@ body {
   line-height: var(--leading-normal);
   color: var(--text-primary);
   background-color: var(--bg-primary);
-  min-height: 100vh;
+  min-height: 80vh;
   overflow-x: hidden;
 }
 

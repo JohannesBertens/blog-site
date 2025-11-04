@@ -1,0 +1,279 @@
+---
+// src/components/LoadingScreen.astro
+// Terminal-style loading screen that shows on initial site load only
+---
+
+<div class="loading-screen" id="loading-screen">
+  <div class="loading-terminal">
+    <div class="terminal-header">
+      <div class="terminal-dots">
+        <span class="dot red"></span>
+        <span class="dot yellow"></span>
+        <span class="dot green"></span>
+      </div>
+      <div class="terminal-title">loading...</div>
+    </div>
+    <div class="terminal-content">
+      <div class="loading-line">
+        <span class="prompt">$</span>
+        <span class="command typing">Initializing blog...</span>
+        <span class="cursor">_</span>
+      </div>
+      <div class="loading-output" id="loading-output">
+        <!-- Dynamic loading messages -->
+      </div>
+      <div class="loading-progress">
+        <div class="progress-bar">
+          <div class="progress-fill" id="loading-progress"></div>
+        </div>
+        <div class="progress-text" id="loading-percentage">0%</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--bg-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    opacity: 1;
+    transition: opacity 0.5s ease;
+  }
+
+  .loading-screen.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .loading-terminal {
+    width: 90%;
+    max-width: 500px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-primary);
+    border-radius: 0.75rem;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  }
+
+  .terminal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-2) var(--space-4);
+    background: var(--bg-tertiary);
+    border-bottom: 1px solid var(--border-primary);
+  }
+
+  .terminal-dots {
+    display: flex;
+    gap: var(--space-1);
+  }
+
+  .dot {
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 50%;
+  }
+
+  .dot.red { background-color: #ff5f56; }
+  .dot.yellow { background-color: #ffbd2e; }
+  .dot.green { background-color: #27c93f; }
+
+  .terminal-title {
+    font-family: var(--font-mono);
+    font-size: var(--fluid-text-xs);
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .terminal-content {
+    padding: var(--space-6);
+    background: var(--code-bg);
+    font-family: var(--font-mono);
+    font-size: var(--fluid-text-sm);
+  }
+
+  .loading-line {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+  }
+
+  .prompt {
+    color: var(--accent-green);
+  }
+
+  .command {
+    color: var(--text-primary);
+  }
+
+  .typing {
+    position: relative;
+  }
+
+  .typing::after {
+    content: '';
+    position: absolute;
+    right: -0.5rem;
+    top: 0;
+    width: 2px;
+    height: 1.2em;
+    background: var(--accent-cyan);
+    animation: blink 1s infinite;
+  }
+
+  .cursor {
+    color: var(--accent-cyan);
+    animation: blink 1s infinite;
+  }
+
+  @keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+  }
+
+  .loading-output {
+    margin-bottom: var(--space-4);
+    padding-left: var(--space-4);
+    color: var(--text-secondary);
+    font-size: var(--fluid-text-xs);
+    line-height: 1.6;
+  }
+
+  .output-line {
+    margin-bottom: var(--space-1);
+    opacity: 0;
+    animation: fadeInUp 0.3s ease forwards;
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .loading-progress {
+    margin-top: var(--space-4);
+  }
+
+  .progress-bar {
+    height: 4px;
+    background: var(--bg-tertiary);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: var(--space-2);
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-green) 0%, var(--accent-cyan) 100%);
+    width: 0%;
+    transition: width 0.3s ease;
+    border-radius: 2px;
+  }
+
+  .progress-text {
+    font-family: var(--font-mono);
+    font-size: var(--fluid-text-xs);
+    color: var(--accent-cyan);
+    text-align: right;
+  }
+</style>
+
+<script>
+  // Loading sequence simulation - runs only on initial page load
+  const loadingMessages = [
+    'Loading components...',
+    'Parsing Markdown content...',
+    'Applying syntax highlighting...',
+    'Building table of contents...',
+    'Calculating reading time...',
+    'Optimizing images...',
+    'Initializing analytics...',
+    'Ready to launch!'
+  ];
+
+  let messageIndex = 0;
+  let progress = 0;
+
+  function addLoadingMessage() {
+    const output = document.getElementById('loading-output');
+    if (output && messageIndex < loadingMessages.length) {
+      const line = document.createElement('div');
+      line.className = 'output-line';
+      line.textContent = `> ${loadingMessages[messageIndex]}`;
+      line.style.animationDelay = `${messageIndex * 0.1}s`;
+      output.appendChild(line);
+
+      messageIndex++;
+
+      // Add next message
+      if (messageIndex < loadingMessages.length) {
+        setTimeout(addLoadingMessage, 300);
+      }
+    }
+  }
+
+  function updateProgress() {
+    const progressBar = document.getElementById('loading-progress');
+    const progressText = document.getElementById('loading-percentage');
+
+    if (progressBar && progressText) {
+      progress += Math.random() * 15 + 5; // Random progress increment
+
+      if (progress > 100) progress = 100;
+
+      progressBar.style.width = `${progress}%`;
+      progressText.textContent = `${Math.round(progress)}%`;
+
+      if (progress < 100) {
+        setTimeout(updateProgress, 100);
+      } else {
+        // Hide loading screen
+        setTimeout(() => {
+          const loadingScreen = document.getElementById('loading-screen');
+          if (loadingScreen) {
+            loadingScreen.classList.add('hidden');
+            // Store that loading has completed for this session
+            sessionStorage.setItem('blog-loaded', 'true');
+          }
+        }, 250);
+      }
+    }
+  }
+
+  // Check if loading screen should show (only on initial load)
+  function shouldShowLoadingScreen() {
+    // Don't show if already loaded in this session
+    if (sessionStorage.getItem('blog-loaded') === 'true') {
+      const loadingScreen = document.getElementById('loading-screen');
+      if (loadingScreen) {
+        loadingScreen.style.display = 'none';
+      }
+      return false;
+    }
+    return true;
+  }
+
+  // Initialize loading sequence if this is the initial load
+  if (shouldShowLoadingScreen()) {
+    // Start loading sequence
+    setTimeout(addLoadingMessage, 500);
+    setTimeout(updateProgress, 800);
+  }
+</script>
