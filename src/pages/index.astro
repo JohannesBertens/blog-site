@@ -1,19 +1,150 @@
 ---
-import '../styles/global.css';
-import Navigation from '../components/Navigation.astro';
+import Layout from '../layouts/Layout.astro';
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-    	<Navigation />
+<Layout title="Home - Johannes Developer Blog" description="Welcome to my terminal-inspired developer blog" currentPage="home">
+  <!-- Hero Section with Terminal Style -->
+  <section class="section hero">
+    <div class="container">
+      <div class="text-center">
+        <!-- Terminal Hero -->
+        <div class="hero-terminal">
+          <div class="terminal-header">
+            <div class="terminal-dots">
+              <span class="dot red"></span>
+              <span class="dot yellow"></span>
+              <span class="dot green"></span>
+            </div>
+            <div class="terminal-title">welcome.sh</div>
+          </div>
+          <div class="terminal-content">
+            <div class="terminal-line">
+              <span class="prompt">$</span>
+              <span class="command typing">./welcome.sh --user=johannes</span>
+              <span class="cursor">_</span>
+            </div>
+            <div class="terminal-output">
+              <div class="output-line">🚀 Welcome to my developer blog!</div>
+              <div class="output-line">💻 Built with Astro and terminal aesthetics</div>
+              <div class="output-line">🎨 CSS Architecture Phase 1 Complete!</div>
+              <div class="output-line">🔧 Explore the code and design system</div>
+            </div>
+          </div>
+        </div>
 
-		<h1>My Astro</h1>
-	</body>
-</html>
+        <!-- Main Title -->
+        <div class="mt-8">
+          <h1 class="text-4xl font-bold mb-4">
+            <span class="terminal-prompt">$</span>
+            <span class="command">echo "Hello, World!"</span>
+          </h1>
+          <p class="text-xl text-secondary lead max-w-2xl mx-auto">
+            Welcome to my terminal-inspired blog where I share thoughts on web development,
+            coding adventures, and technical discoveries.
+          </p>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid mt-12">
+          <div class="card text-center">
+            <div class="text-2xl font-bold text-green mb-2">🚀</div>
+            <div class="text-sm text-secondary">Phase 1</div>
+            <div class="text-xs text-muted">CSS Architecture</div>
+          </div>
+          <div class="card text-center">
+            <div class="text-2xl font-bold text-cyan mb-2">🎨</div>
+            <div class="text-sm text-secondary">Terminal</div>
+            <div class="text-xs text-muted">Design System</div>
+          </div>
+          <div class="card text-center">
+            <div class="text-2xl font-bold text-blue mb-2">💻</div>
+            <div class="text-sm text-secondary">Developer</div>
+            <div class="text-xs text-muted">Focused</div>
+          </div>
+          <div class="card text-center">
+            <div class="text-2xl font-bold text-purple mb-2">⚡</div>
+            <div class="text-sm text-secondary">Modern</div>
+            <div class="text-xs text-muted">CSS Architecture</div>
+          </div>
+        </div>
+
+        <!-- Call to Action -->
+        <div class="mt-12">
+          <div class="flex flex-center gap-4 flex-wrap">
+            <a href="/blog/" class="btn btn-primary">
+              <span>📝</span>
+              <span>Read Blog Posts</span>
+            </a>
+            <a href="/about/" class="btn btn-secondary">
+              <span>👤</span>
+              <span>About Me</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="section section-bg">
+    <div class="container">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold mb-4">
+          <span class="terminal-prompt">$</span>
+          <span class="command">ls features/</span>
+        </h2>
+        <p class="text-lg text-secondary">What makes this blog special</p>
+      </div>
+
+      <div class="feature-grid">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">🎨 Terminal Aesthetic</h3>
+          </div>
+          <div class="card-content">
+            <p class="text-secondary">
+              Inspired by developer terminals and code editors, featuring dark themes,
+              green/cyan accents, and monospace fonts for that authentic developer experience.
+            </p>
+          </div>
+          <div class="card-footer">
+            <span class="badge badge-success">Design System</span>
+            <span class="badge badge-info">CSS Variables</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">🏗️ Modern Architecture</h3>
+          </div>
+          <div class="card-content">
+            <p class="text-secondary">
+              Built with a comprehensive CSS architecture including design tokens,
+              component-based styling, utility classes, and responsive layouts.
+            </p>
+          </div>
+          <div class="card-footer">
+            <span class="badge badge-success">CSS Architecture</span>
+            <span class="badge badge-warning">Scalable</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">📱 Responsive Design</h3>
+          </div>
+          <div class="card-content">
+            <p class="text-secondary">
+              Mobile-first responsive design with fluid typography, flexible grids,
+              and adaptive layouts that work perfectly on all device sizes.
+            </p>
+          </div>
+          <div class="card-footer">
+            <span class="badge badge-info">Mobile-First</span>
+            <span class="badge badge-success">Fluid Typography</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>

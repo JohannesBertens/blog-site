@@ -1,0 +1,700 @@
+/* =============================================================================
+   Layout System
+   Grid, container, and layout utilities using the design system
+   ============================================================================= */
+
+/* Import design tokens for reference */
+@import './tokens.css';
+
+/* =============================================================================
+   Container System
+   Responsive container utilities for content layout
+   ============================================================================= */
+
+/* Base container */
+.container {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--container-padding);
+  padding-right: var(--container-padding);
+}
+
+/* Full width container for edge-to-edge layouts */
+.container-full {
+  width: 100%;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* Fluid container that scales with viewport */
+.container-fluid {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--container-padding);
+  padding-right: var(--container-padding);
+}
+
+/* =============================================================================
+   Section Layouts
+   Common section patterns for content organization
+   ============================================================================= */
+
+/* Base section */
+.section {
+  padding: var(--section-gap) 0;
+  position: relative;
+}
+
+.section-sm {
+  padding: var(--space-12) 0;
+}
+
+.section-md {
+  padding: var(--space-16) 0;
+}
+
+.section-lg {
+  padding: var(--space-20) 0;
+}
+
+.section-xl {
+  padding: var(--space-24) 0;
+}
+
+.section-2xl {
+  padding: var(--space-32) 0;
+}
+
+/* Section with background */
+.section-bg {
+  background-color: var(--bg-secondary);
+  border-top: 1px solid var(--border-primary);
+  border-bottom: 1px solid var(--border-primary);
+}
+
+.section-gradient {
+  background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+}
+
+/* =============================================================================
+   Grid System
+   Responsive grid layouts using CSS Grid
+   ============================================================================= */
+
+/* Base grid */
+.grid {
+  display: grid;
+  gap: var(--component-gap);
+}
+
+/* Grid with custom gap */
+.grid-gap-sm { gap: var(--space-4); }
+.grid-gap-md { gap: var(--space-6); }
+.grid-gap-lg { gap: var(--space-8); }
+.grid-gap-xl { gap: var(--space-12); }
+
+/* Grid columns */
+.grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+.grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.grid-cols-5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.grid-cols-6 { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+.grid-cols-7 { grid-template-columns: repeat(7, minmax(0, 1fr)); }
+.grid-cols-8 { grid-template-columns: repeat(8, minmax(0, 1fr)); }
+.grid-cols-9 { grid-template-columns: repeat(9, minmax(0, 1fr)); }
+.grid-cols-10 { grid-template-columns: repeat(10, minmax(0, 1fr)); }
+.grid-cols-11 { grid-template-columns: repeat(11, minmax(0, 1fr)); }
+.grid-cols-12 { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+
+/* Auto-fit and auto-fill grids */
+.grid-auto-fit {
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+.grid-auto-fill {
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+}
+
+.grid-auto-fit-sm {
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.grid-auto-fill-sm {
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+}
+
+/* Grid with fixed column widths */
+.grid-fixed-sm {
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+}
+
+.grid-fixed-md {
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+
+.grid-fixed-lg {
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+}
+
+/* Grid rows */
+.grid-rows-1 { grid-template-rows: repeat(1, minmax(0, 1fr)); }
+.grid-rows-2 { grid-template-rows: repeat(2, minmax(0, 1fr)); }
+.grid-rows-3 { grid-template-rows: repeat(3, minmax(0, 1fr)); }
+.grid-rows-4 { grid-template-rows: repeat(4, minmax(0, 1fr)); }
+
+/* =============================================================================
+   Flexbox Layouts
+   Flex utilities for one-dimensional layouts
+   ============================================================================= */
+
+/* Flex container */
+.flex {
+  display: flex;
+}
+
+.flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-wrap {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+/* Flex spacing */
+.flex-gap-sm { gap: var(--space-2); }
+.flex-gap-md { gap: var(--space-4); }
+.flex-gap-lg { gap: var(--space-6); }
+.flex-gap-xl { gap: var(--space-8); }
+
+/* Flex alignment */
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.flex-start {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.flex-end {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+/* =============================================================================
+   Specific Layout Patterns
+   Common layout patterns for the blog
+   ============================================================================= */
+
+/* Blog post layout */
+.blog-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-8);
+  max-width: var(--container-xl);
+  margin: 0 auto;
+}
+
+.blog-with-sidebar {
+  grid-template-columns: 300px 1fr;
+}
+
+.blog-layout-wide {
+  grid-template-columns: 250px 1fr 200px;
+}
+
+/* Article content layout */
+.article-content {
+  max-width: var(--reading-width);
+  margin: 0 auto;
+  line-height: var(--reading-line-height);
+}
+
+/* Card grid layouts */
+.card-grid {
+  display: grid;
+  gap: var(--space-6);
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.card-grid-2 {
+  display: grid;
+  gap: var(--space-6);
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.card-grid-3 {
+  display: grid;
+  gap: var(--space-6);
+  grid-template-columns: repeat(3, 1fr);
+}
+
+/* Sidebar layouts */
+.sidebar-left {
+  display: grid;
+  grid-template-columns: 250px 1fr;
+  gap: var(--space-8);
+}
+
+.sidebar-right {
+  display: grid;
+  grid-template-columns: 1fr 250px;
+  gap: var(--space-8);
+}
+
+.sidebar-both {
+  display: grid;
+  grid-template-columns: 200px 1fr 200px;
+  gap: var(--space-8);
+}
+
+/* Hero section layout */
+.hero {
+  text-align: center;
+  padding: var(--space-20) 0;
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+  border-bottom: 1px solid var(--border-primary);
+}
+
+.hero-terminal {
+  max-width: 800px;
+  margin: 0 auto var(--space-8);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-xl);
+}
+
+/* Stats grid layout */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--space-4);
+  margin: var(--space-8) 0;
+}
+
+/* Feature grid layout */
+.feature-grid {
+  display: grid;
+  gap: var(--space-8);
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+/* Gallery layout */
+.gallery-grid {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-auto-rows: 200px;
+}
+
+.gallery-grid .item:nth-child(3n+1) {
+  grid-row: span 2;
+}
+
+.gallery-grid .item:nth-child(4n) {
+  grid-column: span 2;
+}
+
+/* Timeline layout */
+.timeline {
+  position: relative;
+  padding: var(--space-8) 0;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--border-primary);
+  transform: translateX(-50%);
+}
+
+.timeline-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+  margin-bottom: var(--space-8);
+  position: relative;
+}
+
+.timeline-item:nth-child(odd) {
+  flex-direction: row-reverse;
+}
+
+.timeline-content {
+  flex: 1;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+}
+
+.timeline-dot {
+  width: 1rem;
+  height: 1rem;
+  background: var(--accent-green);
+  border-radius: 50%;
+  border: 2px solid var(--bg-primary);
+  box-shadow: 0 0 0 4px var(--bg-secondary);
+}
+
+/* =============================================================================
+   Stack Layouts
+   Stacking layouts for vertical organization
+   ============================================================================= */
+
+/* Stack utilities */
+.stack-sm > * + * {
+  margin-top: var(--space-2);
+}
+
+.stack-md > * + * {
+  margin-top: var(--space-4);
+}
+
+.stack-lg > * + * {
+  margin-top: var(--space-6);
+}
+
+.stack-xl > * + * {
+  margin-top: var(--space-8);
+}
+
+.stack-2xl > * + * {
+  margin-top: var(--space-12);
+}
+
+/* Stack with horizontal lines */
+.stack-lined > * + * {
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border-primary);
+}
+
+/* =============================================================================
+   Split Layouts
+   Side-by-side layouts for comparisons and features
+   ============================================================================= */
+
+/* Split layout */
+.split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-8);
+  align-items: center;
+}
+
+.split-vertical {
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  gap: var(--space-8);
+}
+
+.split-uneven {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: var(--space-8);
+}
+
+/* =============================================================================
+   Centering Layouts
+   Utilities for centering content
+   ============================================================================= */
+
+/* Center container */
+.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.center-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 50vh;
+}
+
+/* =============================================================================
+   Responsive Layout Adjustments
+   Mobile-first responsive layout modifications
+   ============================================================================= */
+
+/* Small devices (phones) */
+@media (max-width: 640px) {
+  .container {
+    padding-left: var(--space-4);
+    padding-right: var(--space-4);
+  }
+
+  .section {
+    padding: var(--space-12) 0;
+  }
+
+  .blog-with-sidebar {
+    grid-template-columns: 1fr;
+  }
+
+  .blog-layout-wide {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar-left,
+  .sidebar-right,
+  .sidebar-both {
+    grid-template-columns: 1fr;
+  }
+
+  .split,
+  .split-uneven {
+    grid-template-columns: 1fr;
+  }
+
+  .card-grid-2,
+  .card-grid-3 {
+    grid-template-columns: 1fr;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .timeline::before {
+    left: var(--space-4);
+  }
+
+  .timeline-item {
+    flex-direction: column !important;
+    align-items: flex-start;
+    padding-left: var(--space-8);
+  }
+
+  .timeline-dot {
+    position: absolute;
+    left: calc(var(--space-4) - 0.5rem);
+    top: var(--space-4);
+  }
+}
+
+/* Medium devices (tablets) */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .blog-layout-wide {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar-both {
+    grid-template-columns: 200px 1fr;
+  }
+
+  .split-uneven {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .card-grid-3 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .timeline::before {
+    left: var(--space-8);
+  }
+
+  .timeline-item {
+    padding-left: var(--space-12);
+  }
+
+  .timeline-dot {
+    left: calc(var(--space-8) - 0.5rem);
+  }
+}
+
+/* Large devices (desktops) */
+@media (min-width: 1025px) {
+  .blog-layout {
+    grid-template-columns: 300px 1fr;
+  }
+
+  .gallery-grid {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
+}
+
+/* =============================================================================
+   Print Layout Optimizations
+   Special layout rules for printing
+   ============================================================================= */
+
+@media print {
+  .container {
+    max-width: none;
+    padding: 0;
+  }
+
+  .section {
+    padding: var(--space-4) 0;
+  }
+
+  .blog-with-sidebar,
+  .sidebar-left,
+  .sidebar-right,
+  .sidebar-both {
+    grid-template-columns: 1fr;
+  }
+
+  .navigation,
+  .sidebar,
+  footer,
+  .no-print {
+    display: none !important;
+  }
+
+  .hero {
+    padding: var(--space-4) 0;
+    background: none;
+    border: none;
+  }
+
+  .card {
+    break-inside: avoid;
+    border: 1px solid #ccc;
+    margin-bottom: var(--space-4);
+  }
+}
+
+/* =============================================================================
+   Accessibility Layout Enhancements
+   Layout improvements for screen readers and accessibility
+   ============================================================================= */
+
+/* Skip links */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: var(--accent-green);
+  color: var(--text-inverse);
+  padding: var(--space-2) var(--space-3);
+  text-decoration: none;
+  border-radius: var(--radius);
+  font-family: var(--font-mono);
+  font-weight: var(--font-medium);
+  z-index: var(--z-skip-link);
+  transition: top var(--duration-200) var(--ease-in-out);
+}
+
+.skip-link:focus {
+  top: 6px;
+}
+
+/* Landmark regions for screen readers */
+.main-content {
+  min-height: 100vh;
+}
+
+[role="navigation"] {
+  position: relative;
+}
+
+[role="main"] {
+  position: relative;
+}
+
+[role="complementary"] {
+  position: relative;
+}
+
+[role="contentinfo"] {
+  position: relative;
+}
+
+/* Focus visible for better keyboard navigation */
+.layout-focusable:focus-visible {
+  outline: var(--focus-width) solid var(--border-focus);
+  outline-offset: var(--focus-offset);
+  border-radius: var(--radius);
+}
+
+/* =============================================================================
+   Performance Optimizations
+   Layout performance enhancements
+   ============================================================================= */
+
+/* Contain layout for better performance */
+.layout-contain {
+  contain: layout style paint;
+}
+
+/* GPU acceleration for animated layouts */
+.layout-gpu {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Optimize images within layouts */
+.layout img {
+  image-rendering: optimizeQuality;
+  image-rendering: -webkit-optimize-contrast;
+}
+
+/* =============================================================================
+   Debug Layout Utilities
+   Helper classes for debugging layout issues
+   ============================================================================= */
+
+/* Debug borders - remove in production */
+.debug-layout * {
+  outline: 1px solid rgba(255, 0, 0, 0.3) !important;
+}
+
+.debug-grid {
+  background-image:
+    linear-gradient(rgba(255, 0, 0, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 0, 0, 0.1) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+.debug-container {
+  background-color: rgba(255, 0, 0, 0.05);
+}
+
+.debug-section {
+  background-color: rgba(0, 255, 0, 0.05);
+}
+
+.debug-grid-item {
+  background-color: rgba(0, 0, 255, 0.05);
+}
+
+/* Hide debug utilities in production */
+@media (min-resolution: 120dpi) {
+  .debug-layout,
+  .debug-grid,
+  .debug-container,
+  .debug-section,
+  .debug-grid-item {
+    display: none;
+  }
+}

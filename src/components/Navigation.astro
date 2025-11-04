@@ -1,5 +1,78 @@
 ---
+// Terminal-inspired Navigation Component
+// Accepts currentPage prop for active state styling
+const { currentPage = '' } = Astro.props;
 ---
-<a href="/">Home</a>
-<a href="/about/">About</a>
-<a href="/blog/">Blog</a>
+
+<!-- Terminal-style Navigation -->
+<nav class="navigation">
+  <div class="navigation-container">
+    <!-- Terminal prompt branding -->
+    <a href="/" class="nav-brand">
+      <div class="nav-brand-icon">$</div>
+      <span class="terminal-prompt">cd ~/johannes</span>
+    </a>
+
+    <!-- Navigation menu -->
+    <ul class="nav-menu">
+      <li class="nav-item">
+        <a href="/" class={`nav-link ${currentPage === 'home' ? 'active' : ''}`}>
+          <span class="nav-link-icon">🏠</span>
+          <span>home</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="/about/" class={`nav-link ${currentPage === 'about' ? 'active' : ''}`}>
+          <span class="nav-link-icon">👤</span>
+          <span>about</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="/blog/" class={`nav-link ${currentPage === 'blog' ? 'active' : ''}`}>
+          <span class="nav-link-icon">📝</span>
+          <span>blog</span>
+        </a>
+      </li>
+    </ul>
+
+    <!-- Navigation status indicator -->
+    <div class="nav-status">
+      <div class="status-dot status-online"></div>
+      <span>online</span>
+    </div>
+
+    <!-- Mobile navigation toggle -->
+    <button class="nav-toggle" aria-label="Toggle navigation menu">
+      <span class="hamburger"></span>
+    </button>
+  </div>
+</nav>
+
+<script>
+  // Mobile navigation functionality
+  const navToggle = document.querySelector('.nav-toggle');
+  const navMenu = document.querySelector('.nav-menu');
+
+  if (navToggle && navMenu) {
+    navToggle.addEventListener('click', () => {
+      navToggle.classList.toggle('active');
+      navMenu.classList.toggle('active');
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!navToggle.contains(e.target) && !navMenu.contains(e.target)) {
+        navToggle.classList.remove('active');
+        navMenu.classList.remove('active');
+      }
+    });
+
+    // Close menu on escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        navToggle.classList.remove('active');
+        navMenu.classList.remove('active');
+      }
+    });
+  }
+</script>

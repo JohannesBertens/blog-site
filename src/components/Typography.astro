@@ -1,0 +1,245 @@
+---
+// Typography Components for Terminal-Inspired Design
+// Specialized typography components with enhanced styling
+
+interface Props {
+  type?: 'heading' | 'subheading' | 'terminal' | 'code' | 'status' | 'lead';
+  level?: number;
+  variant?: 'default' | 'success' | 'warning' | 'error' | 'info';
+  size?: 'sm' | 'md' | 'lg' | 'xl';
+  children?: any;
+  class?: string;
+}
+
+const {
+  type = 'heading',
+  level = 1,
+  variant = 'default',
+  size = 'md',
+  children,
+  class: className = ''
+} = Astro.props;
+
+// Determine the appropriate HTML tag based on type and level
+const getTagName = () => {
+  switch (type) {
+    case 'heading':
+      return `h${Math.min(Math.max(level, 1), 6)}`;
+    case 'subheading':
+      return `h${Math.min(Math.max(level + 1, 2), 6)}`;
+    case 'terminal':
+      return 'div';
+    case 'code':
+      return 'code';
+    case 'status':
+      return 'span';
+    case 'lead':
+      return 'p';
+    default:
+      return 'div';
+  }
+};
+
+// Determine CSS classes based on props
+const getClasses = () => {
+  const baseClasses = 'typography-component';
+  const typeClasses = `typography-${type}`;
+  const variantClasses = variant !== 'default' ? `typography-${variant}` : '';
+  const sizeClasses = size !== 'md' ? `typography-${size}` : '';
+
+  return [baseClasses, typeClasses, variantClasses, sizeClasses, className].filter(Boolean).join(' ');
+};
+---
+
+<astro:component>
+  <!-- Dynamic component rendering based on type -->
+  {getTagName() === 'div' ? (
+    <div class={getClasses()}>{children}</div>
+  ) : getTagName() === 'code' ? (
+    <code class={getClasses()}>{children}</code>
+  ) : getTagName() === 'span' ? (
+    <span class={getClasses()}>{children}</span>
+  ) : getTagName() === 'p' ? (
+    <p class={getClasses()}>{children}</p>
+  ) : getTagName() === 'h1' ? (
+    <h1 class={getClasses()}>{children}</h1>
+  ) : getTagName() === 'h2' ? (
+    <h2 class={getClasses()}>{children}</h2>
+  ) : getTagName() === 'h3' ? (
+    <h3 class={getClasses()}>{children}</h3>
+  ) : getTagName() === 'h4' ? (
+    <h4 class={getClasses()}>{children}</h4>
+  ) : getTagName() === 'h5' ? (
+    <h5 class={getClasses()}>{children}</h5>
+  ) : getTagName() === 'h6' ? (
+    <h6 class={getClasses()}>{children}</h6>
+  ) : (
+    <div class={getClasses()}>{children}</div>
+  )}
+</astro:component>
+
+<style>
+  /* Typography Component Styles */
+  .typography-component {
+    font-family: var(--font-sans);
+    line-height: var(--leading-normal);
+    color: var(--text-primary);
+  }
+
+  /* Heading Styles */
+  .typography-heading {
+    font-family: var(--font-mono);
+    font-weight: var(--font-semibold);
+    line-height: var(--leading-tight);
+    letter-spacing: var(--tracking-tight);
+    margin-bottom: var(--space-4);
+    scroll-margin-top: 2rem;
+  }
+
+  .typography-heading.typography-sm {
+    font-size: var(--text-xl);
+  }
+
+  .typography-heading.typography-md {
+    font-size: var(--text-2xl);
+  }
+
+  .typography-heading.typography-lg {
+    font-size: var(--text-3xl);
+  }
+
+  .typography-heading.typography-xl {
+    font-size: var(--text-4xl);
+  }
+
+  /* Terminal Prompt Styles */
+  .typography-terminal {
+    font-family: var(--font-terminal);
+    font-size: var(--terminal-text-size);
+    line-height: var(--terminal-line-height);
+    color: var(--accent-green);
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) 0;
+  }
+
+  .typography-terminal::before {
+    content: '$';
+    font-weight: var(--font-bold);
+  }
+
+  .typography-terminal.typography-success {
+    color: var(--accent-green);
+  }
+
+  .typography-terminal.typography-warning {
+    color: var(--accent-yellow);
+  }
+
+  .typography-terminal.typography-error {
+    color: var(--accent-red);
+  }
+
+  .typography-terminal.typography-info {
+    color: var(--accent-cyan);
+  }
+
+  /* Code Styles */
+  .typography-code {
+    font-family: var(--font-mono);
+    background-color: var(--bg-tertiary);
+    padding: 0.125rem 0.375rem;
+    border-radius: var(--radius);
+    font-size: var(--code-inline-size);
+    color: var(--accent-cyan);
+    border: 1px solid var(--border-primary);
+    display: inline-block;
+  }
+
+  /* Status Indicator Styles */
+  .typography-status {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    font-weight: var(--font-medium);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+  }
+
+  .typography-status::before {
+    content: '';
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .typography-status.typography-success {
+    background: rgba(63, 185, 80, 0.1);
+    color: var(--accent-green);
+    border: 1px solid var(--accent-green);
+  }
+
+  .typography-status.typography-success::before {
+    background: var(--accent-green);
+  }
+
+  .typography-status.typography-warning {
+    background: rgba(210, 153, 34, 0.1);
+    color: var(--accent-yellow);
+    border: 1px solid var(--accent-yellow);
+  }
+
+  .typography-status.typography-warning::before {
+    background: var(--accent-yellow);
+  }
+
+  .typography-status.typography-error {
+    background: rgba(248, 81, 73, 0.1);
+    color: var(--accent-red);
+    border: 1px solid var(--accent-red);
+  }
+
+  .typography-status.typography-error::before {
+    background: var(--accent-red);
+  }
+
+  .typography-status.typography-info {
+    background: rgba(57, 197, 207, 0.1);
+    color: var(--accent-cyan);
+    border: 1px solid var(--accent-cyan);
+  }
+
+  .typography-status.typography-info::before {
+    background: var(--accent-cyan);
+  }
+
+  /* Lead Text Styles */
+  .typography-lead {
+    font-size: var(--text-lg);
+    color: var(--text-secondary);
+    line-height: var(--leading-relaxed);
+    margin-bottom: var(--space-6);
+    max-width: none;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 640px) {
+    .typography-heading.typography-xl {
+      font-size: var(--text-3xl);
+    }
+
+    .typography-heading.typography-lg {
+      font-size: var(--text-2xl);
+    }
+
+    .typography-terminal {
+      font-size: var(--text-xs);
+    }
+  }
+</style>

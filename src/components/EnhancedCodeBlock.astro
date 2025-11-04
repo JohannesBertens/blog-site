@@ -1,0 +1,517 @@
+---
+// Enhanced Code Block Component with Line Numbers and Syntax Highlighting
+// Terminal-inspired code blocks with advanced features
+
+interface Props {
+  code: string;
+  language?: string;
+  title?: string;
+  showLineNumbers?: boolean;
+  copyable?: boolean;
+  filename?: string;
+  maxLines?: number;
+}
+
+const {
+  code,
+  language = 'bash',
+  title,
+  showLineNumbers = true,
+  copyable = true,
+  filename,
+  maxLines
+} = Astro.props;
+
+// Split code into lines for line numbering
+const codeLines = code.split('\n');
+
+// Generate a unique ID for this code block
+const codeId = `code-${Math.random().toString(36).substr(2, 9)}`;
+
+// Format file extension for display
+const getFileExtension = (lang: string) => {
+  const extensions: Record<string, string> = {
+    'javascript': 'js',
+    'typescript': 'ts',
+    'python': 'py',
+    'html': 'html',
+    'css': 'css',
+    'scss': 'scss',
+    'bash': 'sh',
+    'shell': 'sh',
+    'json': 'json',
+    'xml': 'xml',
+    'yaml': 'yml',
+    'markdown': 'md'
+  };
+  return extensions[lang.toLowerCase()] || lang;
+};
+
+// Truncate code if maxLines is specified
+const displayCode = maxLines && codeLines.length > maxLines
+  ? codeLines.slice(0, maxLines).join('\n') + '\n...'
+  : code;
+---
+
+<div class={`enhanced-code-block ${showLineNumbers ? 'line-numbers' : ''}`} data-language={language}>
+  {title && (
+    <div class="code-header">
+      <div class="code-title">
+        <span class="file-icon">📄</span>
+        <span class="file-name">{title}</span>
+        {filename && (
+          <span class="file-extension">.{getFileExtension(language)}</span>
+        )}
+      </div>
+      <div class="code-actions">
+        {copyable && (
+          <button class="copy-btn" data-code={encodeURIComponent(code)} data-target={codeId}>
+            <span class="copy-icon">📋</span>
+            <span class="copy-text">Copy</span>
+          </button>
+        )}
+      </div>
+    </div>
+  )}
+
+  <div class="code-terminal">
+    <div class="terminal-header">
+      <div class="terminal-dots">
+        <span class="dot red"></span>
+        <span class="dot yellow"></span>
+        <span class="dot green"></span>
+      </div>
+      <div class="terminal-title">
+        {filename || language || 'terminal'}
+      </div>
+      <div class="terminal-actions">
+        {maxLines && codeLines.length > maxLines && (
+          <span class="truncated-indicator" title={`${codeLines.length} total lines, showing ${maxLines}`}>
+            +{codeLines.length - maxLines} lines
+          </span>
+        )}
+      </div>
+    </div>
+
+    <div class="code-content" id={codeId}>
+      <pre class="code-pre"><code class={`language-${language} language-highlight`}>{displayCode}</code></pre>
+    </div>
+
+    <div class="code-footer">
+      <div class="code-stats">
+        <span class="stat-item">
+          <span class="stat-icon">📏</span>
+          <span class="stat-text">{codeLines.length} lines</span>
+        </span>
+        <span class="stat-item">
+          <span class="stat-icon">⚡</span>
+          <span class="stat-text">{language}</span>
+        </span>
+      </div>
+      {copyable && (
+        <button class="copy-btn copy-btn-footer" data-code={encodeURIComponent(code)} data-target={codeId}>
+          <span class="copy-icon">📋</span>
+          <span class="copy-text">Copy code</span>
+        </button>
+      )}
+    </div>
+  </div>
+</div>
+
+<style>
+  .enhanced-code-block {
+    margin: var(--space-6) 0;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 1px solid var(--border-primary);
+    background: var(--bg-secondary);
+    font-family: var(--font-mono);
+    font-size: var(--code-block-size);
+    line-height: var(--code-line-height);
+    position: relative;
+  }
+
+  .enhanced-code-block::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(180deg, var(--accent-green) 0%, var(--accent-cyan) 100%);
+    opacity: 0.8;
+  }
+
+  .code-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-4);
+    background: var(--bg-tertiary);
+    border-bottom: 1px solid var(--border-primary);
+  }
+
+  .code-title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    font-size: var(--text-sm);
+    color: var(--text-primary);
+    font-weight: var(--font-semibold);
+  }
+
+  .file-icon {
+    font-size: 1.2em;
+  }
+
+  .file-name {
+    font-family: var(--font-mono);
+  }
+
+  .file-extension {
+    color: var(--accent-cyan);
+    font-size: var(--text-xs);
+    background: rgba(57, 197, 207, 0.1);
+    padding: 0.125rem 0.375rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--accent-cyan);
+  }
+
+  .code-actions {
+    display: flex;
+    gap: var(--space-2);
+  }
+
+  .copy-btn {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    background: var(--bg-primary);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius);
+    color: var(--text-secondary);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    cursor: pointer;
+    transition: all var(--duration-200) var(--ease-in-out);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .copy-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(63, 185, 80, 0.1), transparent);
+    transition: left var(--duration-500) var(--ease-in-out);
+  }
+
+  .copy-btn:hover::before {
+    left: 100%;
+  }
+
+  .copy-btn:hover {
+    background: var(--bg-tertiary);
+    color: var(--accent-green);
+    border-color: var(--accent-green);
+    transform: translateY(-1px);
+  }
+
+  .copy-btn.copied {
+    color: var(--accent-green);
+    background: rgba(63, 185, 80, 0.1);
+    border-color: var(--accent-green);
+  }
+
+  .copy-btn-footer {
+    padding: var(--space-2) var(--space-4);
+    font-size: var(--text-xs);
+  }
+
+  .code-terminal {
+    background: var(--code-bg);
+  }
+
+  .terminal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-3) var(--space-4);
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-primary);
+  }
+
+  .terminal-dots {
+    display: flex;
+    gap: var(--space-1);
+  }
+
+  .dot {
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 50%;
+  }
+
+  .dot.red { background-color: #ff5f56; }
+  .dot.yellow { background-color: #ffbd2e; }
+  .dot.green { background-color: #27c93f; }
+
+  .terminal-title {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+    flex: 1;
+    text-align: center;
+  }
+
+  .terminal-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .truncated-indicator {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+    background: var(--bg-tertiary);
+    padding: 0.125rem 0.375rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--border-primary);
+  }
+
+  .code-content {
+    padding: var(--space-4);
+    background: var(--code-bg);
+    overflow-x: auto;
+    position: relative;
+  }
+
+  .code-pre {
+    margin: 0;
+    padding: 0;
+    background: none;
+    font-family: var(--font-mono);
+    font-size: inherit;
+    line-height: inherit;
+    color: var(--text-primary);
+    overflow-x: auto;
+    white-space: pre;
+    word-wrap: normal;
+  }
+
+  .language-highlight {
+    display: block;
+    position: relative;
+  }
+
+  /* Line Numbers */
+  .line-numbers .language-highlight {
+    counter-reset: line;
+    padding-left: var(--space-10);
+    position: relative;
+  }
+
+  .line-numbers .language-highlight > * {
+    counter-increment: line;
+    display: block;
+    position: relative;
+    min-height: var(--code-line-height);
+  }
+
+  .line-numbers .language-highlight > *::before {
+    content: counter(line);
+    position: absolute;
+    left: calc(-1 * var(--space-8));
+    width: var(--space-6);
+    text-align: right;
+    color: var(--text-muted);
+    font-size: 0.875em;
+    user-select: none;
+    font-weight: var(--font-normal);
+    border-right: 1px solid var(--border-primary);
+    margin-right: var(--space-2);
+    padding-right: var(--space-1);
+    line-height: var(--code-line-height);
+  }
+
+  /* Code Footer */
+  .code-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-3) var(--space-4);
+    background: var(--bg-tertiary);
+    border-top: 1px solid var(--border-primary);
+  }
+
+  .code-stats {
+    display: flex;
+    gap: var(--space-4);
+  }
+
+  .stat-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+  }
+
+  .stat-icon {
+    font-size: 1em;
+  }
+
+  .stat-text {
+    font-family: var(--font-mono);
+  }
+
+  /* Syntax highlighting colors */
+  .token.comment { color: var(--code-comment); font-style: italic; }
+  .token.keyword { color: var(--code-keyword); font-weight: var(--font-semibold); }
+  .token.string { color: var(--code-string); }
+  .token.number { color: var(--code-number); }
+  .token.function { color: var(--code-function); }
+  .token.operator { color: var(--code-operator); }
+  .token.punctuation { color: var(--code-punctuation); }
+  .token.variable { color: var(--code-variable); }
+  .token.class-name { color: var(--code-class-name); }
+  .token.tag { color: var(--code-tag); }
+  .token.attr-name { color: var(--code-attr-name); }
+  .token.attr-value { color: var(--code-attr-value); }
+  .token.property { color: var(--accent-cyan); }
+  .token.boolean { color: var(--accent-blue); }
+  .token.null { color: var(--accent-purple); }
+
+  /* Responsive adjustments */
+  @media (max-width: 640px) {
+    .code-header {
+      flex-direction: column;
+      gap: var(--space-3);
+      align-items: stretch;
+    }
+
+    .code-title {
+      justify-content: center;
+    }
+
+    .code-actions {
+      justify-content: center;
+    }
+
+    .terminal-header {
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+
+    .terminal-title {
+      text-align: center;
+    }
+
+    .code-footer {
+      flex-direction: column;
+      gap: var(--space-3);
+      align-items: stretch;
+    }
+
+    .code-stats {
+      justify-content: center;
+    }
+
+    .copy-btn-footer {
+      justify-content: center;
+    }
+
+    .line-numbers .language-highlight > *::before {
+      width: var(--space-4);
+      font-size: 0.75em;
+    }
+  }
+
+  /* Loading animation for code blocks */
+  .enhanced-code-block.loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(63, 185, 80, 0.1), transparent);
+    animation: code-loading 1.5s infinite;
+  }
+
+  @keyframes code-loading {
+    0% { left: -100%; }
+    100% { left: 100%; }
+  }
+</style>
+
+<script>
+  // Copy functionality with enhanced feedback
+  document.addEventListener('DOMContentLoaded', () => {
+    const copyButtons = document.querySelectorAll('.copy-btn');
+
+    copyButtons.forEach(button => {
+      button.addEventListener('click', async (e) => {
+        e.preventDefault();
+
+        const code = decodeURIComponent(button.dataset.code);
+        const targetId = button.dataset.target;
+
+        try {
+          await navigator.clipboard.writeText(code);
+
+          // Visual feedback
+          button.classList.add('copied');
+          const originalText = button.querySelector('.copy-text').textContent;
+          button.querySelector('.copy-text').textContent = 'Copied!';
+
+          // Update all buttons for this code block
+          document.querySelectorAll(`[data-target="${targetId}"]`).forEach(btn => {
+            btn.classList.add('copied');
+            btn.querySelector('.copy-text').textContent = 'Copied!';
+          });
+
+          setTimeout(() => {
+            document.querySelectorAll(`[data-target="${targetId}"]`).forEach(btn => {
+              btn.classList.remove('copied');
+              btn.querySelector('.copy-text').textContent = originalText;
+            });
+          }, 2000);
+
+        } catch (err) {
+          console.error('Failed to copy code:', err);
+
+          // Fallback for older browsers
+          const textArea = document.createElement('textarea');
+          textArea.value = code;
+          textArea.style.position = 'fixed';
+          textArea.style.opacity = '0';
+          document.body.appendChild(textArea);
+          textArea.select();
+
+          try {
+            document.execCommand('copy');
+            button.classList.add('copied');
+            button.querySelector('.copy-text').textContent = 'Copied!';
+
+            setTimeout(() => {
+              button.classList.remove('copied');
+              button.querySelector('.copy-text').textContent = originalText;
+            }, 2000);
+          } catch (fallbackErr) {
+            console.error('Fallback copy failed:', fallbackErr);
+          }
+
+          document.body.removeChild(textArea);
+        }
+      });
+    });
+  });
+</script>

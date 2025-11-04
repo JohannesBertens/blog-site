@@ -1,0 +1,459 @@
+/* =============================================================================
+   Main CSS Entry Point
+   Imports all CSS modules in the correct order for proper cascade
+   ============================================================================= */
+
+/* Import design tokens first - defines all CSS custom properties */
+@import './tokens.css';
+
+/* Import CSS reset - provides consistent baseline across browsers */
+@import './reset.css';
+
+/* Import base styles - fundamental HTML element styling */
+@import './base.css';
+
+/* Import layout system - grid, containers, and layout utilities */
+@import './layout.css';
+
+/* Import component styles - reusable component styling */
+@import './components.css';
+
+/* Import utility classes - single-purpose utility classes */
+@import './utilities.css';
+
+/* =============================================================================
+   Additional Global Enhancements
+   Styles that don't fit into specific modules but are needed globally
+   ============================================================================= */
+
+/* Custom scrollbar styling for terminal aesthetic */
+::-webkit-scrollbar {
+  width: var(--scrollbar-width);
+  height: var(--scrollbar-width);
+}
+
+::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius);
+  transition: all var(--duration-200) var(--ease-in-out);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+  border-color: var(--accent-cyan);
+}
+
+::-webkit-scrollbar-corner {
+  background: var(--scrollbar-track);
+}
+
+/* Firefox scrollbar support */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}
+
+/* Terminal-style scrollbar for code blocks */
+.terminal-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.terminal-scrollbar::-webkit-scrollbar-track {
+  background: var(--code-bg);
+  border-radius: var(--radius-sm);
+}
+
+.terminal-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--accent-green);
+  border-radius: var(--radius-sm);
+  opacity: 0.5;
+}
+
+.terminal-scrollbar::-webkit-scrollbar-thumb:hover {
+  opacity: 1;
+  background: var(--accent-cyan);
+}
+
+/* Global focus styles for better accessibility */
+:focus-visible {
+  outline: var(--focus-width) solid var(--border-focus);
+  outline-offset: var(--focus-offset);
+  border-radius: var(--radius);
+}
+
+/* Enhanced selection styling */
+::selection {
+  background-color: var(--accent-green);
+  color: var(--text-inverse);
+  text-shadow: none;
+}
+
+/* Firefox selection */
+::-moz-selection {
+  background-color: var(--accent-green);
+  color: var(--text-inverse);
+  text-shadow: none;
+}
+
+/* Placeholder text styling */
+::placeholder {
+  color: var(--text-muted);
+  font-style: italic;
+  opacity: 1;
+}
+
+/* Enhanced text rendering */
+.text-optimized {
+  text-rendering: optimizeLegibility;
+  -webkit-font-feature-settings: 'kern' 1, 'liga' 1;
+  font-feature-settings: 'kern' 1, 'liga' 1;
+}
+
+/* Global animations and transitions */
+.transition-all {
+  transition: all var(--duration-200) var(--ease-in-out);
+}
+
+.transition-colors {
+  transition: color var(--duration-200) var(--ease-in-out),
+              background-color var(--duration-200) var(--ease-in-out),
+              border-color var(--duration-200) var(--ease-in-out);
+}
+
+.transition-transform {
+  transition: transform var(--duration-200) var(--ease-in-out);
+}
+
+/* Global hover effects */
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.hover-scale:hover {
+  transform: scale(var(--interactive-scale));
+}
+
+.hover-glow:hover {
+  box-shadow: 0 0 20px rgba(63, 185, 80, 0.3);
+}
+
+/* Loading states */
+.loading {
+  position: relative;
+  overflow: hidden;
+}
+
+.loading::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(63, 185, 80, 0.1), transparent);
+  animation: loading-shimmer 1.5s infinite;
+}
+
+@keyframes loading-shimmer {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+/* Pulse animations */
+.pulse {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* Terminal cursor blink animation */
+.cursor-blink::after {
+  content: '_';
+  animation: blink 1s infinite;
+  color: var(--accent-cyan);
+}
+
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+/* =============================================================================
+   Responsive Design Utilities
+   Global responsive helpers and breakpoints
+   ============================================================================= */
+
+/* Container for responsive layouts */
+.container {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--container-padding);
+  padding-right: var(--container-padding);
+}
+
+/* Responsive container max-widths */
+@media (min-width: 640px) {
+  .container {
+    max-width: var(--container-sm);
+  }
+}
+
+@media (min-width: 768px) {
+  .container {
+    max-width: var(--container-md);
+  }
+}
+
+@media (min-width: 1024px) {
+  .container {
+    max-width: var(--container-lg);
+  }
+}
+
+@media (min-width: 1280px) {
+  .container {
+    max-width: var(--container-xl);
+  }
+}
+
+@media (min-width: 1536px) {
+  .container {
+    max-width: var(--container-2xl);
+  }
+}
+
+/* =============================================================================
+   Global Print Styles
+   Ensure content prints correctly
+   ============================================================================= */
+
+@media print {
+  /* Remove animations and transitions for printing */
+  * {
+    animation: none !important;
+    transition: none !important;
+    text-shadow: none !important;
+    box-shadow: none !important;
+  }
+
+  /* Ensure text is black on white */
+  body {
+    color: #000 !important;
+    background: #fff !important;
+  }
+
+  /* Hide non-essential elements */
+  .no-print,
+  .navigation,
+  .sidebar,
+  footer {
+    display: none !important;
+  }
+
+  /* Ensure links are visible */
+  a {
+    color: #000 !important;
+    text-decoration: underline !important;
+  }
+
+  a[href]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.8em;
+    color: #666;
+  }
+
+  /* Optimize code blocks for printing */
+  pre {
+    border: 1px solid #ccc;
+    page-break-inside: avoid;
+    background: #f5f5f5 !important;
+    color: #000 !important;
+  }
+
+  code {
+    background: #f5f5f5 !important;
+    color: #000 !important;
+  }
+
+  /* Optimize tables for printing */
+  table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+
+  th, td {
+    border: 1px solid #ccc;
+    padding: 8px;
+  }
+
+  /* Ensure images don't overflow */
+  img {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+
+  /* Optimize headings for printing */
+  h1, h2, h3, h4, h5, h6 {
+    color: #000 !important;
+    page-break-after: avoid;
+    margin-top: 1em;
+    margin-bottom: 0.5em;
+  }
+
+  /* Optimize paragraphs for printing */
+  p {
+    orphans: 3;
+    widows: 3;
+    margin-bottom: 0.5em;
+  }
+}
+
+/* =============================================================================
+   High Contrast Mode Support
+   Better accessibility for users with high contrast preferences
+   ============================================================================= */
+
+@media (prefers-contrast: high) {
+  :root {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8f8f8;
+    --bg-tertiary: #e8e8e8;
+    --text-primary: #000000;
+    --text-secondary: #333333;
+    --text-muted: #666666;
+    --border-primary: #000000;
+    --border-secondary: #333333;
+    --accent-green: #006600;
+    --accent-blue: #0000cc;
+    --accent-cyan: #009999;
+    --accent-yellow: #cc6600;
+    --accent-red: #cc0000;
+  }
+
+  a {
+    text-decoration: underline;
+  }
+
+  a:focus {
+    outline: 3px solid #000000;
+    outline-offset: 2px;
+  }
+
+  button:focus,
+  input:focus,
+  textarea:focus,
+  select:focus {
+    outline: 3px solid #000000;
+    outline-offset: 2px;
+  }
+}
+
+/* =============================================================================
+   Reduced Motion Support
+   Respect user preferences for reduced motion
+   ============================================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .loading::after {
+    animation: none;
+  }
+
+  .pulse {
+    animation: none;
+  }
+
+  .cursor-blink::after {
+    animation: none;
+  }
+}
+
+/* =============================================================================
+   Dark Mode Support (Future Implementation)
+   Prepared for potential dark mode toggle functionality
+   ============================================================================= */
+
+@media (prefers-color-scheme: light) {
+  :root {
+    /* Light mode tokens - for future implementation */
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8fafc;
+    --bg-tertiary: #f1f5f9;
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+    --text-muted: #94a3b8;
+    --border-primary: #e2e8f0;
+    --border-secondary: #cbd5e1;
+    --code-bg: #f8fafc;
+    --code-border: #e2e8f0;
+  }
+}
+
+/* =============================================================================
+   Performance Optimizations
+   CSS optimizations for better performance
+   ============================================================================= */
+
+/* Contain paint for better performance */
+.performance-optimize {
+  contain: layout style paint;
+}
+
+/* GPU acceleration for animations */
+.gpu-accelerated {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Optimize images for performance */
+img {
+  image-rendering: optimizeQuality;
+  image-rendering: -webkit-optimize-contrast;
+}
+
+/* =============================================================================
+   Debug Utilities
+   Helper classes for debugging during development
+   ============================================================================= */
+
+/* Debug borders - remove in production */
+.debug * {
+  outline: 1px solid rgba(255, 0, 0, 0.3) !important;
+}
+
+.debug-grid {
+  background-image:
+    linear-gradient(rgba(255, 0, 0, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 0, 0, 0.1) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* Hide debug utilities in production */
+@media (min-resolution: 120dpi) {
+  .debug,
+  .debug-grid {
+    display: none;
+  }
+}

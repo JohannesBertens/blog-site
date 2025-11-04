@@ -1,22 +1,159 @@
 ---
-import '../styles/global.css';
-import Navigation from '../components/Navigation.astro';
+import Layout from '../layouts/Layout.astro';
 ---
-<html lang="en">
-  <head>
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width" />
-    <title>Astro</title>
-  </head>
-  <body>
-    <Navigation />
 
-    <h1>My Astro Learning Blog</h1>
-    <p>This is where I will post about my journey learning Astro.</p>
-    <ul>
-        <li><a href="/posts/post-1/">Post 1</a></li>
-        <li><a href="/posts/post-2/">Post 2</a></li>
-        <li><a href="/posts/post-3/">Post 3</a></li>
-    </ul>
-  </body>
-</html>
+<Layout title="Blog - Johannes Developer Blog" description="Read my latest posts about web development, CSS architecture, and terminal-inspired design" currentPage="blog">
+  <!-- Blog Hero Section -->
+  <section class="section hero">
+    <div class="container">
+      <div class="text-center">
+        <h1 class="text-4xl font-bold mb-6">
+          <span class="terminal-prompt">$</span>
+          <span class="command">ls -la posts/</span>
+        </h1>
+        <p class="text-xl text-secondary lead max-w-2xl mx-auto">
+          Explore my thoughts on web development, CSS architecture, and terminal-inspired design systems.
+        </p>
+
+        <!-- Terminal File Listing -->
+        <div class="hero-terminal mt-8">
+          <div class="terminal-header">
+            <div class="terminal-dots">
+              <span class="dot red"></span>
+              <span class="dot yellow"></span>
+              <span class="dot green"></span>
+            </div>
+            <div class="terminal-title">posts/</div>
+          </div>
+          <div class="terminal-content">
+            <div class="terminal-line">
+              <span class="prompt">$</span>
+              <span class="command">ls -la posts/</span>
+            </div>
+            <div class="terminal-output">
+              <div class="output-line">total 24</div>
+              <div class="output-line">drwxr-xr-x 2 johannes dev 4096 Dec 15 10:30 .</div>
+              <div class="output-line">drwxr-xr-x 3 johannes dev 4096 Dec 15 10:30 ..</div>
+              <div class="output-line">-rw-r--r-- 1 johannes dev 2048 Dec 15 10:15 post-1.md</div>
+              <div class="output-line">-rw-r--r-- 1 johannes dev 1536 Dec 14 15:45 post-2.md</div>
+              <div class="output-line">-rw-r--r-- 1 johannes dev 1792 Dec 13 09:20 post-3.md</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Blog Posts Section -->
+  <section class="section">
+    <div class="container">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="text-3xl font-bold text-center mb-8">
+          <span class="terminal-prompt">$</span>
+          <span class="command">cat posts/*.md</span>
+        </h2>
+
+        <!-- Blog Posts Grid -->
+        <div class="card-grid">
+          <div class="card">
+            <div class="card-header">
+              <div class="flex justify-between items-start">
+                <h3 class="card-title">First Post</h3>
+                <span class="badge badge-success">Latest</span>
+              </div>
+              <div class="text-xs text-muted">December 15, 2024</div>
+            </div>
+            <div class="card-content">
+              <p class="text-secondary">
+                My first post exploring the beginning of my web development journey and the fundamentals of creating modern web experiences.
+              </p>
+            </div>
+            <div class="card-footer">
+              <a href="/posts/post-1/" class="card-action">
+                <span>Read More</span>
+                <span>→</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Second Post</h3>
+              <div class="text-xs text-muted">December 14, 2024</div>
+            </div>
+            <div class="card-content">
+              <p class="text-secondary">
+                Diving deeper into web development concepts and exploring intermediate topics in modern front-end development.
+              </p>
+            </div>
+            <div class="card-footer">
+              <a href="/posts/post-2/" class="card-action">
+                <span>Read More</span>
+                <span>→</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Third Post</h3>
+              <div class="text-xs text-muted">December 13, 2024</div>
+            </div>
+            <div class="card-content">
+              <p class="text-secondary">
+                Exploring advanced CSS architecture patterns and terminal-inspired design systems for modern web applications.
+              </p>
+            </div>
+            <div class="card-footer">
+              <a href="/posts/post-3/" class="card-action">
+                <span>Read More</span>
+                <span>→</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stats Section -->
+        <div class="text-center mt-12">
+          <div class="stats-grid">
+            <div class="card text-center">
+              <div class="text-2xl font-bold text-green mb-2">📝</div>
+              <div class="text-lg font-semibold">3</div>
+              <div class="text-xs text-muted">Posts</div>
+            </div>
+            <div class="card text-center">
+              <div class="text-2xl font-bold text-cyan mb-2">📚</div>
+              <div class="text-lg font-semibold">CSS</div>
+              <div class="text-xs text-muted">Architecture</div>
+            </div>
+            <div class="card text-center">
+              <div class="text-2xl font-bold text-blue mb-2">🎨</div>
+              <div class="text-lg font-semibold">Terminal</div>
+              <div class="text-xs text-muted">Design</div>
+            </div>
+            <div class="card text-center">
+              <div class="text-2xl font-bold text-purple mb-2">🚀</div>
+              <div class="text-lg font-semibold">Modern</div>
+              <div class="text-xs text-muted">Web Dev</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Call to Action -->
+        <div class="text-center mt-12">
+          <div class="terminal-section">
+            <div class="text-left font-mono text-sm">
+              <div class="mb-4">
+                <span class="text-green">$</span>
+                <span class="command">echo "More posts coming soon!"</span>
+              </div>
+              <div class="ml-6 text-cyan">
+                Stay tuned for more web development insights, CSS architecture patterns, and terminal-inspired design experiments.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>

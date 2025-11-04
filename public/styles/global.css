@@ -1,0 +1,22 @@
+/* =============================================================================
+   Global Styles - Main CSS Architecture Entry Point
+   Imports the complete CSS architecture for the blog
+   ============================================================================= */
+
+/* Import the main CSS entry point */
+@import './main.css';
+
+/*
+   This file now serves as the main entry point for all CSS.
+   The architecture is organized as follows:
+
+   1. tokens.css - Design tokens (colors, typography, spacing)
+   2. reset.css - Modern CSS reset
+   3. base.css - Base HTML element styles
+   4. layout.css - Layout and grid systems
+   5. components.css - Component-specific styles
+   6. utilities.css - Utility classes
+
+   All styling is now organized using the terminal-inspired design system
+   with CSS custom properties for consistency and maintainability.
+*/
