@@ -1,150 +1,528 @@
 ---
+// src/pages/blog.astro
 import Layout from '../layouts/Layout.astro';
+import BlogCard from '../components/BlogCard.astro';
+import Navigation from '../components/Navigation.astro';
+
+// Get all blog posts using import.meta.glob (recommended approach)
+const allPostModules = import.meta.glob('../pages/posts/*.md', { eager: true });
+const allPosts = Object.values(allPostModules);
+
+// Sort posts by date (newest first)
+const sortedPosts = allPosts.sort((a, b) =>
+  new Date(b.frontmatter.pubDate).valueOf() -
+  new Date(a.frontmatter.pubDate).valueOf()
+);
+
+// Extract unique tags
+const allTags = [...new Set(
+  allPosts.flatMap(post => post.frontmatter.tags || [])
+)];
+
+// Calculate reading time helper with better error handling
+const calculateReadingTime = (content: any) => {
+  const wordsPerMinute = 200;
+
+  // Convert content to string if it's not already
+  const contentStr = typeof content === 'string' ? content :
+                   (content && content.toString ? content.toString() : '');
+
+  const words = contentStr.split(/\s+/).length;
+  const minutes = Math.ceil(words / wordsPerMinute);
+  return `${minutes} min read`;
+};
+
+// Filter posts by tag
+let filteredPosts = sortedPosts;
+let currentTag = 'all';
+
+if (Astro.url.searchParams.has('tag')) {
+  currentTag = Astro.url.searchParams.get('tag')!;
+  filteredPosts = sortedPosts.filter(post =>
+    post.frontmatter.tags?.includes(currentTag)
+  );
+}
 ---
 
-<Layout title="Home - Johannes Developer Blog" description="Welcome to my terminal-inspired developer blog" currentPage="home">
-  <!-- Hero Section with Terminal Style -->
-  <section class="section hero">
-    <div class="container">
-      <div class="text-center">
-        <!-- Terminal Hero -->
-        <div class="hero-terminal">
-          <div class="terminal-header">
-            <div class="terminal-dots">
-              <span class="dot red"></span>
-              <span class="dot yellow"></span>
-              <span class="dot green"></span>
-            </div>
-            <div class="terminal-title">welcome.sh</div>
-          </div>
-          <div class="terminal-content">
-            <div class="terminal-line">
-              <span class="prompt">$</span>
-              <span class="command typing">./welcome.sh --user=johannes</span>
-              <span class="cursor">_</span>
-            </div>
-            <div class="terminal-output">
-              <div class="output-line">🚀 Welcome to my developer blog!</div>
-              <div class="output-line">💻 Built with Astro and terminal aesthetics</div>
-              <div class="output-line">🎨 CSS Architecture Phase 1 Complete!</div>
-              <div class="output-line">🔧 Explore the code and design system</div>
-            </div>
-          </div>
-        </div>
+<Layout title="Blog - Johannes Developer" currentPage="blog">
 
-        <!-- Main Title -->
-        <div class="mt-8">
-          <h1 class="text-4xl font-bold mb-4">
-            <span class="terminal-prompt">$</span>
-            <span class="command">echo "Hello, World!"</span>
-          </h1>
-          <p class="text-xl text-secondary lead max-w-2xl mx-auto">
-            Welcome to my terminal-inspired blog where I share thoughts on web development,
-            coding adventures, and technical discoveries.
-          </p>
-        </div>
+  <main class="blog-main">
+    <section class="blog-hero">
+      <div class="container">
 
-        <!-- Stats Grid -->
-        <div class="stats-grid mt-12">
-          <div class="card text-center">
-            <div class="text-2xl font-bold text-green mb-2">🚀</div>
-            <div class="text-sm text-secondary">Phase 1</div>
-            <div class="text-xs text-muted">CSS Architecture</div>
+        <div class="blog-stats">
+          <div class="stat-item">
+            <span class="stat-number">{filteredPosts.length}</span>
+            <span class="stat-label">Posts</span>
           </div>
-          <div class="card text-center">
-            <div class="text-2xl font-bold text-cyan mb-2">🎨</div>
-            <div class="text-sm text-secondary">Terminal</div>
-            <div class="text-xs text-muted">Design System</div>
+          <div class="stat-item">
+            <span class="stat-number">{allTags.length}</span>
+            <span class="stat-label">Tags</span>
           </div>
-          <div class="card text-center">
-            <div class="text-2xl font-bold text-blue mb-2">💻</div>
-            <div class="text-sm text-secondary">Developer</div>
-            <div class="text-xs text-muted">Focused</div>
-          </div>
-          <div class="card text-center">
-            <div class="text-2xl font-bold text-purple mb-2">⚡</div>
-            <div class="text-sm text-secondary">Modern</div>
-            <div class="text-xs text-muted">CSS Architecture</div>
-          </div>
-        </div>
-
-        <!-- Call to Action -->
-        <div class="mt-12">
-          <div class="flex flex-center gap-4 flex-wrap">
-            <a href="/blog/" class="btn btn-primary">
-              <span>📝</span>
-              <span>Read Blog Posts</span>
-            </a>
-            <a href="/about/" class="btn btn-secondary">
-              <span>👤</span>
-              <span>About Me</span>
-            </a>
+          <div class="stat-item">
+            <span class="stat-number">
+              {Math.floor(allPosts.reduce((acc, post) => acc + post.compiledContent.length, 0) / 1000)}K
+            </span>
+            <span class="stat-label">Words</span>
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- Features Section -->
-  <section class="section section-bg">
-    <div class="container">
-      <div class="text-center mb-12">
-        <h2 class="text-3xl font-bold mb-4">
-          <span class="terminal-prompt">$</span>
-          <span class="command">ls features/</span>
-        </h2>
-        <p class="text-lg text-secondary">What makes this blog special</p>
+    <section class="blog-content">
+      <div class="container">
+        <div class="blog-layout">
+          <!-- Tags Filter -->
+          <aside class="blog-sidebar">
+            <div class="sidebar-section">
+              <h3 class="sidebar-title">
+                <span class="title-prefix">$</span>
+                <span class="title-text">filter by tag</span>
+              </h3>
+              <div class="tags-filter">
+                <a
+                  href="/blog"
+                  class={`tag-filter ${currentTag === 'all' ? 'active' : ''}`}
+                >
+                  <span class="tag-prefix">all</span>
+                  <span class="tag-count">({sortedPosts.length})</span>
+                </a>
+                {allTags.map(tag => {
+                  const count = sortedPosts.filter(post =>
+                    post.frontmatter.tags?.includes(tag)
+                  ).length;
+                  return (
+                    <a
+                      href={`/blog?tag=${tag}`}
+                      class={`tag-filter ${currentTag === tag ? 'active' : ''}`}
+                    >
+                      <span class="tag-prefix">#{tag}</span>
+                      <span class="tag-count">({count})</span>
+                    </a>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div class="sidebar-section">
+              <h3 class="sidebar-title">
+                <span class="title-prefix">$</span>
+                <span class="title-text">recent activity</span>
+              </h3>
+              <div class="recent-activity">
+                <div class="activity-item">
+                  <span class="activity-icon">📝</span>
+                  <span class="activity-text">Latest post published</span>
+                  <span class="activity-time">2 hours ago</span>
+                </div>
+                <div class="activity-item">
+                  <span class="activity-icon">🔧</span>
+                  <span class="activity-text">Code examples updated</span>
+                  <span class="activity-time">1 day ago</span>
+                </div>
+                <div class="activity-item">
+                  <span class="activity-icon">📊</span>
+                  <span class="activity-text">Analytics dashboard launched</span>
+                  <span class="activity-time">3 days ago</span>
+                </div>
+              </div>
+            </div>
+          </aside>
+
+          <!-- Posts Grid -->
+          <div class="blog-posts">
+            <div class="posts-header">
+              <h2 class="posts-title">
+                {currentTag === 'all' ? 'All Posts' : `Posts tagged: ${currentTag}`}
+              </h2>
+              <div class="posts-count">
+                {filteredPosts.length} {filteredPosts.length === 1 ? 'post' : 'posts'}
+              </div>
+            </div>
+
+            <div class="posts-grid">
+              {filteredPosts.map((post, index) => (
+                <BlogCard
+                  title={post.frontmatter.title}
+                  description={post.frontmatter.description}
+                  pubDate={new Date(post.frontmatter.pubDate)}
+                  url={post.url}
+                  tags={post.frontmatter.tags}
+                  readingTime={calculateReadingTime(post.compiledContent)}
+                />
+              ))}
+            </div>
+
+            {filteredPosts.length === 0 && (
+              <div class="empty-state">
+                <div class="empty-icon">📭</div>
+                <h3>No posts found</h3>
+                <p>No posts match the current filter. Try selecting a different tag.</p>
+                <a href="/blog" class="reset-filter">Clear filter</a>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
-
-      <div class="feature-grid">
-        <div class="card">
-          <div class="card-header">
-            <h3 class="card-title">🎨 Terminal Aesthetic</h3>
-          </div>
-          <div class="card-content">
-            <p class="text-secondary">
-              Inspired by developer terminals and code editors, featuring dark themes,
-              green/cyan accents, and monospace fonts for that authentic developer experience.
-            </p>
-          </div>
-          <div class="card-footer">
-            <span class="badge badge-success">Design System</span>
-            <span class="badge badge-info">CSS Variables</span>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-header">
-            <h3 class="card-title">🏗️ Modern Architecture</h3>
-          </div>
-          <div class="card-content">
-            <p class="text-secondary">
-              Built with a comprehensive CSS architecture including design tokens,
-              component-based styling, utility classes, and responsive layouts.
-            </p>
-          </div>
-          <div class="card-footer">
-            <span class="badge badge-success">CSS Architecture</span>
-            <span class="badge badge-warning">Scalable</span>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-header">
-            <h3 class="card-title">📱 Responsive Design</h3>
-          </div>
-          <div class="card-content">
-            <p class="text-secondary">
-              Mobile-first responsive design with fluid typography, flexible grids,
-              and adaptive layouts that work perfectly on all device sizes.
-            </p>
-          </div>
-          <div class="card-footer">
-            <span class="badge badge-info">Mobile-First</span>
-            <span class="badge badge-success">Fluid Typography</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+    </section>
+  </main>
 </Layout>
+
+<style>
+  .blog-main {
+    min-height: 100vh;
+    background: var(--bg-primary);
+  }
+
+  .blog-hero {
+    padding: var(--section-gap) 0;
+    background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+    border-bottom: 1px solid var(--border-primary);
+  }
+
+  .hero-content {
+    text-align: center;
+    margin-bottom: var(--space-8);
+  }
+
+  .hero-terminal {
+    max-width: 600px;
+    margin: 0 auto;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    border: 1px solid var(--border-primary);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  }
+
+  .terminal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-2) var(--space-4);
+    background: var(--bg-tertiary);
+    border-bottom: 1px solid var(--border-primary);
+  }
+
+  .terminal-dots {
+    display: flex;
+    gap: var(--space-1);
+  }
+
+  .dot {
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 50%;
+  }
+
+  .dot.red { background-color: #ff5f56; }
+  .dot.yellow { background-color: #ffbd2e; }
+  .dot.green { background-color: #27c93f; }
+
+  .terminal-title {
+    font-family: var(--font-mono);
+    font-size: var(--fluid-text-xs);
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .terminal-content {
+    background: var(--code-bg);
+    padding: var(--space-4);
+    font-family: var(--font-mono);
+    font-size: var(--fluid-text-sm);
+  }
+
+  .terminal-line {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-2);
+  }
+
+  .prompt {
+    color: var(--accent-green);
+  }
+
+  .command {
+    color: var(--text-primary);
+  }
+
+  .terminal-output {
+    margin-top: var(--space-2);
+    padding-left: var(--space-4);
+    color: var(--text-secondary);
+  }
+
+  .output-line {
+    margin-bottom: var(--space-1);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .blog-stats {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-8);
+    margin-top: var(--space-6);
+  }
+
+  .stat-item {
+    text-align: center;
+    padding: var(--space-4);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-primary);
+    border-radius: 0.5rem;
+    min-width: 120px;
+  }
+
+  .stat-number {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: var(--fluid-text-2xl);
+    font-weight: var(--font-bold);
+    color: var(--accent-cyan);
+    margin-bottom: var(--space-1);
+  }
+
+  .stat-label {
+    font-family: var(--font-mono);
+    font-size: var(--fluid-text-xs);
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .blog-content {
+    padding: var(--section-gap) 0;
+  }
+
+  .blog-layout {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: var(--space-8);
+    align-items: start;
+  }
+
+  .blog-sidebar {
+    position: sticky;
+    top: calc(var(--space-16) + 4rem);
+  }
+
+  .sidebar-section {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-primary);
+    border-radius: 0.75rem;
+    padding: var(--space-6);
+    margin-bottom: var(--space-6);
+  }
+
+  .sidebar-title {
+    font-family: var(--font-mono);
+    font-size: var(--fluid-text-lg);
+    color: var(--text-primary);
+    margin: 0 0 var(--space-4) 0;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .title-prefix {
+    color: var(--accent-green);
+    font-weight: var(--font-normal);
+  }
+
+  .tags-filter {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .tag-filter {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-3) var(--space-4);
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-primary);
+    border-radius: 0.5rem;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-family: var(--font-mono);
+    font-size: var(--fluid-text-sm);
+    transition: all 0.2s ease;
+  }
+
+  .tag-filter:hover {
+    background: var(--bg-primary);
+    border-color: var(--accent-green);
+    color: var(--accent-green);
+    transform: translateX(2px);
+  }
+
+  .tag-filter.active {
+    background: var(--bg-primary);
+    border-color: var(--accent-cyan);
+    color: var(--accent-cyan);
+  }
+
+  .tag-prefix {
+    font-weight: var(--font-medium);
+  }
+
+  .tag-count {
+    color: var(--text-muted);
+    font-size: var(--fluid-text-xs);
+  }
+
+  .recent-activity {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .activity-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3);
+    background: var(--bg-tertiary);
+    border-radius: 0.5rem;
+    border: 1px solid var(--border-primary);
+  }
+
+  .activity-icon {
+    font-size: 1.1em;
+  }
+
+  .activity-text {
+    flex: 1;
+    font-size: var(--fluid-text-sm);
+    color: var(--text-secondary);
+  }
+
+  .activity-time {
+    font-family: var(--font-mono);
+    font-size: var(--fluid-text-xs);
+    color: var(--text-muted);
+  }
+
+  .blog-posts {
+    flex: 1;
+  }
+
+  .posts-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-6);
+    padding-bottom: var(--space-4);
+    border-bottom: 1px solid var(--border-primary);
+  }
+
+  .posts-title {
+    font-family: var(--font-mono);
+    font-size: var(--fluid-text-2xl);
+    color: var(--text-primary);
+    margin: 0;
+  }
+
+  .posts-count {
+    font-family: var(--font-mono);
+    font-size: var(--fluid-text-sm);
+    color: var(--text-secondary);
+    background: var(--bg-tertiary);
+    padding: var(--space-2) var(--space-3);
+    border-radius: 9999px;
+    border: 1px solid var(--border-primary);
+  }
+
+  .posts-grid {
+    display: grid;
+    gap: var(--space-6);
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: var(--space-12) var(--space-6);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-primary);
+    border-radius: 0.75rem;
+  }
+
+  .empty-icon {
+    font-size: 3rem;
+    margin-bottom: var(--space-4);
+  }
+
+  .empty-state h3 {
+    font-family: var(--font-mono);
+    color: var(--text-primary);
+    margin-bottom: var(--space-2);
+  }
+
+  .empty-state p {
+    color: var(--text-secondary);
+    margin-bottom: var(--space-4);
+  }
+
+  .reset-filter {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-4);
+    background: var(--accent-green);
+    color: var(--text-inverse);
+    text-decoration: none;
+    border-radius: 0.5rem;
+    font-family: var(--font-mono);
+    font-weight: var(--font-medium);
+    transition: all 0.2s ease;
+  }
+
+  .reset-filter:hover {
+    background: var(--accent-cyan);
+    transform: translateY(-1px);
+  }
+
+  /* Responsive design */
+  @media (max-width: 1024px) {
+    .blog-layout {
+      grid-template-columns: 1fr;
+      gap: var(--space-6);
+    }
+
+    .blog-sidebar {
+      position: static;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: var(--space-4);
+    }
+
+    .sidebar-section {
+      margin-bottom: 0;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .blog-stats {
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+
+    .stat-item {
+      min-width: auto;
+    }
+
+    .posts-header {
+      flex-direction: column;
+      gap: var(--space-3);
+      align-items: flex-start;
+    }
+
+    .hero-terminal {
+      max-width: 100%;
+    }
+  }
+</style>

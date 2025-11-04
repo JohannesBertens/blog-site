@@ -258,7 +258,6 @@
   /* Hide non-essential elements */
   .no-print,
   .navigation,
-  .sidebar,
   footer {
     display: none !important;
   }

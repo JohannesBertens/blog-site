@@ -88,9 +88,7 @@ const { title, description, currentPage = '' } = Astro.props;
             if (secondEvent.key === 'h') {
               window.location.href = '/';
             } else if (secondEvent.key === 'b') {
-              window.location.href = '/blog/';
-            } else if (secondEvent.key === 'a') {
-              window.location.href = '/about/';
+              window.location.href = '/';
             }
             document.removeEventListener('keydown', handleSecondKey);
           };

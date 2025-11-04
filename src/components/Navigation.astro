@@ -10,41 +10,8 @@ const { currentPage = '' } = Astro.props;
     <!-- Terminal prompt branding -->
     <a href="/" class="nav-brand">
       <div class="nav-brand-icon">$</div>
-      <span class="terminal-prompt">cd ~/johannes</span>
+      <span class="terminal-prompt">cd ~/jreb/blog</span>
     </a>
-
-    <!-- Navigation menu -->
-    <ul class="nav-menu">
-      <li class="nav-item">
-        <a href="/" class={`nav-link ${currentPage === 'home' ? 'active' : ''}`}>
-          <span class="nav-link-icon">🏠</span>
-          <span>home</span>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a href="/about/" class={`nav-link ${currentPage === 'about' ? 'active' : ''}`}>
-          <span class="nav-link-icon">👤</span>
-          <span>about</span>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a href="/blog/" class={`nav-link ${currentPage === 'blog' ? 'active' : ''}`}>
-          <span class="nav-link-icon">📝</span>
-          <span>blog</span>
-        </a>
-      </li>
-    </ul>
-
-    <!-- Navigation status indicator -->
-    <div class="nav-status">
-      <div class="status-dot status-online"></div>
-      <span>online</span>
-    </div>
-
-    <!-- Mobile navigation toggle -->
-    <button class="nav-toggle" aria-label="Toggle navigation menu">
-      <span class="hamburger"></span>
-    </button>
   </div>
 </nav>
 

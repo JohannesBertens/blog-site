@@ -1,0 +1,326 @@
+---
+// Blog Card Component
+// Terminal-inspired blog post cards with metadata and interactive elements
+
+interface Props {
+  title: string;
+  description: string;
+  pubDate: Date;
+  url: string;
+  tags?: string[];
+  readingTime?: string;
+}
+
+const { title, description, pubDate, url, tags = [], readingTime } = Astro.props;
+
+const formatDate = (date: Date) => {
+  return new Intl.DateTimeFormat('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric'
+  }).format(date);
+};
+
+const getRelativeTime = (date: Date) => {
+  const now = new Date();
+  const diff = now.getTime() - date.getTime();
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+  if (days === 0) return 'today';
+  if (days === 1) return 'yesterday';
+  if (days < 7) return `${days} days ago`;
+  if (days < 30) return `${Math.floor(days / 7)} weeks ago`;
+  if (days < 365) return `${Math.floor(days / 30)} months ago`;
+  return `${Math.floor(days / 365)} years ago`;
+};
+---
+
+<article class="blog-card">
+  <div class="card-header">
+    <div class="card-meta">
+      <time class="publish-date" datetime={pubDate.toISOString()}>
+        <span class="date-icon">📅</span>
+        <span class="date-text">{formatDate(pubDate)}</span>
+        <span class="date-relative">({getRelativeTime(pubDate)})</span>
+      </time>
+      {readingTime && (
+        <span class="reading-time">
+          <span class="time-icon">⏱️</span>
+          <span class="time-text">{readingTime}</span>
+        </span>
+      )}
+    </div>
+    <div class="card-status">
+      <span class="status-indicator"></span>
+    </div>
+  </div>
+
+  <div class="card-content">
+    <h3 class="card-title">
+      <a href={url} class="title-link">
+        <span class="title-text">{title}</span>
+      </a>
+    </h3>
+
+    <p class="card-description">{description}</p>
+
+    {tags.length > 0 && (
+      <div class="card-tags">
+        {tags.map(tag => (
+          <span class="tag" key={tag}>
+            <span class="tag-prefix">#</span>
+            <span class="tag-text">{tag}</span>
+          </span>
+        ))}
+      </div>
+    )}
+  </div>
+
+  <div class="card-footer">
+    <a href={url} class="read-more">
+      <span class="read-text">Read Post</span>
+      <span class="read-arrow">→</span>
+    </a>
+  </div>
+</article>
+
+<style>
+  .blog-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
+    transition: all var(--duration-300) var(--ease-in-out);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .blog-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(180deg, var(--accent-green) 0%, var(--accent-cyan) 100%);
+    transform: translateX(-100%);
+    transition: transform var(--duration-300) var(--ease-in-out);
+  }
+
+  .blog-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--accent-green);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .blog-card:hover::before {
+    transform: translateX(0);
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--space-4);
+  }
+
+  .card-meta {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .publish-date {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--text-secondary);
+    text-decoration: none;
+  }
+
+  .date-icon {
+    font-size: 1em;
+  }
+
+  .date-text {
+    color: var(--accent-cyan);
+    font-weight: var(--font-medium);
+  }
+
+  .date-relative {
+    color: var(--text-muted);
+    font-style: italic;
+  }
+
+  .reading-time {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+  }
+
+  .time-icon {
+    font-size: 1em;
+  }
+
+  .card-status {
+    display: flex;
+    align-items: center;
+  }
+
+  .status-indicator {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--accent-green);
+    box-shadow: 0 0 0.5rem var(--accent-green);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.7;
+      transform: scale(1.1);
+    }
+  }
+
+  .card-content {
+    margin-bottom: var(--space-4);
+  }
+
+  .card-title {
+    margin: 0 0 var(--space-3) 0;
+    font-size: var(--text-xl);
+    font-family: var(--font-mono);
+    line-height: var(--leading-tight);
+  }
+
+  .title-link {
+    color: var(--text-primary);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    transition: color var(--duration-200) var(--ease-in-out);
+  }
+
+  .title-link:hover {
+    color: var(--accent-green);
+  }
+
+  .title-prefix {
+    color: var(--accent-green);
+    font-weight: var(--font-normal);
+    transition: transform var(--duration-200) var(--ease-in-out);
+  }
+
+  .title-link:hover .title-prefix {
+    transform: translateX(2px);
+  }
+
+  .card-description {
+    color: var(--text-secondary);
+    line-height: var(--leading-normal);
+    margin: 0 0 var(--space-4) 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+  }
+
+  .tag {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: 0.25rem 0.5rem;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--text-secondary);
+    transition: all var(--duration-200) var(--ease-in-out);
+  }
+
+  .tag:hover {
+    background: var(--bg-primary);
+    border-color: var(--accent-cyan);
+    color: var(--accent-cyan);
+  }
+
+  .tag-prefix {
+    color: var(--accent-cyan);
+    font-weight: var(--font-semibold);
+  }
+
+  .card-footer {
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--border-primary);
+  }
+
+  .read-more {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-4);
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius);
+    color: var(--accent-cyan);
+    text-decoration: none;
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+    transition: all var(--duration-200) var(--ease-in-out);
+  }
+
+  .read-more:hover {
+    background: var(--bg-primary);
+    border-color: var(--accent-cyan);
+    color: var(--text-primary);
+    transform: translateX(2px);
+  }
+
+  .read-arrow {
+    transition: transform var(--duration-200) var(--ease-in-out);
+  }
+
+  .read-more:hover .read-arrow {
+    transform: translateX(2px);
+  }
+
+  /* Responsive design */
+  @media (max-width: 640px) {
+    .blog-card {
+      padding: var(--space-4);
+    }
+
+    .card-header {
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+
+    .card-title {
+      font-size: var(--text-lg);
+    }
+
+    .card-tags {
+      margin-bottom: var(--space-3);
+    }
+  }
+</style>
