@@ -1,8 +1,9 @@
 ---
+export const prerender = false;
+
 // src/pages/blog.astro
 import Layout from '../layouts/Layout.astro';
 import BlogCard from '../components/BlogCard.astro';
-import Navigation from '../components/Navigation.astro';
 
 // Get all blog posts using import.meta.glob (recommended approach)
 const allPostModules = import.meta.glob('../pages/posts/*.md', { eager: true });
