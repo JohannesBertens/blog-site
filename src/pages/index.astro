@@ -35,12 +35,43 @@ const calculateReadingTime = (content: any) => {
 // Filter posts by tag
 let filteredPosts = sortedPosts;
 let currentTag = 'all';
+let isValidTag = false;
 
 if (Astro.url.searchParams.has('tag')) {
-  currentTag = Astro.url.searchParams.get('tag')!;
-  filteredPosts = sortedPosts.filter(post =>
-    post.frontmatter.tags?.includes(currentTag)
-  );
+  const rawTag = Astro.url.searchParams.get('tag');
+
+  // Proper validation and sanitization
+  if (rawTag && typeof rawTag === 'string') {
+    // Sanitize input: trim whitespace
+    currentTag = rawTag.trim();
+
+    // Validate that the tag exists in our posts
+    isValidTag = allTags.some(existingTag =>
+      existingTag.toLowerCase() === currentTag.toLowerCase()
+    );
+
+    if (isValidTag) {
+      // Case-insensitive filtering with error handling for malformed frontmatter
+      filteredPosts = sortedPosts.filter(post => {
+        const postTags = post.frontmatter.tags;
+        // Ensure tags is an array before calling includes
+        if (!Array.isArray(postTags)) {
+          return false;
+        }
+        return postTags.some(tag =>
+          typeof tag === 'string' && tag.toLowerCase() === currentTag.toLowerCase()
+        );
+      });
+
+      // Update currentTag to the actual tag casing from our data for display
+      const actualTag = allTags.find(tag =>
+        tag.toLowerCase() === currentTag.toLowerCase()
+      );
+      if (actualTag) {
+        currentTag = actualTag;
+      }
+    }
+  }
 }
 ---
 
@@ -88,9 +119,15 @@ if (Astro.url.searchParams.has('tag')) {
                   <span class="tag-count">({sortedPosts.length})</span>
                 </a>
                 {allTags.map(tag => {
-                  const count = sortedPosts.filter(post =>
-                    post.frontmatter.tags?.includes(tag)
-                  ).length;
+                  const count = sortedPosts.filter(post => {
+                    const postTags = post.frontmatter.tags;
+                    if (!Array.isArray(postTags)) {
+                      return false;
+                    }
+                    return postTags.some(postTag =>
+                      typeof postTag === 'string' && postTag.toLowerCase() === tag.toLowerCase()
+                    );
+                  }).length;
                   return (
                     <a
                       href={`/?tag=${tag}`}
@@ -155,10 +192,15 @@ if (Astro.url.searchParams.has('tag')) {
 
             {filteredPosts.length === 0 && (
               <div class="empty-state">
-                <div class="empty-icon">📭</div>
-                <h3>No posts found</h3>
-                <p>No posts match the current filter. Try selecting a different tag.</p>
-                <a href="/blog" class="reset-filter">Clear filter</a>
+                <div class="empty-icon">{!isValidTag && currentTag !== 'all' ? '⚠️' : '📭'}</div>
+                <h3>{!isValidTag && currentTag !== 'all' ? 'Unknown tag' : 'No posts found'}</h3>
+                <p>
+                  {!isValidTag && currentTag !== 'all'
+                    ? `The tag "${currentTag}" doesn't exist in any posts. Try selecting a different tag.`
+                    : 'No posts match the current filter. Try selecting a different tag.'
+                  }
+                </p>
+                <a href="/" class="reset-filter">Clear filter</a>
               </div>
             )}
           </div>

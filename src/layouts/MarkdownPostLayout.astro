@@ -82,6 +82,15 @@ const relatedPosts = allPosts
     <div class="post-layout">
       <!-- Table of Contents -->
       <aside class="post-sidebar">
+
+        <div class="post-progress">
+          <h4 class="progress-title">Reading Progress</h4>
+          <div class="progress-bar">
+            <div class="progress-fill" id="reading-progress"></div>
+          </div>
+          <div class="progress-text" id="progress-text">0%</div>
+        </div>
+
         <div class="toc-container">
           <h3 class="toc-title">
             <span class="toc-icon">📋</span>
@@ -92,13 +101,6 @@ const relatedPosts = allPosts
           </nav>
         </div>
 
-        <div class="post-progress">
-          <h4 class="progress-title">Reading Progress</h4>
-          <div class="progress-bar">
-            <div class="progress-fill" id="reading-progress"></div>
-          </div>
-          <div class="progress-text" id="progress-text">0%</div>
-        </div>
       </aside>
 
       <!-- Main Content -->
@@ -171,7 +173,7 @@ const relatedPosts = allPosts
 
   .post-layout {
     display: grid;
-    grid-template-columns: 300px 1fr;
+    grid-template-columns: 400px 1fr;
     gap: var(--space-8);
     max-width: var(--container-xl);
     margin: 0 auto;
@@ -257,6 +259,7 @@ const relatedPosts = allPosts
     border: 1px solid var(--border-primary);
     border-radius: 0.75rem;
     padding: var(--space-6);
+    margin-bottom: var(--space-6);
   }
 
   .progress-title {
@@ -690,13 +693,14 @@ const relatedPosts = allPosts
       heading.id = id;
 
       const level = parseInt(heading.tagName.charAt(1));
-      const indent = (level - 2) * 1; // Indent based on heading level
-
-      tocHTML += `
-        <a href="#${id}" class="toc-link toc-level-${level}" data-level="${level}">
-          ${'  '.repeat(indent)}${heading.textContent}
-        </a>
-      `;
+      const indent = level; // Indent based on heading level
+      if (level < 4) {
+        tocHTML += `
+          <a href="#${id}" class="toc-link toc-level-${level}" data-level="${level}">
+            ${'&nbsp'.repeat(indent)}${heading.textContent}
+          </a>
+        `;
+      }
     });
 
     tocNav.innerHTML = tocHTML;
