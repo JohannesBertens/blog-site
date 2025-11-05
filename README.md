@@ -345,10 +345,3 @@ pnpm build
 ---
 
 **⭐ Star this repository if it helped you!**
-
-Made with [Astro](https://astro.build) · [MIT License](LICENSE)
-
-[![GitHub stars](https://img.shields.io/github/stars/yourusername/terminal-blog?style=social)](https://github.com/yourusername/terminal-blog)
-[![GitHub forks](https://img.shields.io/github/forks/yourusername/terminal-blog?style=social)](https://github.com/yourusername/terminal-blog)
-
-</div>
