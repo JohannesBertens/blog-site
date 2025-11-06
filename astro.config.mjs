@@ -6,7 +6,6 @@ import cloudflare from '@astrojs/cloudflare';
 export default defineConfig({
   output: 'server',
   adapter: cloudflare({
-    // Enable edge-side rendering for better performance
-    mode: 'advanced'
+    imageService: 'cloudflare'
   })
 });

@@ -641,14 +641,7 @@ const relatedPosts = allPosts
     }
 
     .post-sidebar {
-      position: static;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: var(--space-4);
-    }
-
-    .toc-container {
-      margin-bottom: 0;
+      display: none;
     }
 
     .content-wrapper {
@@ -657,8 +650,17 @@ const relatedPosts = allPosts
   }
 
   @media (max-width: 768px) {
+    .post-layout {
+      grid-template-columns: 1fr;
+      gap: 0;
+      padding: 0;
+      margin: 0;
+    }
+
     .post-content {
-      padding: var(--space-6);
+      padding: var(--space-4);
+      margin: 0;
+      max-width: 100vw;
     }
 
     .share-buttons {
