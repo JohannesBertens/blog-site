@@ -38,6 +38,11 @@ const getRelativeTime = (date: Date) => {
 <article class="blog-card fade-in-up hover-lift transition-all">
   <div class="card-header">
     <div class="card-meta">
+      <h3 class="card-title">
+        <a href={url} class="title-link">
+          <span class="title-text">{title}</span>
+        </a>
+      </h3>
       <time class="publish-date" datetime={pubDate.toISOString()}>
         <span class="date-icon">📅</span>
         <span class="date-text">{formatDate(pubDate)}</span>
@@ -56,12 +61,6 @@ const getRelativeTime = (date: Date) => {
   </div>
 
   <div class="card-content">
-    <h3 class="card-title">
-      <a href={url} class="title-link">
-        <span class="title-text">{title}</span>
-      </a>
-    </h3>
-
     <p class="card-description">{description}</p>
 
     {tags.length > 0 && (
