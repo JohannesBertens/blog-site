@@ -85,14 +85,6 @@ const relatedPosts = allPosts
       <!-- Table of Contents -->
       <aside class="post-sidebar">
 
-        <div class="post-progress">
-          <h4 class="progress-title">Reading Progress</h4>
-          <div class="progress-bar">
-            <div class="progress-fill" id="reading-progress"></div>
-          </div>
-          <div class="progress-text" id="progress-text">0%</div>
-        </div>
-
         <div class="toc-container">
           <h3 class="toc-title">
             <span class="toc-icon">📋</span>
@@ -256,45 +248,7 @@ const relatedPosts = allPosts
     opacity: 1;
   }
 
-  .post-progress {
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-primary);
-    border-radius: 0.75rem;
-    padding: var(--space-6);
-    margin-bottom: var(--space-6);
-  }
 
-  .progress-title {
-    font-family: var(--font-mono);
-    font-size: var(--fluid-text-sm);
-    color: var(--text-secondary);
-    margin: 0 0 var(--space-3) 0;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  .progress-bar {
-    height: 4px;
-    background: var(--bg-tertiary);
-    border-radius: 2px;
-    overflow: hidden;
-    margin-bottom: var(--space-2);
-  }
-
-  .progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--accent-green) 0%, var(--accent-cyan) 100%);
-    width: 0%;
-    transition: width 0.3s ease;
-    border-radius: 2px;
-  }
-
-  .progress-text {
-    font-family: var(--font-mono);
-    font-size: var(--fluid-text-xs);
-    color: var(--accent-cyan);
-    text-align: center;
-  }
 
   .post-content {
     background: var(--bg-secondary);
@@ -756,26 +710,7 @@ const relatedPosts = allPosts
     }
   }
 
-  // Reading Progress
-  function updateReadingProgress() {
-    const article = document.querySelector('.content-wrapper');
-    const progressBar = document.getElementById('reading-progress');
-    const progressText = document.getElementById('progress-text');
 
-    if (!article || !progressBar) return;
-
-    const articleTop = article.offsetTop;
-    const articleHeight = article.offsetHeight;
-    const windowHeight = window.innerHeight;
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-
-    const progress = Math.min(100, Math.max(0,
-      ((scrollTop - articleTop + windowHeight) / (articleHeight + windowHeight)) * 100
-    ));
-
-    progressBar.style.width = `${progress}%`;
-    progressText.textContent = `${Math.round(progress)}%`;
-  }
 
   // Like button functionality
   function setupLikeButton() {
@@ -842,17 +777,12 @@ const relatedPosts = allPosts
   // Initialize everything when DOM is ready
   document.addEventListener('DOMContentLoaded', () => {
     generateTableOfContents();
-    updateReadingProgress();
     setupLikeButton();
     setupShareButtons();
 
-    // Update progress on scroll
+    // Update active TOC link on scroll
     window.addEventListener('scroll', () => {
-      updateReadingProgress();
       updateActiveTocLink();
     });
-
-    // Update progress on resize
-    window.addEventListener('resize', updateReadingProgress);
   });
 </script>

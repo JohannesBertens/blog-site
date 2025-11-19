@@ -79,28 +79,6 @@ if (Astro.url.searchParams.has('tag')) {
 <Layout title="Blog - Johannes Developer" currentPage="blog">
 
   <main class="blog-main">
-    <section class="blog-hero">
-      <div class="container">
-
-        <div class="blog-stats">
-          <div class="stat-item">
-            <span class="stat-number">{filteredPosts.length}</span>
-            <span class="stat-label">Posts</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-number">{allTags.length}</span>
-            <span class="stat-label">Tags</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-number">
-              {Math.floor(allPosts.reduce((acc, post) => acc + post.compiledContent.length, 0) / 1000)}K
-            </span>
-            <span class="stat-label">Words</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
     <section class="blog-content">
       <div class="container">
         <div class="blog-layout">
@@ -142,29 +120,7 @@ if (Astro.url.searchParams.has('tag')) {
               </div>
             </div>
 
-            <div class="sidebar-section">
-              <h3 class="sidebar-title">
-                <span class="title-prefix">$</span>
-                <span class="title-text">recent activity</span>
-              </h3>
-              <div class="recent-activity">
-                <div class="activity-item">
-                  <span class="activity-icon">📝</span>
-                  <span class="activity-text">Latest post published</span>
-                  <span class="activity-time">2 hours ago</span>
-                </div>
-                <div class="activity-item">
-                  <span class="activity-icon">🔧</span>
-                  <span class="activity-text">Code examples updated</span>
-                  <span class="activity-time">1 day ago</span>
-                </div>
-                <div class="activity-item">
-                  <span class="activity-icon">📊</span>
-                  <span class="activity-text">Analytics dashboard launched</span>
-                  <span class="activity-time">3 days ago</span>
-                </div>
-              </div>
-            </div>
+
           </aside>
 
           <!-- Posts Grid -->
@@ -217,125 +173,7 @@ if (Astro.url.searchParams.has('tag')) {
     background: var(--bg-primary);
   }
 
-  .blog-hero {
-    padding: var(--section-gap) 0;
-    background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
-    border-bottom: 1px solid var(--border-primary);
-  }
 
-  .hero-content {
-    text-align: center;
-    margin-bottom: var(--space-8);
-  }
-
-  .hero-terminal {
-    max-width: 600px;
-    margin: 0 auto;
-    border-radius: 0.75rem;
-    overflow: hidden;
-    border: 1px solid var(--border-primary);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  }
-
-  .terminal-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: var(--space-2) var(--space-4);
-    background: var(--bg-tertiary);
-    border-bottom: 1px solid var(--border-primary);
-  }
-
-  .terminal-dots {
-    display: flex;
-    gap: var(--space-1);
-  }
-
-  .dot {
-    width: 0.75rem;
-    height: 0.75rem;
-    border-radius: 50%;
-  }
-
-  .dot.red { background-color: #ff5f56; }
-  .dot.yellow { background-color: #ffbd2e; }
-  .dot.green { background-color: #27c93f; }
-
-  .terminal-title {
-    font-family: var(--font-mono);
-    font-size: var(--fluid-text-xs);
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  .terminal-content {
-    background: var(--code-bg);
-    padding: var(--space-4);
-    font-family: var(--font-mono);
-    font-size: var(--fluid-text-sm);
-  }
-
-  .terminal-line {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-    margin-bottom: var(--space-2);
-  }
-
-  .prompt {
-    color: var(--accent-green);
-  }
-
-  .command {
-    color: var(--text-primary);
-  }
-
-  .terminal-output {
-    margin-top: var(--space-2);
-    padding-left: var(--space-4);
-    color: var(--text-secondary);
-  }
-
-  .output-line {
-    margin-bottom: var(--space-1);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .blog-stats {
-    display: flex;
-    justify-content: center;
-    gap: var(--space-8);
-    margin-top: var(--space-6);
-  }
-
-  .stat-item {
-    text-align: center;
-    padding: var(--space-4);
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-primary);
-    border-radius: 0.5rem;
-    min-width: 120px;
-  }
-
-  .stat-number {
-    display: block;
-    font-family: var(--font-mono);
-    font-size: var(--fluid-text-2xl);
-    font-weight: var(--font-bold);
-    color: var(--accent-cyan);
-    margin-bottom: var(--space-1);
-  }
-
-  .stat-label {
-    font-family: var(--font-mono);
-    font-size: var(--fluid-text-xs);
-    color: var(--text-secondary);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
 
   .blog-content {
     padding: var(--section-gap) 0;
@@ -419,37 +257,7 @@ if (Astro.url.searchParams.has('tag')) {
     font-size: var(--fluid-text-xs);
   }
 
-  .recent-activity {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-3);
-  }
 
-  .activity-item {
-    display: flex;
-    align-items: center;
-    gap: var(--space-3);
-    padding: var(--space-3);
-    background: var(--bg-tertiary);
-    border-radius: 0.5rem;
-    border: 1px solid var(--border-primary);
-  }
-
-  .activity-icon {
-    font-size: 1.1em;
-  }
-
-  .activity-text {
-    flex: 1;
-    font-size: var(--fluid-text-sm);
-    color: var(--text-secondary);
-  }
-
-  .activity-time {
-    font-family: var(--font-mono);
-    font-size: var(--fluid-text-xs);
-    color: var(--text-muted);
-  }
 
   .blog-posts {
     flex: 1;
