@@ -17,6 +17,7 @@ interface Props {
   wordCount?: number;
 }
 
+const { frontmatter } = Astro.props;
 const {
   title,
   description,
@@ -26,9 +27,7 @@ const {
   tags = [],
   readingTime,
   wordCount
-} = Astro.props;
-
-const { content } = Astro.props;
+} = frontmatter;
 
 // Convert dates to Date objects with proper handling
 const publishDate = pubDate ? (typeof pubDate === 'string' ? new Date(pubDate) : pubDate) : new Date();
