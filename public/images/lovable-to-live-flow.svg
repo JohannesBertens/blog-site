@@ -1,0 +1,131 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 200">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f8fafc;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#e2e8f0;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="boxGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1d4ed8;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#f97316;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ea580c;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <rect width="1200" height="200" fill="url(#bgGrad)" rx="8"/>
+  
+  <!-- Step 1: Vibe Code -->
+  <g transform="translate(20, 60)">
+    <rect width="95" height="80" fill="url(#accentGrad)" rx="6"/>
+    <text x="47" y="35" fill="white" font-family="system-ui, sans-serif" font-size="11" font-weight="600" text-anchor="middle">Vibe Code</text>
+    <text x="47" y="55" fill="white" font-size="20" text-anchor="middle">❤️</text>
+  </g>
+  
+  <!-- Arrow 1 -->
+  <path d="M 120 100 L 135 100" stroke="#94a3b8" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+  
+  <!-- Step 2: Connect GitHub -->
+  <g transform="translate(140, 60)">
+    <rect width="95" height="80" fill="url(#boxGrad)" rx="6"/>
+    <text x="47" y="35" fill="white" font-family="system-ui, sans-serif" font-size="10" font-weight="600" text-anchor="middle">Connect</text>
+    <text x="47" y="48" fill="white" font-family="system-ui, sans-serif" font-size="10" font-weight="600" text-anchor="middle">GitHub</text>
+    <circle cx="47" cy="62" r="10" fill="white"/>
+    <path d="M 47 54 C 42 54 38 58 38 63 C 38 67 41 70 44 71 C 44.5 71 45 71 45 70 L 45 68 C 42 69 41 67 41 67 C 41 66 40 65 40 65 C 39 64 39 64 40 64 C 41 64 42 65 42 65 C 43 67 45 66 46 66 C 46 65 46 65 46 64 C 44 64 41 63 41 59 C 41 58 42 57 42 56 C 42 56 42 55 42 54 C 42 54 43 54 45 55 C 46 55 48 55 49 55 C 51 54 52 54 52 54 C 52 55 52 56 52 56 C 52 57 53 58 53 59 C 53 63 50 64 48 64 C 48 65 48 66 48 67 L 48 70 C 48 71 49 71 49 71 C 53 70 56 67 56 63 C 56 58 52 54 47 54 Z" fill="#1d4ed8"/>
+  </g>
+  
+  <!-- Arrow 2 -->
+  <path d="M 240 100 L 255 100" stroke="#94a3b8" stroke-width="2" fill="none"/>
+  
+  <!-- Step 3: Clone Locally -->
+  <g transform="translate(260, 60)">
+    <rect width="95" height="80" fill="url(#boxGrad)" rx="6"/>
+    <text x="47" y="35" fill="white" font-family="system-ui, sans-serif" font-size="10" font-weight="600" text-anchor="middle">Clone</text>
+    <text x="47" y="48" fill="white" font-family="system-ui, sans-serif" font-size="10" font-weight="600" text-anchor="middle">Locally</text>
+    <text x="47" y="68" fill="white" font-size="18" text-anchor="middle">⬇️</text>
+  </g>
+  
+  <!-- Arrow 3 -->
+  <path d="M 360 100 L 375 100" stroke="#94a3b8" stroke-width="2" fill="none"/>
+  
+  <!-- Step 4: Remove bun.lockb -->
+  <g transform="translate(380, 60)">
+    <rect width="95" height="80" fill="url(#boxGrad)" rx="6"/>
+    <text x="47" y="32" fill="white" font-family="system-ui, sans-serif" font-size="10" font-weight="600" text-anchor="middle">Remove</text>
+    <text x="47" y="45" fill="white" font-family="system-ui, sans-serif" font-size="9" font-weight="600" text-anchor="middle">bun.lockb</text>
+    <text x="47" y="68" fill="white" font-size="18" text-anchor="middle">🗑️</text>
+  </g>
+  
+  <!-- Arrow 4 -->
+  <path d="M 480 100 L 495 100" stroke="#94a3b8" stroke-width="2" fill="none"/>
+  
+  <!-- Step 5: npm install -->
+  <g transform="translate(500, 60)">
+    <rect width="95" height="80" fill="url(#boxGrad)" rx="6"/>
+    <text x="47" y="35" fill="white" font-family="system-ui, sans-serif" font-size="10" font-weight="600" text-anchor="middle">npm</text>
+    <text x="47" y="48" fill="white" font-family="system-ui, sans-serif" font-size="10" font-weight="600" text-anchor="middle">install</text>
+    <text x="47" y="68" fill="white" font-size="18" text-anchor="middle">📦</text>
+  </g>
+  
+  <!-- Arrow 5 -->
+  <path d="M 600 100 L 615 100" stroke="#94a3b8" stroke-width="2" fill="none"/>
+  
+  <!-- Step 6: Update browserslist -->
+  <g transform="translate(620, 60)">
+    <rect width="95" height="80" fill="url(#boxGrad)" rx="6"/>
+    <text x="47" y="32" fill="white" font-family="system-ui, sans-serif" font-size="10" font-weight="600" text-anchor="middle">Update</text>
+    <text x="47" y="45" fill="white" font-family="system-ui, sans-serif" font-size="8" font-weight="600" text-anchor="middle">browserslist</text>
+    <text x="47" y="68" fill="white" font-size="18" text-anchor="middle">🔄</text>
+  </g>
+  
+  <!-- Arrow 6 -->
+  <path d="M 720 100 L 735 100" stroke="#94a3b8" stroke-width="2" fill="none"/>
+  
+  <!-- Step 7: Test locally -->
+  <g transform="translate(740, 60)">
+    <rect width="95" height="80" fill="url(#boxGrad)" rx="6"/>
+    <text x="47" y="35" fill="white" font-family="system-ui, sans-serif" font-size="10" font-weight="600" text-anchor="middle">Test</text>
+    <text x="47" y="48" fill="white" font-family="system-ui, sans-serif" font-size="10" font-weight="600" text-anchor="middle">locally</text>
+    <text x="47" y="68" fill="white" font-size="18" text-anchor="middle">✅</text>
+  </g>
+  
+  <!-- Arrow 7 -->
+  <path d="M 840 100 L 855 100" stroke="#94a3b8" stroke-width="2" fill="none"/>
+  
+  <!-- Step 8: Commit -->
+  <g transform="translate(860, 60)">
+    <rect width="95" height="80" fill="url(#boxGrad)" rx="6"/>
+    <text x="47" y="40" fill="white" font-family="system-ui, sans-serif" font-size="11" font-weight="600" text-anchor="middle">Commit</text>
+    <text x="47" y="65" fill="white" font-size="18" text-anchor="middle">💾</text>
+  </g>
+  
+  <!-- Arrow 8 -->
+  <path d="M 960 100 L 975 100" stroke="#94a3b8" stroke-width="2" fill="none"/>
+  
+  <!-- Step 9: Cloudflare Pages -->
+  <g transform="translate(980, 60)">
+    <rect width="95" height="80" fill="url(#accentGrad)" rx="6"/>
+    <text x="47" y="32" fill="white" font-family="system-ui, sans-serif" font-size="10" font-weight="600" text-anchor="middle">Cloudflare</text>
+    <text x="47" y="45" fill="white" font-family="system-ui, sans-serif" font-size="10" font-weight="600" text-anchor="middle">Pages</text>
+    <text x="47" y="68" fill="white" font-size="18" text-anchor="middle">☁️</text>
+  </g>
+  
+  <!-- Arrow 9 -->
+  <path d="M 1080 100 L 1095 100" stroke="#94a3b8" stroke-width="2" fill="none"/>
+  
+  <!-- Step 10: Custom Domain -->
+  <g transform="translate(1100, 60)">
+    <rect width="95" height="80" fill="url(#accentGrad)" rx="6"/>
+    <text x="47" y="32" fill="white" font-family="system-ui, sans-serif" font-size="10" font-weight="600" text-anchor="middle">Custom</text>
+    <text x="47" y="45" fill="white" font-family="system-ui, sans-serif" font-size="10" font-weight="600" text-anchor="middle">Domain</text>
+    <text x="47" y="68" fill="white" font-size="18" text-anchor="middle">🌐</text>
+  </g>
+  
+  <!-- Arrows with heads -->
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#94a3b8"/>
+    </marker>
+  </defs>
+</svg>
