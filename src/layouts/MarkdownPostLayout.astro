@@ -38,6 +38,14 @@ const lastUpdated = updatedDate ? (typeof updatedDate === 'string' ? new Date(up
 const safePublishDate = isNaN(publishDate.getTime()) ? new Date() : publishDate;
 const safeLastUpdated = lastUpdated && !isNaN(lastUpdated.getTime()) ? lastUpdated : undefined;
 
+// Format date as yyyy-mm-dd
+const formatDate = (date: Date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
 // Get all posts for related posts functionality
 const allPostModules = import.meta.glob('../pages/posts/*.md', { eager: true });
 const allPosts = Object.values(allPostModules);
@@ -141,7 +149,7 @@ const relatedPosts = allPosts
                 <h4 class="related-post-title">{post.title}</h4>
                 <p class="related-description">{post.description}</p>
                 <div class="related-meta">
-                  <span class="related-date">{post.pubDate.toLocaleDateString()}</span>
+                  <span class="related-date">{formatDate(post.pubDate)}</span>
                   {post.tags.length > 0 && (
                     <div class="related-tags">
                       {post.tags.slice(0, 2).map(tag => (
