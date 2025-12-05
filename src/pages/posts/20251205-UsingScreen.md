@@ -1,6 +1,6 @@
 ---
 title: 'Using Screen in the Terminal'
-pubDate: 2025-11-03
+pubDate: 2025-12-05
 description: 'Short but sweet introduction to "screen"'
 author: 'Johannes'
 tags: ["terminal", "screen", "learning in public"]
