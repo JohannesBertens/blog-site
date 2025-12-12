@@ -15,7 +15,6 @@ A stunning, terminal-inspired Astro blog template with a sophisticated CSS archi
 ### 🖥️ Terminal-Inspired Design
 - **GitHub Dark Terminal Theme**: Custom color palette inspired by developer terminals
 - **Fluid Typography System**: Modern clamp() based typography with perfect scaling
-- **Terminal Loading Screen**: Animated terminal-style loading experience (first load only)
 - **Custom Scrollbars**: Styled scrollbars that match the terminal aesthetic
 - **Interactive Elements**: Hover states, transitions, and micro-interactions
 
@@ -161,7 +160,6 @@ All components are designed to be easily customizable:
 - **BlogCard.astro**: Modify post preview styling
 - **Navigation.astro**: Customize navigation and keyboard shortcuts
 - **Metadata.astro**: Change how post metadata is displayed
-- **LoadingScreen.astro**: Adjust the terminal loading animation
 
 ## 🛠 Development Workflow
 
