@@ -20,16 +20,23 @@ const allTags = [...new Set(
   allPosts.flatMap(post => post.frontmatter.tags || [])
 )];
 
-// Calculate reading time helper with better error handling
-const calculateReadingTime = (content: any) => {
-  const wordsPerMinute = 200;
+// Calculate reading time helper using rawContent (markdown)
+const calculateReadingTime = (post: any) => {
+  const wordsPerMinute = 100;
 
-  // Convert content to string if it's not already
-  const contentStr = typeof content === 'string' ? content :
-                   (content && content.toString ? content.toString() : '');
+  // Use rawContent() to get the actual markdown text
+  const contentStr = post.rawContent ? post.rawContent() : '';
 
-  const words = contentStr.split(/\s+/).length;
+  // Remove markdown syntax for more accurate word count
+  const textOnly = contentStr
+    .replace(/```[\s\S]*?```/g, '') // Remove code blocks
+    .replace(/`[^`]*`/g, '') // Remove inline code
+    .replace(/[#*_~\[\]()]/g, '') // Remove markdown syntax
+    .trim();
+
+  const words = textOnly.split(/\s+/).filter(word => word.length > 0).length;
   const minutes = Math.ceil(words / wordsPerMinute);
+
   return `${minutes} min read`;
 };
 
@@ -142,7 +149,7 @@ if (Astro.url.searchParams.has('tag')) {
                   pubDate={new Date(post.frontmatter.pubDate)}
                   url={post.url}
                   tags={post.frontmatter.tags}
-                  readingTime={calculateReadingTime(post.compiledContent())}
+                  readingTime={calculateReadingTime(post)}
                 />
               ))}
             </div>
