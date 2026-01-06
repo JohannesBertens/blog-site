@@ -142,7 +142,7 @@ if (Astro.url.searchParams.has('tag')) {
                   pubDate={new Date(post.frontmatter.pubDate)}
                   url={post.url}
                   tags={post.frontmatter.tags}
-                  readingTime={calculateReadingTime(post.compiledContent)}
+                  readingTime={calculateReadingTime(post.compiledContent())}
                 />
               ))}
             </div>
