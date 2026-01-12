@@ -190,3 +190,40 @@ Your vibe-coded Lovable site is now live on the internet, hosted for free, with:
 - Configure redirects in `_redirects` file if needed
 
 Happy shipping!
+
+---
+
+## Copy-Paste Summary
+
+All the commands you need to copy and paste in one go (Steps 3-8):
+Replace `yourusername/your-lovable-project` with your actual GitHub username and repository name.
+
+```bash
+# Clone your repo
+git clone https://github.com/yourusername/your-lovable-project.git
+cd your-lovable-project
+
+# Remove bun lockfile and set up npm
+rm bun.lockb
+npm install
+npm update
+npm audit fix
+npm audit fix --force
+
+# Update browserslist
+npx update-browserslist-db@latest
+
+# Test locally
+npm run dev
+# Press Ctrl+C when done testing
+```
+
+Then to deploy.
+```bash
+# Commit and push
+git add .
+git commit -m "Prepare for Cloudflare Pages deployment"
+git push
+```
+
+> Todo: Add the cloudflare integration via CLI
