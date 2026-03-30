@@ -168,7 +168,7 @@ Save this as `run.sh`:
 #!/bin/bash
 source .venv/bin/activate
 
-python -m sglang.launch_server \
+uv run sglang serve \
   --model-path /home/johannes/models/lukealonso/MiniMax-M2.5-NVFP4/ \
   --fp4-gemm-backend flashinfer_cutlass \
   --attention-backend triton \
@@ -346,57 +346,13 @@ With 2x RTX PRO 6000 Blackwell and MiniMax M2 NVFP4:
 
 ---
 
-## Step 5: Alternative Configurations
-
-### Minimal Configuration (Fewer Features, More Stable)
-
-```bash
-python -m sglang.launch_server \
-    --model-path ~/models/lukealonso/MiniMax-M2.5-NVFP4/ \
-    --served-model-name vllm \
-    --tp 2 \
-    --trust-remote-code \
-    --fp4-gemm-backend flashinfer_cutlass \
-    --attention-backend triton \
-    --tool-call-parser minimax-m2 \
-    --reasoning-parser minimax-append-think \
-    --host 0.0.0.0 \
-    --port 8000
-```
-
-### Long Context Configuration (200K+ tokens)
-
-```bash
-python -m sglang.launch_server \
-    --model-path ~/models/lukealonso/MiniMax-M2.5-NVFP4/ \
-    --served-model-name vllm \
-    --tp 2 \
-    --trust-remote-code \
-    --mem-fraction-static 0.85 \
-    --max-running-requests 8 \
-    --context-length 200000 \
-    --chunked-prefill-size 32768 \
-    --kv-cache-dtype fp8_e4m3 \
-    --quantization modelopt_fp4 \
-    --fp4-gemm-backend flashinfer_cutlass \
-    --attention-backend triton \
-    --tool-call-parser minimax-m2 \
-    --reasoning-parser minimax-append-think \
-    --host 0.0.0.0 \
-    --port 8000
-```
-
-> **Note**: Expert parallelism (`--ep`) can cause MiniMax M2 to fail to load. Only use `--tp` for this model.
-
----
-
 ## Monitoring
 
 The metrics endpoint requires the `--enable-metrics` flag to be enabled:
 
 ```bash
 # Add --enable-metrics to your server launch
-python -m sglang.launch_server \
+uv run sglang serve \
   --model-path ~/models/lukealonso/MiniMax-M2.5-NVFP4/ \
   --fp4-gemm-backend flashinfer_cutlass \
   --attention-backend triton \
@@ -471,7 +427,7 @@ uv pip install -U sgl-kernel \
   --index-strategy unsafe-best-match
 
 # 4. Run server
-python -m sglang.launch_server \
+uv run sglang serve \
   --model-path /home/johannes/models/lukealonso/MiniMax-M2.5-NVFP4/ \
   --fp4-gemm-backend flashinfer_cutlass \
   --attention-backend triton \
