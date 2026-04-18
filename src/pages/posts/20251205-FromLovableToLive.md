@@ -9,7 +9,7 @@ layout: '../../layouts/MarkdownPostLayout.astro'
 
 ## Introduction
 
-So you've discovered <a href="https://lovable.dev" target="_blank">Lovable.dev</a> and "vibe coded" your way to a beautiful website. Now what? This guide walks you through hosting your creation for free using Cloudflare Pages.
+So you've discovered <a href="https://lovable.dev" target="_blank" rel="noopener noreferrer">Lovable.dev</a> and "vibe coded" your way to a beautiful website. Now what? This guide walks you through hosting your creation for free using Cloudflare Pages.
 
 > **Important Caveat:** This guide only covers sites **without a database**. Keeping your site static means no backend to secure, no data leaks to worry about, and free hosting that scales beautifully.
 
@@ -21,7 +21,7 @@ So you've discovered <a href="https://lovable.dev" target="_blank">Lovable.dev</
 
 ## Step 1: Vibe Code Your Site on Lovable.dev
 
-Head to <a href="https://lovable.dev" target="_blank">Lovable.dev</a> and start building. Describe what you want, iterate on the design, and let the AI help you create something beautiful.
+Head to <a href="https://lovable.dev" target="_blank" rel="noopener noreferrer">Lovable.dev</a> and start building. Describe what you want, iterate on the design, and let the AI help you create something beautiful.
 
 **The Golden Rule:** Keep it database-free and avoid storing personal data. This keeps your site safe, simple, and free to host.
 

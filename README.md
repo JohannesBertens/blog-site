@@ -8,7 +8,7 @@ A stunning, terminal-inspired Astro blog template with a sophisticated CSS archi
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.7.2-3178C6?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
 [![pnpm](https://img.shields.io/badge/pnpm-9.15.4-F69220?style=for-the-badge&logo=pnpm)](https://pnpm.io/)
 [![License](https://img.shields.io/badge/License-MIT-2D9EBD?style=for-the-badge)](LICENSE)
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/yourusername/terminal-blog)
+[![Deploy with Cloudflare Pages](https://img.shields.io/badge/Deploy%20with-Cloudflare%20Pages-1716?style=for-the-badge&logo=cloudflare)](https://pages.cloudflare.com)
 
 ## ✨ Features
 
@@ -223,43 +223,32 @@ animations.css → Animations and transitions
 
 ## 🌐 Deployment
 
-### Static Hosting Options
+This project uses **Cloudflare Pages SSR** for deployment. The Astro config outputs to a server with the Cloudflare adapter.
 
-This template works perfectly with any static hosting service:
-
-#### Vercel (Recommended)
+#### Cloudflare Pages (Recommended)
 ```bash
-# Connect to Vercel
-vercel
+# Deploy via Cloudflare CLI
+npm install -g wrangler
 
-# Or use the Git integration
-git push origin main  # Auto-deploys on Vercel
+# Preview locally with Cloudflare adapter
+pnpm dev
+
+# Deploy to Cloudflare Pages
+wrangler deploy
 ```
 
-#### Netlify
+#### Manual Deployment
 ```bash
-# Build command
+# Build for production
 pnpm build
 
-# Publish directory
-dist
-```
-
-#### GitHub Pages
-```yaml
-# .github/workflows/deploy.yml
-name: Deploy to GitHub Pages
-on:
-  push:
-    branches: [ main ]
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: withastro/action@v2
-        with:
-          path: ./dist
+# The output in dist/ is ready for Cloudflare Pages
+# Configure in Cloudflare Dashboard:
+#   Framework preset: Vite
+#   Build command: pnpm build
+#   Build output directory: dist
+#   Root directory: /
+#   Server function directory: .output/server
 ```
 
 ### Environment Variables
@@ -272,7 +261,13 @@ SITE_NAME="Terminal Blog"
 SITE_DESCRIPTION="A terminal-inspired blog template"
 ```
 
-## 🤝 Contributing
+### Required Cloudflare KV Bindings
+
+For SSR sessions, this project requires a Cloudflare KV namespace:
+- Name: `SESSION`
+- Bind in `wrangler.toml`: `kv_namespaces = { binding = "SESSION", id = "..." }`
+
+#### 🤝 Contributing
 
 We welcome contributions! Here's how you can help:
 

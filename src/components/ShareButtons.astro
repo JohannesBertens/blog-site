@@ -1,0 +1,113 @@
+---
+// Share Buttons - Web Share API with fallback share links
+interface Props {
+  title: string;
+  url: string;
+}
+
+const { title, url } = Astro.props;
+
+const encodedTitle = encodeURIComponent(title);
+const encodedUrl = encodeURIComponent(url);
+
+function handleShare(e: Event) {
+  const btn = e.currentTarget as HTMLElement;
+  const platform = btn.dataset.platform;
+
+  if (platform === 'native' && navigator.share) {
+    navigator.share({ title, url }).catch(() => {
+      // User cancelled or share failed — fall through to individual links
+    });
+    return;
+  }
+
+  const shareUrls: Record<string, string> = {
+    twitter: `https://twitter.com/intent/tweet?text=${encodedTitle}&url=${encodedUrl}`,
+    linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}&summary=${encodedTitle}`,
+    reddit: `https://reddit.com/submit?url=${encodedUrl}&title=${encodedTitle}`,
+  };
+
+  const shareUrl = shareUrls[platform ?? ''];
+  if (shareUrl) {
+    window.open(shareUrl, '_blank', 'noopener,noreferrer,width=600,height=400');
+  }
+}
+---
+
+<div class="post-actions">
+  <div class="action-group">
+    <h4>Share this post</h4>
+    <div class="share-buttons">
+      <button class="share-btn" data-platform="native" onClick={handleShare}>
+        <span class="share-icon">🔗</span>
+        <span class="share-text">Share</span>
+      </button>
+      <button class="share-btn" data-platform="twitter" onClick={handleShare}>
+        <span class="share-icon">🐦</span>
+        <span class="share-text">Twitter</span>
+      </button>
+      <button class="share-btn" data-platform="linkedin" onClick={handleShare}>
+        <span class="share-icon">💼</span>
+        <span class="share-text">LinkedIn</span>
+      </button>
+      <button class="share-btn" data-platform="reddit" onClick={handleShare}>
+        <span class="share-icon">🤖</span>
+        <span class="share-text">Reddit</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<style>
+  .post-actions {
+    margin-top: var(--space-12);
+    padding-top: var(--space-8);
+    border-top: 1px solid var(--border-primary);
+    display: grid;
+    gap: var(--space-6);
+  }
+
+  .action-group {
+    text-align: center;
+  }
+
+  .action-group h4 {
+    font-family: var(--font-mono);
+    font-size: var(--fluid-text-lg);
+    color: var(--text-primary);
+    margin: 0 0 var(--space-4) 0;
+  }
+
+  .share-buttons {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+  }
+
+  .share-btn {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-4);
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-primary);
+    border-radius: 0.5rem;
+    color: var(--text-secondary);
+    font-family: var(--font-mono);
+    font-size: var(--fluid-text-sm);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .share-btn:hover {
+    background: var(--bg-primary);
+    border-color: var(--accent-cyan);
+    color: var(--accent-cyan);
+    transform: translateY(-1px);
+  }
+
+  .share-icon {
+    font-size: 1.1em;
+  }
+</style>

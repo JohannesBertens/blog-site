@@ -1,0 +1,188 @@
+---
+// PostGrid.astro — Posts grid with header and empty state
+// Renders a list of BlogCard components with a header and empty-state fallback.
+
+import BlogCard from './BlogCard.astro';
+import type { BlogPostModule } from '../lib/types';
+import { getReadingTime } from '../lib/posts';
+
+interface Props {
+  posts: BlogPostModule[];
+  currentTag: string;
+  isValidTag: boolean;
+}
+
+const { posts, currentTag, isValidTag } = Astro.props;
+---
+
+<div class="blog-posts">
+  <div class="posts-header">
+    <h2 class="posts-title">
+      {currentTag === 'all' ? 'All Posts' : `Posts tagged: ${currentTag}`}
+    </h2>
+    <div class="posts-count">
+      {posts.length}
+      {posts.length === 1 ? 'post' : 'posts'}
+    </div>
+  </div>
+
+  <div class="posts-grid">
+    {
+      posts.map((post, index) => (
+        <BlogCard
+          title={post.frontmatter.title}
+          description={post.frontmatter.description}
+          pubDate={new Date(post.frontmatter.pubDate)}
+          url={post.url}
+          tags={post.frontmatter.tags}
+          readingTime={getReadingTime(post)}
+          postTags={post.frontmatter.tags || []}
+        />
+      ))
+    }
+  </div>
+
+  {
+    posts.length === 0 && (
+      <div class="empty-state">
+        <div class="empty-icon">{!isValidTag && currentTag !== 'all' ? '⚠️' : '📭'}</div>
+        <h3>{!isValidTag && currentTag !== 'all' ? 'Unknown tag' : 'No posts found'}</h3>
+        <p>
+          {!isValidTag && currentTag !== 'all'
+            ? `The tag "${currentTag}" doesn't exist in any posts. Try selecting a different tag.`
+            : 'No posts match the current filter. Try selecting a different tag.'}
+        </p>
+        <a href="/" class="reset-filter">
+          Clear filter
+        </a>
+      </div>
+    )
+  }
+</div>
+
+<script client:load>
+  // Client-side tag filtering for prerendered pages
+  function applyTagFilter() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const tag = urlParams.get('tag');
+    const cards = document.querySelectorAll('.blog-card');
+    const postsCount = document.querySelector('.posts-count');
+
+    if (!tag || tag === 'all') {
+      cards.forEach((card) => {
+        card.style.display = '';
+      });
+      if (postsCount) postsCount.textContent = `${cards.length} posts`;
+      return;
+    }
+
+    const searchTag = tag.toLowerCase();
+    let visibleCount = 0;
+
+    cards.forEach((card) => {
+      const tags = (card.getAttribute('data-tags-lower') || '').split(',').map(t => t.trim());
+      if (tags.includes(searchTag)) {
+        card.style.display = '';
+        visibleCount++;
+      } else {
+        card.style.display = 'none';
+      }
+    });
+
+    if (postsCount) {
+      postsCount.textContent = `${visibleCount} ${visibleCount === 1 ? 'post' : 'posts'}`;
+    }
+
+    // Show empty state if no cards visible
+    const emptyState = document.querySelector('.empty-state');
+    if (emptyState && visibleCount === 0) {
+      emptyState.style.display = '';
+    } else if (emptyState) {
+      emptyState.style.display = 'none';
+    }
+  }
+
+  // Apply filter on load and on popstate (back/forward)
+  applyTagFilter();
+  window.addEventListener('popstate', applyTagFilter);
+</script>
+
+<style>
+  .blog-posts {
+    flex: 1;
+  }
+
+  .posts-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-6);
+    padding-bottom: var(--space-4);
+    border-bottom: 1px solid var(--border-primary);
+  }
+
+  .posts-title {
+    font-family: var(--font-mono);
+    font-size: var(--fluid-text-2xl);
+    color: var(--text-primary);
+    margin: 0;
+  }
+
+  .posts-count {
+    font-family: var(--font-mono);
+    font-size: var(--fluid-text-sm);
+    color: var(--text-secondary);
+    background: var(--bg-tertiary);
+    padding: var(--space-2) var(--space-3);
+    border-radius: 9999px;
+    border: 1px solid var(--border-primary);
+  }
+
+  .posts-grid {
+    display: grid;
+    gap: var(--space-6);
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: var(--space-12) var(--space-6);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-primary);
+    border-radius: 0.75rem;
+  }
+
+  .empty-icon {
+    font-size: 3rem;
+    margin-bottom: var(--space-4);
+  }
+
+  .empty-state h3 {
+    font-family: var(--font-mono);
+    color: var(--text-primary);
+    margin-bottom: var(--space-2);
+  }
+
+  .empty-state p {
+    color: var(--text-secondary);
+    margin-bottom: var(--space-4);
+  }
+
+  .reset-filter {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-4);
+    background: var(--accent-green);
+    color: var(--text-inverse);
+    text-decoration: none;
+    border-radius: 0.5rem;
+    font-family: var(--font-mono);
+    font-weight: var(--font-medium);
+    transition: all 0.2s ease;
+  }
+
+  .reset-filter:hover {
+    background: var(--accent-cyan);
+    transform: translateY(-1px);
+  }
+</style>

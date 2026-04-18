@@ -1,0 +1,159 @@
+---
+// Related Posts - Shows posts with similar tags
+import { formatDate } from '../lib/utils';
+
+interface Props {
+  currentPostUrl: string;
+  currentTags: string[];
+  allPosts: Array<{
+    url: string;
+    title: string;
+    description?: string;
+    tags?: string[];
+    pubDate: Date;
+  }>;
+}
+
+const { currentPostUrl, currentTags, allPosts } = Astro.props;
+
+// Find related posts (posts with similar tags), sorted by shared tag count then date
+const relatedPosts = allPosts
+  .filter((post) => post.url !== currentPostUrl)
+  .map((post) => ({
+    title: post.title,
+    url: post.url,
+    description: post.description,
+    tags: post.tags || [],
+    pubDate: post.pubDate,
+  }))
+  .sort((a, b) => {
+    const sharedTagsA = a.tags.filter((tag) => currentTags.includes(tag)).length;
+    const sharedTagsB = b.tags.filter((tag) => currentTags.includes(tag)).length;
+    if (sharedTagsA !== sharedTagsB) {
+      return sharedTagsB - sharedTagsA;
+    }
+    return b.pubDate.getTime() - a.pubDate.getTime();
+  })
+  .slice(0, 3);
+---
+
+{relatedPosts.length > 0 && (
+  <section class="related-posts">
+    <div class="container">
+      <h3 class="related-title">
+        <span class="title-prefix">$</span>
+        <span class="title-text">find similar posts</span>
+      </h3>
+      <div class="related-grid">
+        {relatedPosts.map((post) => (
+          <div class="related-card">
+            <a href={post.url} class="related-link">
+              <h4 class="related-post-title">{post.title}</h4>
+              <p class="related-description">{post.description}</p>
+              <div class="related-meta">
+                <span class="related-date">{formatDate(post.pubDate)}</span>
+                {post.tags && post.tags.length > 0 && (
+                  <div class="related-tags">
+                    {post.tags.slice(0, 2).map((tag) => (
+                      <span class="related-tag">#{tag}</span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </a>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+)}
+
+<style>
+  .related-posts {
+    margin-top: var(--section-gap);
+    padding: var(--space-12) 0;
+    background: var(--bg-secondary);
+    border-top: 1px solid var(--border-primary);
+  }
+
+  .related-title {
+    font-family: var(--font-mono);
+    font-size: var(--fluid-text-2xl);
+    color: var(--text-primary);
+    margin: 0 0 var(--space-6) 0;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+  }
+
+  .title-prefix {
+    color: var(--accent-green);
+    font-weight: var(--font-normal);
+  }
+
+  .related-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--space-6);
+  }
+
+  .related-card {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-primary);
+    border-radius: 0.75rem;
+    padding: var(--space-6);
+    transition: all 0.2s ease;
+  }
+
+  .related-card:hover {
+    border-color: var(--accent-cyan);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .related-link {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .related-post-title {
+    font-family: var(--font-mono);
+    font-size: var(--fluid-text-lg);
+    color: var(--text-primary);
+    margin: 0 0 var(--space-2) 0;
+  }
+
+  .related-description {
+    color: var(--text-secondary);
+    margin: 0 0 var(--space-4) 0;
+    line-height: var(--leading-relaxed);
+  }
+
+  .related-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .related-date {
+    font-family: var(--font-mono);
+    font-size: var(--fluid-text-xs);
+    color: var(--text-muted);
+  }
+
+  .related-tags {
+    display: flex;
+    gap: var(--space-2);
+  }
+
+  .related-tag {
+    font-family: var(--font-mono);
+    font-size: var(--fluid-text-xs);
+    color: var(--accent-cyan);
+    background: rgba(6, 182, 212, 0.1);
+    padding: var(--space-1) var(--space-2);
+    border-radius: 0.25rem;
+  }
+</style>

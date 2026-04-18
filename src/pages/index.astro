@@ -1,165 +1,91 @@
 ---
-export const prerender = false;
+export const prerender = true;
 
-// src/pages/blog.astro
 import Layout from '../layouts/Layout.astro';
-import BlogCard from '../components/BlogCard.astro';
-import { calculateReadingTime } from '../lib/utils';
-import type { BlogPostModule } from '../lib/types';
+import TagFilter from '../components/TagFilter.astro';
+import PostGrid from '../components/PostGrid.astro';
+import { getAllPosts, getAllTags, getTagCounts, getFilteredPosts, isValidTag } from '../lib/posts';
 
-// Get all blog posts using import.meta.glob (recommended approach)
-const allPostModules = import.meta.glob<BlogPostModule>('../pages/posts/*.md', { eager: true });
-const allPosts = Object.values(allPostModules);
+// Data loading — single source of truth
+const allPosts = getAllPosts();
+const allTags = getAllTags();
+const tagCounts = getTagCounts();
 
-// Sort posts by date (newest first)
-const sortedPosts = allPosts.sort((a, b) =>
-  new Date(b.frontmatter.pubDate).valueOf() -
-  new Date(a.frontmatter.pubDate).valueOf()
-);
-
-// Extract unique tags
-const allTags = [...new Set(
-  allPosts.flatMap(post => post.frontmatter.tags || [])
-)];
-
-// Calculate reading time helper using rawContent (markdown)
-const getReadingTime = (post: BlogPostModule) => {
-  const contentStr = post.rawContent ? post.rawContent() : '';
-  return calculateReadingTime(contentStr);
-};
-
-// Filter posts by tag
-let filteredPosts = sortedPosts;
-let currentTag = 'all';
-let isValidTag = false;
-
-if (Astro.url.searchParams.has('tag')) {
-  const rawTag = Astro.url.searchParams.get('tag');
-
-  // Proper validation and sanitization
-  if (rawTag && typeof rawTag === 'string') {
-    // Sanitize input: trim whitespace
-    currentTag = rawTag.trim();
-
-    // Validate that the tag exists in our posts
-    isValidTag = allTags.some(existingTag =>
-      existingTag.toLowerCase() === currentTag.toLowerCase()
-    );
-
-    if (isValidTag) {
-      // Case-insensitive filtering with error handling for malformed frontmatter
-      filteredPosts = sortedPosts.filter(post => {
-        const postTags = post.frontmatter.tags;
-        // Ensure tags is an array before calling includes
-        if (!Array.isArray(postTags)) {
-          return false;
-        }
-        return postTags.some(tag =>
-          typeof tag === 'string' && tag.toLowerCase() === currentTag.toLowerCase()
-        );
-      });
-
-      // Update currentTag to the actual tag casing from our data for display
-      const actualTag = allTags.find(tag =>
-        tag.toLowerCase() === currentTag.toLowerCase()
-      );
-      if (actualTag) {
-        currentTag = actualTag;
-      }
-    }
-  }
-}
+// Tag filtering logic
+const rawTag = Astro.url.searchParams.get('tag');
+const { posts: filteredPosts, canonicalTag: currentTag } = getFilteredPosts(rawTag);
+const valid = isValidTag(rawTag, tagCounts);
 ---
 
 <Layout title="Blog - Johannes Developer" currentPage="blog">
-
   <main class="blog-main">
     <section class="blog-content">
       <div class="container">
         <div class="blog-layout">
-          <!-- Tags Filter -->
-          <aside class="blog-sidebar">
-            <div class="sidebar-section">
-              <h3 class="sidebar-title">
-                <span class="title-prefix">$</span>
-                <span class="title-text">filter by tag</span>
-              </h3>
-              <div class="tags-filter">
-                <a
-                  href="/"
-                  class={`tag-filter ${currentTag === 'all' ? 'active' : ''}`}
-                >
-                  <span class="tag-prefix">all</span>
-                  <span class="tag-count">({sortedPosts.length})</span>
-                </a>
-                {allTags.map(tag => {
-                  const count = sortedPosts.filter(post => {
-                    const postTags = post.frontmatter.tags;
-                    if (!Array.isArray(postTags)) {
-                      return false;
-                    }
-                    return postTags.some(postTag =>
-                      typeof postTag === 'string' && postTag.toLowerCase() === tag.toLowerCase()
-                    );
-                  }).length;
-                  return (
-                    <a
-                      href={`/?tag=${encodeURIComponent(tag)}`}
-                      class={`tag-filter ${currentTag === tag ? 'active' : ''}`}
-                    >
-                      <span class="tag-prefix">#{tag}</span>
-                      <span class="tag-count">({count})</span>
-                    </a>
-                  );
-                })}
-              </div>
-            </div>
-
-
-          </aside>
-
-          <!-- Posts Grid -->
-          <div class="blog-posts">
-            <div class="posts-header">
-              <h2 class="posts-title">
-                {currentTag === 'all' ? 'All Posts' : `Posts tagged: ${currentTag}`}
-              </h2>
-              <div class="posts-count">
-                {filteredPosts.length} {filteredPosts.length === 1 ? 'post' : 'posts'}
-              </div>
-            </div>
-
-            <div class="posts-grid">
-              {filteredPosts.map((post, index) => (
-                <BlogCard
-                  title={post.frontmatter.title}
-                  description={post.frontmatter.description}
-                  pubDate={new Date(post.frontmatter.pubDate)}
-                  url={post.url}
-                  tags={post.frontmatter.tags}
-                  readingTime={getReadingTime(post)}
-                />
-              ))}
-            </div>
-
-            {filteredPosts.length === 0 && (
-              <div class="empty-state">
-                <div class="empty-icon">{!isValidTag && currentTag !== 'all' ? '⚠️' : '📭'}</div>
-                <h3>{!isValidTag && currentTag !== 'all' ? 'Unknown tag' : 'No posts found'}</h3>
-                <p>
-                  {!isValidTag && currentTag !== 'all'
-                    ? `The tag "${currentTag}" doesn't exist in any posts. Try selecting a different tag.`
-                    : 'No posts match the current filter. Try selecting a different tag.'
-                  }
-                </p>
-                <a href="/" class="reset-filter">Clear filter</a>
-              </div>
-            )}
-          </div>
+          <TagFilter
+            allTags={allTags}
+            tagCounts={tagCounts}
+            currentTag={currentTag}
+            totalPosts={allPosts.length}
+          />
+          <PostGrid
+            posts={filteredPosts}
+            currentTag={currentTag}
+            isValidTag={valid}
+          />
         </div>
       </div>
     </section>
   </main>
+
+  <script client:load>
+    function applyTagFilter() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const tag = urlParams.get('tag');
+      const cards = document.querySelectorAll('.blog-card');
+      const postsCount = document.querySelector('.posts-count');
+      const postsTitle = document.querySelector('.posts-title');
+
+      if (!tag || tag === 'all') {
+        cards.forEach((card) => {
+          card.style.display = '';
+        });
+        if (postsCount) postsCount.textContent = `${cards.length} posts`;
+        if (postsTitle) postsTitle.textContent = 'All Posts';
+        const emptyState = document.querySelector('.empty-state');
+        if (emptyState) emptyState.style.display = 'none';
+        return;
+      }
+
+      const searchTag = tag.toLowerCase();
+      let visibleCount = 0;
+
+      cards.forEach((card) => {
+        const tags = (card.getAttribute('data-tags-lower') || '').split(',').map(t => t.trim());
+        if (tags.includes(searchTag)) {
+          card.style.display = '';
+          visibleCount++;
+        } else {
+          card.style.display = 'none';
+        }
+      });
+
+      if (postsCount) {
+        postsCount.textContent = `${visibleCount} ${visibleCount === 1 ? 'post' : 'posts'}`;
+      }
+      if (postsTitle) {
+        postsTitle.textContent = visibleCount === 0 ? 'No posts found' : `Posts tagged: ${tag}`;
+      }
+
+      const emptyState = document.querySelector('.empty-state');
+      if (emptyState) {
+        emptyState.style.display = visibleCount === 0 ? '' : 'none';
+      }
+    }
+
+    applyTagFilter();
+    window.addEventListener('popstate', applyTagFilter);
+  </script>
 </Layout>
 
 <style>
@@ -167,8 +93,6 @@ if (Astro.url.searchParams.has('tag')) {
     min-height: 80vh;
     background: var(--bg-primary);
   }
-
-
 
   .blog-content {
     padding: var(--section-gap) 0;
@@ -179,157 +103,6 @@ if (Astro.url.searchParams.has('tag')) {
     grid-template-columns: 300px 1fr;
     gap: var(--space-8);
     align-items: start;
-  }
-
-  .blog-sidebar {
-    position: sticky;
-    top: calc(var(--space-16) + 4rem);
-  }
-
-  .sidebar-section {
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-primary);
-    border-radius: 0.75rem;
-    padding: var(--space-6);
-    margin-bottom: var(--space-6);
-  }
-
-  .sidebar-title {
-    font-family: var(--font-mono);
-    font-size: var(--fluid-text-lg);
-    color: var(--text-primary);
-    margin: 0 0 var(--space-4) 0;
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-  }
-
-  .title-prefix {
-    color: var(--accent-green);
-    font-weight: var(--font-normal);
-  }
-
-  .tags-filter {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-2);
-  }
-
-  .tag-filter {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: var(--space-3) var(--space-4);
-    background: var(--bg-tertiary);
-    border: 1px solid var(--border-primary);
-    border-radius: 0.5rem;
-    color: var(--text-secondary);
-    text-decoration: none;
-    font-family: var(--font-mono);
-    font-size: var(--fluid-text-sm);
-    transition: all 0.2s ease;
-  }
-
-  .tag-filter:hover {
-    background: var(--bg-primary);
-    border-color: var(--accent-green);
-    color: var(--accent-green);
-    transform: translateX(2px);
-  }
-
-  .tag-filter.active {
-    background: var(--bg-primary);
-    border-color: var(--accent-cyan);
-    color: var(--accent-cyan);
-  }
-
-  .tag-prefix {
-    font-weight: var(--font-medium);
-  }
-
-  .tag-count {
-    color: var(--text-muted);
-    font-size: var(--fluid-text-xs);
-  }
-
-
-
-  .blog-posts {
-    flex: 1;
-  }
-
-  .posts-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: var(--space-6);
-    padding-bottom: var(--space-4);
-    border-bottom: 1px solid var(--border-primary);
-  }
-
-  .posts-title {
-    font-family: var(--font-mono);
-    font-size: var(--fluid-text-2xl);
-    color: var(--text-primary);
-    margin: 0;
-  }
-
-  .posts-count {
-    font-family: var(--font-mono);
-    font-size: var(--fluid-text-sm);
-    color: var(--text-secondary);
-    background: var(--bg-tertiary);
-    padding: var(--space-2) var(--space-3);
-    border-radius: 9999px;
-    border: 1px solid var(--border-primary);
-  }
-
-  .posts-grid {
-    display: grid;
-    gap: var(--space-6);
-  }
-
-  .empty-state {
-    text-align: center;
-    padding: var(--space-12) var(--space-6);
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-primary);
-    border-radius: 0.75rem;
-  }
-
-  .empty-icon {
-    font-size: 3rem;
-    margin-bottom: var(--space-4);
-  }
-
-  .empty-state h3 {
-    font-family: var(--font-mono);
-    color: var(--text-primary);
-    margin-bottom: var(--space-2);
-  }
-
-  .empty-state p {
-    color: var(--text-secondary);
-    margin-bottom: var(--space-4);
-  }
-
-  .reset-filter {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-2);
-    padding: var(--space-3) var(--space-4);
-    background: var(--accent-green);
-    color: var(--text-inverse);
-    text-decoration: none;
-    border-radius: 0.5rem;
-    font-family: var(--font-mono);
-    font-weight: var(--font-medium);
-    transition: all 0.2s ease;
-  }
-
-  .reset-filter:hover {
-    background: var(--accent-cyan);
-    transform: translateY(-1px);
   }
 
   /* Responsive design */
@@ -352,23 +125,10 @@ if (Astro.url.searchParams.has('tag')) {
   }
 
   @media (max-width: 768px) {
-    .blog-stats {
-      flex-direction: column;
-      gap: var(--space-4);
-    }
-
-    .stat-item {
-      min-width: auto;
-    }
-
     .posts-header {
       flex-direction: column;
       gap: var(--space-3);
       align-items: flex-start;
-    }
-
-    .hero-terminal {
-      max-width: 100%;
     }
   }
 </style>

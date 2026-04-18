@@ -1,0 +1,191 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="500 - System Error" description="Internal server error">
+  <div class="terminal-window">
+    <div class="terminal-header">
+      <span class="terminal-dot red"></span>
+      <span class="terminal-dot yellow"></span>
+      <span class="terminal-dot green"></span>
+      <span class="terminal-title">user@blog:~</span>
+    </div>
+    <div class="terminal-body">
+      <div class="terminal-prompt">
+        <span class="prompt-symbol">$</span>
+        <span class="command">cat /var/log/syslog | grep ERROR</span>
+      </div>
+      <div class="error-output">
+        <pre
+          class="stack-trace">Traceback (most recent call last):
+  File "server/app.py", line 42, in handle_request
+    result = process(request)
+  File "server/app.py", line 128, in process
+    raise SystemError("Internal server error")
+SystemError: 500 - Something went wrong on our end</pre>
+      </div>
+      <div class="terminal-prompt">
+        <span class="prompt-symbol">$</span>
+        <span class="command">echo "System is down. Rebooting..."</span>
+      </div>
+      <div class="error-output">
+        <p class="error-detail">Internal Server Error</p>
+        <p class="error-hint">
+          An unexpected error occurred. We've been notified and are working on it.
+        </p>
+      </div>
+      <div class="terminal-prompt">
+        <span class="prompt-symbol">$</span>
+        <span class="cursor-blink"></span>
+      </div>
+      <nav aria-label="Navigation">
+        <a href="/" class="home-link">
+          <span class="prompt-symbol">$</span>
+          <span class="command">reboot</span>
+          <span class="return-label"> → Reboot to Homepage</span>
+        </a>
+      </nav>
+    </div>
+  </div>
+
+  <style is:global>
+    .terminal-window {
+      max-width: 680px;
+      margin: 4rem auto;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+      font-family: var(--font-mono);
+      background: var(--bg-secondary);
+    }
+
+    .terminal-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 16px;
+      background: var(--bg-tertiary);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .terminal-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+    .terminal-dot.red {
+      background: #ff5f57;
+    }
+    .terminal-dot.yellow {
+      background: #febc2e;
+    }
+    .terminal-dot.green {
+      background: #28c840;
+    }
+
+    .terminal-title {
+      flex: 1;
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--color-text-dim);
+      opacity: 0.7;
+    }
+
+    .terminal-body {
+      padding: 24px;
+      min-height: 300px;
+      background: var(--bg-secondary);
+    }
+
+    .terminal-prompt {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .prompt-symbol {
+      color: var(--error-red);
+      font-weight: bold;
+    }
+
+    .command {
+      color: var(--color-text);
+    }
+
+    .error-output {
+      margin: 24px 0;
+      padding: 16px;
+      border-left: 3px solid var(--error-red);
+      background: rgba(248, 81, 73, 0.05);
+    }
+
+    .stack-trace {
+      font-size: 0.85rem;
+      line-height: 1.6;
+      color: var(--color-text-dim);
+      margin: 0;
+    }
+
+    .error-detail {
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: var(--error-red);
+      margin-bottom: 8px;
+    }
+
+    .error-hint {
+      color: var(--color-text-dim);
+      font-size: 0.9rem;
+    }
+
+    .home-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--error-red);
+      text-decoration: none;
+      margin-top: 16px;
+      padding: 8px 12px;
+      border-radius: 4px;
+      transition: background 0.15s;
+    }
+
+    .home-link:hover {
+      background: var(--bg-tertiary);
+    }
+
+    .return-label {
+      color: var(--color-text-dim);
+      margin-left: 8px;
+    }
+
+    .cursor-blink {
+      display: inline-block;
+      width: 8px;
+      height: 1.1em;
+      background: var(--error-red);
+      animation: blink 1s step-end infinite;
+      vertical-align: text-bottom;
+    }
+
+    @keyframes blink {
+      0%,
+      100% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .terminal-window {
+        margin: 2rem 1rem;
+      }
+      .terminal-body {
+        padding: 16px;
+      }
+    }
+  </style>
+</Layout>

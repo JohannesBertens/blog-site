@@ -10,9 +10,10 @@ interface Props {
   url: string;
   tags?: string[];
   readingTime?: string;
+  postTags?: string[];
 }
 
-const { title, description, pubDate, url, tags = [], readingTime } = Astro.props;
+const { title, description, pubDate, url, tags = [], readingTime, postTags = [] } = Astro.props;
 
 const getRelativeTime = (date: Date) => {
   const now = new Date();
@@ -28,7 +29,7 @@ const getRelativeTime = (date: Date) => {
 };
 ---
 
-<article class="blog-card fade-in-up hover-lift transition-all">
+<article class="blog-card fade-in-up hover-lift transition-all" data-tags={tags.join(',').toLowerCase()} data-tags-lower={postTags.join(',').toLowerCase()}>
   <div class="card-header">
     <div class="card-meta">
       <h3 class="card-title">
@@ -41,12 +42,14 @@ const getRelativeTime = (date: Date) => {
         <span class="date-text">{formatDate(pubDate)}</span>
         <span class="date-relative">({getRelativeTime(pubDate)})</span>
       </time>
-      {readingTime && (
-        <span class="reading-time">
-          <span class="time-icon">⏱️</span>
-          <span class="time-text">{readingTime}</span>
-        </span>
-      )}
+      {
+        readingTime && (
+          <span class="reading-time">
+            <span class="time-icon">⏱️</span>
+            <span class="time-text">{readingTime}</span>
+          </span>
+        )
+      }
     </div>
     <div class="card-status">
       <span class="status-indicator"></span>
@@ -56,16 +59,18 @@ const getRelativeTime = (date: Date) => {
   <div class="card-content">
     <p class="card-description">{description}</p>
 
-    {tags.length > 0 && (
-      <div class="card-tags">
-        {tags.map(tag => (
-          <span class="tag" key={tag}>
-            <span class="tag-prefix">#</span>
-            <span class="tag-text">{tag}</span>
-          </span>
-        ))}
-      </div>
-    )}
+    {
+      tags.length > 0 && (
+        <div class="card-tags">
+          {tags.map((tag) => (
+            <span class="tag" key={tag}>
+              <span class="tag-prefix">#</span>
+              <span class="tag-text">{tag}</span>
+            </span>
+          ))}
+        </div>
+      )
+    }
   </div>
 
   <div class="card-footer">
@@ -174,7 +179,8 @@ const getRelativeTime = (date: Date) => {
   }
 
   @keyframes pulse {
-    0%, 100% {
+    0%,
+    100% {
       opacity: 1;
       transform: scale(1);
     }

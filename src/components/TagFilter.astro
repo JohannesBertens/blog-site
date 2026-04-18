@@ -1,0 +1,115 @@
+---
+// TagFilter.astro — Tag filter sidebar component
+// Renders a terminal-styled sidebar with clickable tag filters.
+
+interface Props {
+  allTags: string[];
+  tagCounts: Map<string, number>;
+  currentTag: string;
+  totalPosts: number;
+}
+
+const { allTags, tagCounts, currentTag, totalPosts } = Astro.props;
+---
+
+<aside class="blog-sidebar">
+  <div class="sidebar-section">
+    <h3 class="sidebar-title">
+      <span class="title-prefix">$</span>
+      <span class="title-text">filter by tag</span>
+    </h3>
+    <div class="tags-filter">
+      <a href="/" class={`tag-filter ${currentTag === 'all' ? 'active' : ''}`}>
+        <span class="tag-prefix">all</span>
+        <span class="tag-count">({totalPosts})</span>
+      </a>
+      {
+        allTags.map((tag) => {
+          const count = tagCounts.get(tag.toLowerCase()) || 0;
+          return (
+            <a
+              href={`/?tag=${encodeURIComponent(tag)}`}
+              class={`tag-filter ${currentTag === tag ? 'active' : ''}`}
+            >
+              <span class="tag-prefix">#{tag}</span>
+              <span class="tag-count">({count})</span>
+            </a>
+          );
+        })
+      }
+    </div>
+  </div>
+</aside>
+
+<style>
+  .blog-sidebar {
+    position: sticky;
+    top: calc(var(--space-16) + 4rem);
+  }
+
+  .sidebar-section {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-primary);
+    border-radius: 0.75rem;
+    padding: var(--space-6);
+    margin-bottom: var(--space-6);
+  }
+
+  .sidebar-title {
+    font-family: var(--font-mono);
+    font-size: var(--fluid-text-lg);
+    color: var(--text-primary);
+    margin: 0 0 var(--space-4) 0;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .title-prefix {
+    color: var(--accent-green);
+    font-weight: var(--font-normal);
+  }
+
+  .tags-filter {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .tag-filter {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-3) var(--space-4);
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-primary);
+    border-radius: 0.5rem;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-family: var(--font-mono);
+    font-size: var(--fluid-text-sm);
+    transition: all 0.2s ease;
+  }
+
+  .tag-filter:hover {
+    background: var(--bg-primary);
+    border-color: var(--accent-green);
+    color: var(--accent-green);
+    transform: translateX(2px);
+  }
+
+  .tag-filter.active {
+    background: var(--bg-primary);
+    border-color: var(--accent-cyan);
+    color: var(--accent-cyan);
+  }
+
+  .tag-prefix {
+    font-weight: var(--font-medium);
+  }
+
+  .tag-count {
+    color: var(--text-muted);
+    font-size: var(--fluid-text-xs);
+  }
+</style>

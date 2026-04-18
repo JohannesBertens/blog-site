@@ -1,6 +1,9 @@
 ---
 // Enhanced Code Block Component with Line Numbers and Syntax Highlighting
 // Terminal-inspired code blocks with advanced features
+// NOTE: This component is not currently imported anywhere in the codebase.
+// If used, prefer passing code as a template literal prop rather than
+// using data-* attributes for content storage (avoids DOM-based XSS vectors).
 
 interface Props {
   code: string;
@@ -19,61 +22,68 @@ const {
   showLineNumbers = true,
   copyable = true,
   filename,
-  maxLines
+  maxLines,
 } = Astro.props;
 
 // Split code into lines for line numbering
 const codeLines = code.split('\n');
 
 // Deterministic ID based on code content hash
-const codeHash = Array.from(code).reduce((acc, char) => ((acc << 5) - acc + char.charCodeAt(0)) | 0, 0);
+const codeHash = Array.from(code).reduce(
+  (acc, char) => ((acc << 5) - acc + char.charCodeAt(0)) | 0,
+  0
+);
 const codeId = `code-${Math.abs(codeHash).toString(36)}`;
 
 // Format file extension for display
 const getFileExtension = (lang: string) => {
   const extensions: Record<string, string> = {
-    'javascript': 'js',
-    'typescript': 'ts',
-    'python': 'py',
-    'html': 'html',
-    'css': 'css',
-    'scss': 'scss',
-    'bash': 'sh',
-    'shell': 'sh',
-    'json': 'json',
-    'xml': 'xml',
-    'yaml': 'yml',
-    'markdown': 'md'
+    javascript: 'js',
+    typescript: 'ts',
+    python: 'py',
+    html: 'html',
+    css: 'css',
+    scss: 'scss',
+    bash: 'sh',
+    shell: 'sh',
+    json: 'json',
+    xml: 'xml',
+    yaml: 'yml',
+    markdown: 'md',
   };
   return extensions[lang.toLowerCase()] || lang;
 };
 
 // Truncate code if maxLines is specified
-const displayCode = maxLines && codeLines.length > maxLines
-  ? codeLines.slice(0, maxLines).join('\n') + '\n...'
-  : code;
+const displayCode =
+  maxLines && codeLines.length > maxLines
+    ? codeLines.slice(0, maxLines).join('\n') + '\n...'
+    : code;
 ---
 
-<div class={`enhanced-code-block ${showLineNumbers ? 'line-numbers' : ''}`} data-language={language}>
-  {title && (
-    <div class="code-header">
-      <div class="code-title">
-        <span class="file-icon">📄</span>
-        <span class="file-name">{title}</span>
-        {filename && (
-          <span class="file-extension">.{getFileExtension(language)}</span>
-        )}
+<div
+  class={`enhanced-code-block ${showLineNumbers ? 'line-numbers' : ''}`}
+  data-language={language}
+>
+  {
+    title && (
+      <div class="code-header">
+        <div class="code-title">
+          <span class="file-icon">📄</span>
+          <span class="file-name">{title}</span>
+          {filename && <span class="file-extension">.{getFileExtension(language)}</span>}
+        </div>
+        <div class="code-actions">
+          {copyable && (
+            <button class="copy-btn" data-target={codeId}>
+              <span class="copy-icon">📋</span>
+              <span class="copy-text">Copy</span>
+            </button>
+          )}
+        </div>
       </div>
-      <div class="code-actions">
-        {copyable && (
-          <button class="copy-btn" data-target={codeId}>
-            <span class="copy-icon">📋</span>
-            <span class="copy-text">Copy</span>
-          </button>
-        )}
-      </div>
-    </div>
-  )}
+    )
+  }
 
   <div class="code-terminal">
     <div class="terminal-header">
@@ -86,16 +96,22 @@ const displayCode = maxLines && codeLines.length > maxLines
         {filename || language || 'terminal'}
       </div>
       <div class="terminal-actions">
-        {maxLines && codeLines.length > maxLines && (
-          <span class="truncated-indicator" title={`${codeLines.length} total lines, showing ${maxLines}`}>
-            +{codeLines.length - maxLines} lines
-          </span>
-        )}
+        {
+          maxLines && codeLines.length > maxLines && (
+            <span
+              class="truncated-indicator"
+              title={`${codeLines.length} total lines, showing ${maxLines}`}
+            >
+              +{codeLines.length - maxLines} lines
+            </span>
+          )
+        }
       </div>
     </div>
 
     <div class="code-content" id={codeId}>
-      <pre class="code-pre"><code class={`language-${language} language-highlight`}>{displayCode}</code></pre>
+      <pre
+        class="code-pre"><code class={`language-${language} language-highlight`}>{displayCode}</code></pre>
     </div>
 
     <div class="code-footer">
@@ -109,12 +125,14 @@ const displayCode = maxLines && codeLines.length > maxLines
           <span class="stat-text">{language}</span>
         </span>
       </div>
-      {copyable && (
-        <button class="copy-btn copy-btn-footer" data-target={codeId}>
-          <span class="copy-icon">📋</span>
-          <span class="copy-text">Copy code</span>
-        </button>
-      )}
+      {
+        copyable && (
+          <button class="copy-btn copy-btn-footer" data-target={codeId}>
+            <span class="copy-icon">📋</span>
+            <span class="copy-text">Copy code</span>
+          </button>
+        )
+      }
     </div>
   </div>
 </div>
@@ -257,9 +275,15 @@ const displayCode = maxLines && codeLines.length > maxLines
     border-radius: 50%;
   }
 
-  .dot.red { background-color: #ff5f56; }
-  .dot.yellow { background-color: #ffbd2e; }
-  .dot.green { background-color: #27c93f; }
+  .dot.red {
+    background-color: #ff5f56;
+  }
+  .dot.yellow {
+    background-color: #ffbd2e;
+  }
+  .dot.green {
+    background-color: #27c93f;
+  }
 
   .terminal-title {
     font-family: var(--font-mono);
@@ -374,21 +398,53 @@ const displayCode = maxLines && codeLines.length > maxLines
   }
 
   /* Syntax highlighting colors */
-  .token.comment { color: var(--code-comment); font-style: italic; }
-  .token.keyword { color: var(--code-keyword); font-weight: var(--font-semibold); }
-  .token.string { color: var(--code-string); }
-  .token.number { color: var(--code-number); }
-  .token.function { color: var(--code-function); }
-  .token.operator { color: var(--code-operator); }
-  .token.punctuation { color: var(--code-punctuation); }
-  .token.variable { color: var(--code-variable); }
-  .token.class-name { color: var(--code-class-name); }
-  .token.tag { color: var(--code-tag); }
-  .token.attr-name { color: var(--code-attr-name); }
-  .token.attr-value { color: var(--code-attr-value); }
-  .token.property { color: var(--accent-cyan); }
-  .token.boolean { color: var(--accent-blue); }
-  .token.null { color: var(--accent-purple); }
+  .token.comment {
+    color: var(--code-comment);
+    font-style: italic;
+  }
+  .token.keyword {
+    color: var(--code-keyword);
+    font-weight: var(--font-semibold);
+  }
+  .token.string {
+    color: var(--code-string);
+  }
+  .token.number {
+    color: var(--code-number);
+  }
+  .token.function {
+    color: var(--code-function);
+  }
+  .token.operator {
+    color: var(--code-operator);
+  }
+  .token.punctuation {
+    color: var(--code-punctuation);
+  }
+  .token.variable {
+    color: var(--code-variable);
+  }
+  .token.class-name {
+    color: var(--code-class-name);
+  }
+  .token.tag {
+    color: var(--code-tag);
+  }
+  .token.attr-name {
+    color: var(--code-attr-name);
+  }
+  .token.attr-value {
+    color: var(--code-attr-value);
+  }
+  .token.property {
+    color: var(--accent-cyan);
+  }
+  .token.boolean {
+    color: var(--accent-blue);
+  }
+  .token.null {
+    color: var(--accent-purple);
+  }
 
   /* Responsive adjustments */
   @media (max-width: 640px) {
@@ -448,8 +504,12 @@ const displayCode = maxLines && codeLines.length > maxLines
   }
 
   @keyframes code-loading {
-    0% { left: -100%; }
-    100% { left: 100%; }
+    0% {
+      left: -100%;
+    }
+    100% {
+      left: 100%;
+    }
   }
 </style>
 
@@ -458,7 +518,7 @@ const displayCode = maxLines && codeLines.length > maxLines
   document.addEventListener('DOMContentLoaded', () => {
     const copyButtons = document.querySelectorAll('.copy-btn');
 
-    copyButtons.forEach(button => {
+    copyButtons.forEach((button) => {
       button.addEventListener('click', async (e) => {
         e.preventDefault();
 
@@ -475,7 +535,7 @@ const displayCode = maxLines && codeLines.length > maxLines
           button.querySelector('.copy-text').textContent = 'Copied!';
 
           // Update all buttons for this code block
-          document.querySelectorAll(`[data-target="${targetId}"]`).forEach(btn => {
+          document.querySelectorAll(`[data-target="${targetId}"]`).forEach((btn) => {
             btn.classList.add('copied');
             if (btn !== button) {
               btn.querySelector('.copy-text').textContent = 'Copied!';
@@ -483,12 +543,11 @@ const displayCode = maxLines && codeLines.length > maxLines
           });
 
           setTimeout(() => {
-            document.querySelectorAll(`[data-target="${targetId}"]`).forEach(btn => {
+            document.querySelectorAll(`[data-target="${targetId}"]`).forEach((btn) => {
               btn.classList.remove('copied');
               btn.querySelector('.copy-text').textContent = originalText;
             });
           }, 2000);
-
         } catch (err) {
           console.error('Failed to copy code:', err);
         }

@@ -23,8 +23,8 @@ export function calculateReadingTime(rawContent: string): string {
     .replace(/[#*_~\[\]()]/g, '') // Remove markdown syntax
     .trim();
 
-  const words = textOnly.split(/\s+/).filter(word => word.length > 0).length;
-  const minutes = Math.ceil(words / wordsPerMinute);
+  const words = textOnly.split(/\s+/).filter((word) => word.length > 0).length;
+  const minutes = Math.max(1, Math.ceil(words / wordsPerMinute));
 
   return `${minutes} min read`;
 }
