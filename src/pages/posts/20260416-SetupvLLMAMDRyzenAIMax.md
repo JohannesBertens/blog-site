@@ -227,10 +227,10 @@ This presents an interactive menu for model selection, cache handling, and launc
 
 ### Option B: Manual Launch
 
-For full control, launch vLLM directly. Here I'm serving **Qwen3.5-35B-A3B** — a Mixture-of-Experts model with 35B total parameters but only 3B active per forward pass, making it extremely efficient for the unified memory architecture:
+For full control, launch vLLM directly. Here I'm serving **Qwen3.6-35B-A3B** — a Mixture-of-Experts model with 35B total parameters but only 3B active per forward pass, making it extremely efficient for the unified memory architecture:
 
 ```bash
-vllm serve Qwen/Qwen3.5-35B-A3B \
+vllm serve Qwen/Qwen3.6-35B-A3B \
   --host 0.0.0.0 \
   --port 8000 \
   --tensor-parallel-size 1 \
@@ -256,7 +256,7 @@ vllm serve Qwen/Qwen3.5-35B-A3B \
 | `--trust-remote-code` | | Required for Qwen models with custom code |
 | `--attention-backend TRITON_ATTN` | | Use Triton attention backend (optimized for ROCm) |
 
-### Why Qwen3.5-35B-A3B?
+### Why Qwen3.6-35B-A3B?
 
 | Feature | Detail |
 |---|---|
@@ -279,7 +279,7 @@ Once the server is running, test it with a curl request:
 curl -X POST http://localhost:8000/v1/chat/completions \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "Qwen/Qwen3.5-35B-A3B",
+    "model": "Qwen/Qwen3.6-35B-A3B",
     "messages": [
       {"role": "user", "content": "Hello! Test the performance."}
     ]
@@ -339,7 +339,7 @@ The [amd-strix-halo-vllm-toolboxes](https://github.com/kyuz0/amd-strix-halo-vllm
 | `meta-llama/Meta-Llama-3.1-8B-Instruct` | 1 | 128K | 0.95 |
 | `google/gemma-3-12b-it` | 1 | 128K | 0.95 |
 | `Qwen/Qwen3-14B-AWQ` | 1 | 40K | 0.95 |
-| `Qwen/Qwen3.5-35B-A3B` | 1 | 32K+ | 0.95 |
+| `Qwen/Qwen3.6-35B-A3B` | 1 | 32K+ | 0.95 |
 | `openai/gpt-oss-120b` | 1 | 128K | 0.95 |
 
 Full benchmarks are available at [kyuz0.github.io/amd-strix-halo-vllm-toolboxes](https://kyuz0.github.io/amd-strix-halo-vllm-toolboxes/).
@@ -409,7 +409,7 @@ cd amd-strix-halo-vllm-toolboxes/
 
 # 4. Enter toolbox and serve
 toolbox enter vllm
-vllm serve Qwen/Qwen3.5-35B-A3B \
+vllm serve Qwen/Qwen3.6-35B-A3B \
   --host 0.0.0.0 --port 8000 \
   --tensor-parallel-size 1 \
   --max-num-seqs 1 \
@@ -425,7 +425,7 @@ The AMD Ryzen AI Max+ 395 with unified memory is a compelling platform for local
 Key takeaways:
 - Configure **kernel parameters** to unlock unified memory for the GPU
 - Use the **Strix Halo toolbox** for a pre-configured vLLM + ROCm environment
-- **MoE models** like Qwen3.5-35B-A3B are ideal — large total params, small active params
+- **MoE models** like Qwen3.6-35B-A3B are ideal — large total params, small active params
 - Use **TRITON_ATTN** backend for best ROCm performance
 - For remote access, use **SSH port forwarding**
 
