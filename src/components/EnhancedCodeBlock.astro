@@ -25,8 +25,9 @@ const {
 // Split code into lines for line numbering
 const codeLines = code.split('\n');
 
-// Generate a unique ID for this code block
-const codeId = `code-${Math.random().toString(36).substr(2, 9)}`;
+// Deterministic ID based on code content hash
+const codeHash = Array.from(code).reduce((acc, char) => ((acc << 5) - acc + char.charCodeAt(0)) | 0, 0);
+const codeId = `code-${Math.abs(codeHash).toString(36)}`;
 
 // Format file extension for display
 const getFileExtension = (lang: string) => {
@@ -65,7 +66,7 @@ const displayCode = maxLines && codeLines.length > maxLines
       </div>
       <div class="code-actions">
         {copyable && (
-          <button class="copy-btn" data-code={encodeURIComponent(code)} data-target={codeId}>
+          <button class="copy-btn" data-target={codeId}>
             <span class="copy-icon">📋</span>
             <span class="copy-text">Copy</span>
           </button>
@@ -109,7 +110,7 @@ const displayCode = maxLines && codeLines.length > maxLines
         </span>
       </div>
       {copyable && (
-        <button class="copy-btn copy-btn-footer" data-code={encodeURIComponent(code)} data-target={codeId}>
+        <button class="copy-btn copy-btn-footer" data-target={codeId}>
           <span class="copy-icon">📋</span>
           <span class="copy-text">Copy code</span>
         </button>
@@ -453,7 +454,7 @@ const displayCode = maxLines && codeLines.length > maxLines
 </style>
 
 <script>
-  // Copy functionality with enhanced feedback
+  // Copy functionality using code content from DOM
   document.addEventListener('DOMContentLoaded', () => {
     const copyButtons = document.querySelectorAll('.copy-btn');
 
@@ -461,8 +462,9 @@ const displayCode = maxLines && codeLines.length > maxLines
       button.addEventListener('click', async (e) => {
         e.preventDefault();
 
-        const code = decodeURIComponent(button.dataset.code);
         const targetId = button.dataset.target;
+        const codeElement = document.getElementById(targetId);
+        const code = codeElement ? codeElement.textContent : '';
 
         try {
           await navigator.clipboard.writeText(code);
@@ -475,7 +477,9 @@ const displayCode = maxLines && codeLines.length > maxLines
           // Update all buttons for this code block
           document.querySelectorAll(`[data-target="${targetId}"]`).forEach(btn => {
             btn.classList.add('copied');
-            btn.querySelector('.copy-text').textContent = 'Copied!';
+            if (btn !== button) {
+              btn.querySelector('.copy-text').textContent = 'Copied!';
+            }
           });
 
           setTimeout(() => {
@@ -487,29 +491,6 @@ const displayCode = maxLines && codeLines.length > maxLines
 
         } catch (err) {
           console.error('Failed to copy code:', err);
-
-          // Fallback for older browsers
-          const textArea = document.createElement('textarea');
-          textArea.value = code;
-          textArea.style.position = 'fixed';
-          textArea.style.opacity = '0';
-          document.body.appendChild(textArea);
-          textArea.select();
-
-          try {
-            document.execCommand('copy');
-            button.classList.add('copied');
-            button.querySelector('.copy-text').textContent = 'Copied!';
-
-            setTimeout(() => {
-              button.classList.remove('copied');
-              button.querySelector('.copy-text').textContent = originalText;
-            }, 2000);
-          } catch (fallbackErr) {
-            console.error('Fallback copy failed:', fallbackErr);
-          }
-
-          document.body.removeChild(textArea);
         }
       });
     });

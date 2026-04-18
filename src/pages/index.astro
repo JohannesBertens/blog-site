@@ -116,7 +116,7 @@ if (Astro.url.searchParams.has('tag')) {
                   }).length;
                   return (
                     <a
-                      href={`/?tag=${tag}`}
+                      href={`/?tag=${encodeURIComponent(tag)}`}
                       class={`tag-filter ${currentTag === tag ? 'active' : ''}`}
                     >
                       <span class="tag-prefix">#{tag}</span>

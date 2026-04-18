@@ -18,7 +18,11 @@ const { title, description, currentPage = '' } = Astro.props;
     <meta charset="utf-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="generator" content={Astro.generator} />
+
+    <!-- Security Headers -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta http-equiv="X-Frame-Options" content="DENY" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
 
     <!-- SEO Meta Tags -->
     <title>{title}</title>
@@ -45,10 +49,10 @@ const { title, description, currentPage = '' } = Astro.props;
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
 
     <!-- Preload critical CSS -->
-    <link rel="preload" href="/styles/global.css" as="style" />
+    <link rel="preload" href="/styles/main.css" as="style" />
 
     <!-- Import main CSS architecture -->
-    <link rel="stylesheet" href="/styles/global.css" />
+    <link rel="stylesheet" href="/styles/main.css" />
 
     <!-- Skip link for accessibility -->
     <a href="#main-content" class="skip-link">Skip to main content</a>

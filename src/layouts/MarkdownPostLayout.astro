@@ -341,46 +341,6 @@ const relatedPosts = allPosts
     font-size: 1.1em;
   }
 
-  .like-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-2);
-    padding: var(--space-3) var(--space-6);
-    background: var(--bg-tertiary);
-    border: 1px solid var(--border-primary);
-    border-radius: 9999px;
-    color: var(--text-secondary);
-    font-family: var(--font-mono);
-    font-size: var(--fluid-text-sm);
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-
-  .like-btn:hover {
-    background: rgba(248, 113, 113, 0.1);
-    border-color: #f87171;
-    color: #f87171;
-    transform: scale(1.05);
-  }
-
-  .like-btn.liked {
-    background: rgba(248, 113, 113, 0.2);
-    border-color: #f87171;
-    color: #f87171;
-  }
-
-  .like-icon {
-    font-size: 1.2em;
-    transition: transform 0.2s ease;
-  }
-
-  .like-btn:hover .like-icon {
-    transform: scale(1.2);
-  }
-
-  .like-count {
-    font-weight: var(--font-semibold);
-  }
 
   .related-posts {
     margin-top: var(--section-gap);
@@ -648,27 +608,28 @@ const relatedPosts = allPosts
     const tocNav = document.getElementById('table-of-contents');
 
     if (headings.length === 0) {
-      tocNav.innerHTML = '<p class="no-toc">No headings found</p>';
+      const noToc = document.createElement('p');
+      noToc.className = 'no-toc';
+      noToc.textContent = 'No headings found';
+      tocNav.appendChild(noToc);
       return;
     }
 
-    let tocHTML = '';
     headings.forEach((heading, index) => {
       const id = `heading-${index}`;
       heading.id = id;
 
       const level = parseInt(heading.tagName.charAt(1));
-      const indent = level; // Indent based on heading level
       if (level < 4) {
-        tocHTML += `
-          <a href="#${id}" class="toc-link toc-level-${level}" data-level="${level}">
-            ${'&nbsp'.repeat(indent)}${heading.textContent}
-          </a>
-        `;
+        const link = document.createElement('a');
+        link.href = `#${id}`;
+        link.className = `toc-link toc-level-${level}`;
+        link.dataset.level = String(level);
+        link.style.marginLeft = `${level * 0.5}rem`;
+        link.textContent = heading.textContent;
+        tocNav.appendChild(link);
       }
     });
-
-    tocNav.innerHTML = tocHTML;
 
     // Add click handlers for TOC links
     tocNav.querySelectorAll('.toc-link').forEach(link => {
@@ -719,77 +680,8 @@ const relatedPosts = allPosts
 
 
 
-  // Like button functionality
-  function setupLikeButton() {
-    const likeButton = document.getElementById('like-button');
-    const likeCount = document.getElementById('like-count');
-
-    if (!likeButton) return;
-
-    let liked = localStorage.getItem(`liked-${window.location.pathname}`) === 'true';
-    let likes = parseInt(likeCount.textContent);
-
-    if (liked) {
-      likeButton.classList.add('liked');
-    }
-
-    likeButton.addEventListener('click', () => {
-      if (liked) {
-        liked = false;
-        likes--;
-        likeButton.classList.remove('liked');
-        localStorage.removeItem(`liked-${window.location.pathname}`);
-      } else {
-        liked = true;
-        likes++;
-        likeButton.classList.add('liked');
-        localStorage.setItem(`liked-${window.location.pathname}`, 'true');
-      }
-
-      likeCount.textContent = likes;
-    });
-  }
-
-  // Share functionality
-  function setupShareButtons() {
-    const shareButtons = document.querySelectorAll('.share-btn');
-
-    shareButtons.forEach(button => {
-      button.addEventListener('click', () => {
-        const platform = button.dataset.platform;
-        const url = encodeURIComponent(window.location.href);
-        const title = encodeURIComponent(document.title);
-
-        let shareUrl = '';
-
-        switch(platform) {
-          case 'twitter':
-            shareUrl = `https://twitter.com/intent/tweet?url=${url}&text=${title}`;
-            break;
-          case 'linkedin':
-            shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${url}`;
-            break;
-          case 'reddit':
-            shareUrl = `https://reddit.com/submit?url=${url}&title=${title}`;
-            break;
-        }
-
-        if (shareUrl) {
-          window.open(shareUrl, '_blank', 'width=600,height=400');
-        }
-      });
-    });
-  }
-
-  // Initialize everything when DOM is ready
+  // Initialize TOC when DOM is ready
   document.addEventListener('DOMContentLoaded', () => {
     generateTableOfContents();
-    setupLikeButton();
-    setupShareButtons();
-
-    // Update active TOC link on scroll
-    window.addEventListener('scroll', () => {
-      updateActiveTocLink();
-    });
   });
 </script>
