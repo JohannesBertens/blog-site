@@ -3,9 +3,6 @@
    Grid, container, and layout utilities using the design system
    ============================================================================= */
 
-/* Import design tokens for reference */
-@import './tokens.css';
-
 /* =============================================================================
    Container System
    Responsive container utilities for content layout
@@ -200,15 +197,6 @@
    Specific Layout Patterns
    Common layout patterns for the blog
    ============================================================================= */
-
-/* Blog post layout */
-.blog-layout {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--space-8);
-  max-width: var(--container-xl);
-  margin: 0 auto;
-}
 
 /* Article content layout */
 .article-content {

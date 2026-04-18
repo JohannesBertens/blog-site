@@ -296,8 +296,6 @@
      For specific components and use cases
      ------------------------------------------------------------------------- */
 
-  /* Reading content optimization */
-  --reading-width: 65ch;    /* Optimal line length for reading */
   --reading-line-height: var(--leading-relaxed);
 
   /* Interactive elements */

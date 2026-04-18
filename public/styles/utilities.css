@@ -3,9 +3,6 @@
    Single-purpose utility classes for rapid development
    ============================================================================= */
 
-/* Import design tokens for reference */
-@import './tokens.css';
-
 /* =============================================================================
    Layout Utilities
    Spacing, sizing, and positioning utilities
@@ -797,11 +794,6 @@
     opacity: 1;
     transform: translateX(0);
   }
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.7; transform: scale(1.05); }
 }
 
 @keyframes blink {

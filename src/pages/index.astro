@@ -4,9 +4,11 @@ export const prerender = false;
 // src/pages/blog.astro
 import Layout from '../layouts/Layout.astro';
 import BlogCard from '../components/BlogCard.astro';
+import { calculateReadingTime } from '../lib/utils';
+import type { BlogPostModule } from '../lib/types';
 
 // Get all blog posts using import.meta.glob (recommended approach)
-const allPostModules = import.meta.glob('../pages/posts/*.md', { eager: true });
+const allPostModules = import.meta.glob<BlogPostModule>('../pages/posts/*.md', { eager: true });
 const allPosts = Object.values(allPostModules);
 
 // Sort posts by date (newest first)
@@ -21,23 +23,9 @@ const allTags = [...new Set(
 )];
 
 // Calculate reading time helper using rawContent (markdown)
-const calculateReadingTime = (post: any) => {
-  const wordsPerMinute = 100;
-
-  // Use rawContent() to get the actual markdown text
+const getReadingTime = (post: BlogPostModule) => {
   const contentStr = post.rawContent ? post.rawContent() : '';
-
-  // Remove markdown syntax for more accurate word count
-  const textOnly = contentStr
-    .replace(/```[\s\S]*?```/g, '') // Remove code blocks
-    .replace(/`[^`]*`/g, '') // Remove inline code
-    .replace(/[#*_~\[\]()]/g, '') // Remove markdown syntax
-    .trim();
-
-  const words = textOnly.split(/\s+/).filter(word => word.length > 0).length;
-  const minutes = Math.ceil(words / wordsPerMinute);
-
-  return `${minutes} min read`;
+  return calculateReadingTime(contentStr);
 };
 
 // Filter posts by tag
@@ -149,7 +137,7 @@ if (Astro.url.searchParams.has('tag')) {
                   pubDate={new Date(post.frontmatter.pubDate)}
                   url={post.url}
                   tags={post.frontmatter.tags}
-                  readingTime={calculateReadingTime(post)}
+                  readingTime={getReadingTime(post)}
                 />
               ))}
             </div>
