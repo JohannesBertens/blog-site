@@ -6,18 +6,12 @@ import Metadata from '../components/Metadata.astro';
 import TableOfContents from '../components/TableOfContents.astro';
 import ShareButtons from '../components/ShareButtons.astro';
 import RelatedPosts from '../components/RelatedPosts.astro';
-import { formatDate } from '../lib/utils';
+import { siteConfig } from '../lib/config';
+import { getAllPosts } from '../lib/posts';
 import type { BlogPostFrontmatter } from '../lib/types';
 
 interface Props {
-  title: string;
-  description?: string;
-  pubDate: Date | string;
-  updatedDate?: Date | string;
-  author?: string;
-  tags?: string[];
-  readingTime?: string;
-  wordCount?: number;
+  frontmatter: BlogPostFrontmatter;
 }
 
 const { frontmatter } = Astro.props;
@@ -26,7 +20,7 @@ const {
   description,
   pubDate,
   updatedDate,
-  author = 'Johannes',
+  author = siteConfig.author,
   tags = [],
   readingTime,
   wordCount,
@@ -42,8 +36,7 @@ const lastUpdated = updatedDate
 const safePublishDate = isNaN(publishDate.getTime()) ? new Date() : publishDate;
 const safeLastUpdated = lastUpdated && !isNaN(lastUpdated.getTime()) ? lastUpdated : undefined;
 
-const allPostModules = import.meta.glob('../pages/posts/*.md', { eager: true });
-const allPosts = Object.values(allPostModules);
+const allPosts = getAllPosts();
 const currentPostUrl = Astro.url.pathname;
 ---
 

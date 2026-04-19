@@ -38,53 +38,9 @@ const valid = isValidTag(rawTag, tagCounts);
     </section>
   </main>
 
-  <script client:load>
-    function applyTagFilter() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const tag = urlParams.get('tag');
-      const cards = document.querySelectorAll('.blog-card');
-      const postsCount = document.querySelector('.posts-count');
-      const postsTitle = document.querySelector('.posts-title');
-
-      if (!tag || tag === 'all') {
-        cards.forEach((card) => {
-          card.style.display = '';
-        });
-        if (postsCount) postsCount.textContent = `${cards.length} posts`;
-        if (postsTitle) postsTitle.textContent = 'All Posts';
-        const emptyState = document.querySelector('.empty-state');
-        if (emptyState) emptyState.style.display = 'none';
-        return;
-      }
-
-      const searchTag = tag.toLowerCase();
-      let visibleCount = 0;
-
-      cards.forEach((card) => {
-        const tags = (card.getAttribute('data-tags-lower') || '').split(',').map(t => t.trim());
-        if (tags.includes(searchTag)) {
-          card.style.display = '';
-          visibleCount++;
-        } else {
-          card.style.display = 'none';
-        }
-      });
-
-      if (postsCount) {
-        postsCount.textContent = `${visibleCount} ${visibleCount === 1 ? 'post' : 'posts'}`;
-      }
-      if (postsTitle) {
-        postsTitle.textContent = visibleCount === 0 ? 'No posts found' : `Posts tagged: ${tag}`;
-      }
-
-      const emptyState = document.querySelector('.empty-state');
-      if (emptyState) {
-        emptyState.style.display = visibleCount === 0 ? '' : 'none';
-      }
-    }
-
-    applyTagFilter();
-    window.addEventListener('popstate', applyTagFilter);
+  <script>
+    import { initTagFilter } from '../lib/tagFilter';
+    initTagFilter({ updateTitle: true });
   </script>
 </Layout>
 

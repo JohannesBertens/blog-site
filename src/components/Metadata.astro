@@ -1,6 +1,7 @@
 ---
 // Metadata Component
 // Terminal-inspired metadata display for blog posts
+import { siteConfig } from '../lib/config';
 import { formatDate } from '../lib/utils';
 
 interface Props {
@@ -20,7 +21,7 @@ const {
   description,
   publishDate,
   updatedDate,
-  author = 'Johannes',
+author = siteConfig.author,
   tags = [],
   readingTime,
   wordCount,
@@ -117,7 +118,7 @@ const formatViews = (count: number) => {
           </div>
           <div class="tags-list">
             {tags.map((tag) => (
-              <span class="tag" key={tag}>
+              <span class="tag">
                 <span class="tag-prefix">#{tag}</span>
               </span>
             ))}

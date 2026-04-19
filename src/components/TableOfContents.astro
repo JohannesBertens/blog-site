@@ -138,12 +138,12 @@
   }
 
   function updateActiveTocLink() {
-    const headings = document.querySelectorAll(
+    const headings = document.querySelectorAll<HTMLElement>(
       '.content-wrapper h2, .content-wrapper h3, .content-wrapper h4'
     );
-    const tocLinks = document.querySelectorAll('.toc-link');
+    const tocLinks = document.querySelectorAll<HTMLAnchorElement>('.toc-link');
 
-    let currentHeading: Element | null = null;
+    let currentHeading: HTMLElement | undefined;
     headings.forEach((heading) => {
       const rect = heading.getBoundingClientRect();
       if (rect.top <= 100) {

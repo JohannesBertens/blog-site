@@ -65,7 +65,7 @@ SystemError: 500 - Something went wrong on our end</pre>
       gap: 8px;
       padding: 12px 16px;
       background: var(--bg-tertiary);
-      border-bottom: 1px solid var(--border-color);
+      border-bottom: 1px solid var(--border-primary);
     }
 
     .terminal-dot {
@@ -87,7 +87,7 @@ SystemError: 500 - Something went wrong on our end</pre>
       flex: 1;
       text-align: center;
       font-size: 0.8rem;
-      color: var(--color-text-dim);
+      color: var(--text-muted);
       opacity: 0.7;
     }
 
@@ -105,37 +105,37 @@ SystemError: 500 - Something went wrong on our end</pre>
     }
 
     .prompt-symbol {
-      color: var(--error-red);
+      color: var(--accent-red);
       font-weight: bold;
     }
 
     .command {
-      color: var(--color-text);
+      color: var(--text-primary);
     }
 
     .error-output {
       margin: 24px 0;
       padding: 16px;
-      border-left: 3px solid var(--error-red);
+      border-left: 3px solid var(--accent-red);
       background: rgba(248, 81, 73, 0.05);
     }
 
     .stack-trace {
       font-size: 0.85rem;
       line-height: 1.6;
-      color: var(--color-text-dim);
+      color: var(--text-muted);
       margin: 0;
     }
 
     .error-detail {
       font-size: 1.1rem;
       font-weight: bold;
-      color: var(--error-red);
+      color: var(--accent-red);
       margin-bottom: 8px;
     }
 
     .error-hint {
-      color: var(--color-text-dim);
+      color: var(--text-muted);
       font-size: 0.9rem;
     }
 
@@ -143,20 +143,19 @@ SystemError: 500 - Something went wrong on our end</pre>
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      color: var(--error-red);
+      color: var(--accent-red);
       text-decoration: none;
       margin-top: 16px;
       padding: 8px 12px;
       border-radius: 4px;
       transition: background 0.15s;
     }
-
     .home-link:hover {
       background: var(--bg-tertiary);
     }
 
     .return-label {
-      color: var(--color-text-dim);
+      color: var(--text-muted);
       margin-left: 8px;
     }
 
@@ -164,7 +163,7 @@ SystemError: 500 - Something went wrong on our end</pre>
       display: inline-block;
       width: 8px;
       height: 1.1em;
-      background: var(--error-red);
+      background: var(--accent-red);
       animation: blink 1s step-end infinite;
       vertical-align: text-bottom;
     }

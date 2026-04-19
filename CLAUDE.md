@@ -38,9 +38,16 @@ pnpm astro [command]
 - **Navigation.astro** - Terminal-inspired navigation with keyboard shortcuts
 - **BlogCard.astro** - Blog post preview cards with metadata and tags
 - **Metadata.astro** - Blog post metadata display (author, date, tags, reading time)
-- **Typography.astro** - Typography utilities (available for future use)
 - **Layout.astro** - Main layout with SEO meta tags and global functionality
 - **MarkdownPostLayout.astro** - Specialized layout for blog posts with navigation and sharing
+- **TerminalWindow.astro** - Reusable terminal window component for error pages
+- **SEOMeta.astro** - SEO and Open Graph meta tags component
+- **Footer.astro** - Footer content component
+- **PostGrid.astro** - Blog posts grid with tag filtering
+- **TagFilter.astro** - Tag filter sidebar component
+- **RelatedPosts.astro** - Related posts based on tag similarity
+- **TableOfContents.astro** - Auto-generated table of contents
+- **ShareButtons.astro** - Social sharing functionality
 
 ### CSS Architecture
 - **tokens.css** - Design system variables (colors, spacing, typography)

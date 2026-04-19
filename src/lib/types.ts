@@ -9,6 +9,7 @@ export interface BlogPostFrontmatter {
   tags?: string[];
   readingTime?: string;
   wordCount?: number;
+  draft?: boolean;
 }
 
 export interface BlogPostModule {
@@ -16,3 +17,4 @@ export interface BlogPostModule {
   frontmatter: BlogPostFrontmatter;
   rawContent?: () => string;
 }
+

@@ -4,7 +4,7 @@
 
 interface Props {
   allTags: string[];
-  tagCounts: Map<string, number>;
+  tagCounts: Record<string, number>;
   currentTag: string;
   totalPosts: number;
 }
@@ -25,7 +25,7 @@ const { allTags, tagCounts, currentTag, totalPosts } = Astro.props;
       </a>
       {
         allTags.map((tag) => {
-          const count = tagCounts.get(tag.toLowerCase()) || 0;
+          const count = tagCounts[tag.toLowerCase()] || 0;
           return (
             <a
               href={`/?tag=${encodeURIComponent(tag)}`}

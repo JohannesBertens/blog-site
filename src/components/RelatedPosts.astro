@@ -17,20 +17,24 @@ interface Props {
 const { currentPostUrl, currentTags, allPosts } = Astro.props;
 
 // Find related posts (posts with similar tags), sorted by shared tag count then date
+// Pre-compute shared tag counts: O(n × m) instead of O(n² × m) per comparison
 const relatedPosts = allPosts
   .filter((post) => post.url !== currentPostUrl)
-  .map((post) => ({
-    title: post.title,
-    url: post.url,
-    description: post.description,
-    tags: post.tags || [],
-    pubDate: post.pubDate,
-  }))
+  .map((post) => {
+    const tags = post.tags || [];
+    const sharedCount = tags.filter((tag) => currentTags.includes(tag)).length;
+    return {
+      title: post.title,
+      url: post.url,
+      description: post.description,
+      tags,
+      pubDate: post.pubDate,
+      sharedCount,
+    };
+  })
   .sort((a, b) => {
-    const sharedTagsA = a.tags.filter((tag) => currentTags.includes(tag)).length;
-    const sharedTagsB = b.tags.filter((tag) => currentTags.includes(tag)).length;
-    if (sharedTagsA !== sharedTagsB) {
-      return sharedTagsB - sharedTagsA;
+    if (a.sharedCount !== b.sharedCount) {
+      return b.sharedCount - a.sharedCount;
     }
     return b.pubDate.getTime() - a.pubDate.getTime();
   })

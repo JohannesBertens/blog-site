@@ -28,15 +28,14 @@ const { posts, currentTag, isValidTag } = Astro.props;
 
   <div class="posts-grid">
     {
-      posts.map((post, index) => (
+      posts.map((post) => (
         <BlogCard
           title={post.frontmatter.title}
-          description={post.frontmatter.description}
+          description={post.frontmatter.description ?? ''}
           pubDate={new Date(post.frontmatter.pubDate)}
           url={post.url}
           tags={post.frontmatter.tags}
           readingTime={getReadingTime(post)}
-          postTags={post.frontmatter.tags || []}
         />
       ))
     }
@@ -60,52 +59,10 @@ const { posts, currentTag, isValidTag } = Astro.props;
   }
 </div>
 
-<script client:load>
-  // Client-side tag filtering for prerendered pages
-  function applyTagFilter() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const tag = urlParams.get('tag');
-    const cards = document.querySelectorAll('.blog-card');
-    const postsCount = document.querySelector('.posts-count');
-
-    if (!tag || tag === 'all') {
-      cards.forEach((card) => {
-        card.style.display = '';
-      });
-      if (postsCount) postsCount.textContent = `${cards.length} posts`;
-      return;
-    }
-
-    const searchTag = tag.toLowerCase();
-    let visibleCount = 0;
-
-    cards.forEach((card) => {
-      const tags = (card.getAttribute('data-tags-lower') || '').split(',').map(t => t.trim());
-      if (tags.includes(searchTag)) {
-        card.style.display = '';
-        visibleCount++;
-      } else {
-        card.style.display = 'none';
-      }
-    });
-
-    if (postsCount) {
-      postsCount.textContent = `${visibleCount} ${visibleCount === 1 ? 'post' : 'posts'}`;
-    }
-
-    // Show empty state if no cards visible
-    const emptyState = document.querySelector('.empty-state');
-    if (emptyState && visibleCount === 0) {
-      emptyState.style.display = '';
-    } else if (emptyState) {
-      emptyState.style.display = 'none';
-    }
-  }
-
-  // Apply filter on load and on popstate (back/forward)
-  applyTagFilter();
-  window.addEventListener('popstate', applyTagFilter);
-</script>
+  <script>
+    import { initTagFilter } from '../lib/tagFilter';
+    initTagFilter({ updateTitle: false });
+  </script>
 
 <style>
   .blog-posts {

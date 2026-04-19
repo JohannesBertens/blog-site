@@ -7,5 +7,8 @@ export default defineConfig({
   output: 'server',
   adapter: cloudflare({
     imageService: 'cloudflare'
-  })
+  }),
+  build: {
+    inlineStylesheets: 'auto',
+  },
 });

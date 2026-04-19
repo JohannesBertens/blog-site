@@ -2,6 +2,7 @@
 // Blog Card Component
 // Terminal-inspired blog post cards with metadata and interactive elements
 import { formatDate } from '../lib/utils';
+import { getRelativeTime } from '../lib/dateUtils';
 
 interface Props {
   title: string;
@@ -10,26 +11,12 @@ interface Props {
   url: string;
   tags?: string[];
   readingTime?: string;
-  postTags?: string[];
 }
 
-const { title, description, pubDate, url, tags = [], readingTime, postTags = [] } = Astro.props;
-
-const getRelativeTime = (date: Date) => {
-  const now = new Date();
-  const diff = now.getTime() - date.getTime();
-  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-
-  if (days === 0) return 'today';
-  if (days === 1) return 'yesterday';
-  if (days < 7) return `${days} days ago`;
-  if (days < 30) return `${Math.floor(days / 7)} weeks ago`;
-  if (days < 365) return `${Math.floor(days / 30)} months ago`;
-  return `${Math.floor(days / 365)} years ago`;
-};
+const { title, description, pubDate, url, tags = [], readingTime } = Astro.props;
 ---
 
-<article class="blog-card fade-in-up hover-lift transition-all" data-tags={tags.join(',').toLowerCase()} data-tags-lower={postTags.join(',').toLowerCase()}>
+<article class="blog-card fade-in-up hover-lift transition-all" data-tags={tags.join(',').toLowerCase()} data-tags-lower={tags.join(',').toLowerCase()}>
   <div class="card-header">
     <div class="card-meta">
       <h3 class="card-title">
@@ -63,7 +50,7 @@ const getRelativeTime = (date: Date) => {
       tags.length > 0 && (
         <div class="card-tags">
           {tags.map((tag) => (
-            <span class="tag" key={tag}>
+            <span class="tag">
               <span class="tag-prefix">#</span>
               <span class="tag-text">{tag}</span>
             </span>

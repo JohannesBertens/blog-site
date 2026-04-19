@@ -78,38 +78,49 @@ pnpm preview
 ```
 
 ## 📁 Project Structure
+## 📁 Project Structure
 
 ```
 terminal-blog/
 ├── public/
-│   ├── styles/                 # Modular CSS architecture
-│   │   ├── tokens.css         # Design tokens (colors, spacing, typography)
-│   │   ├── reset.css          # CSS reset
-│   │   ├── base.css           # Base element styles
-│   │   ├── layout.css         # Grid system and containers
-│   │   ├── components.css     # Reusable component styles
-│   │   ├── utilities.css      # Single-purpose utility classes
-│   │   ├── animations.css     # Animations and transitions
-│   │   ├── scrollbars.css     # Custom scrollbar styling
-│   │   ├── global.css         # Global styles and variables
-│   │   └── main.css           # Main entry point
+│   ├── styles/                 # Modular CSS architecture (legacy)
+│   ├── _headers               # Security headers
 │   └── favicon.ico
 ├── src/
 │   ├── components/             # Reusable Astro components
 │   │   ├── BlogCard.astro     # Blog post preview cards
-│   │   ├── EnhancedCodeBlock.astro  # Styled code blocks
-│   │   ├── LoadingScreen.astro      # Terminal loading animation
 │   │   ├── Metadata.astro     # Post metadata display
 │   │   ├── Navigation.astro   # Terminal-style navigation
-│   │   └── Typography.astro   # Typography utilities
+│   │   ├── PostGrid.astro     # Blog posts grid with filtering
+│   │   ├── RelatedPosts.astro  # Related posts by tags
+│   │   ├── SEOMeta.astro      # SEO meta tags
+│   │   ├── ShareButtons.astro  # Social sharing buttons
+│   │   ├── TableOfContents.astro  # Auto-generated TOC
+│   │   ├── TagFilter.astro    # Tag filter sidebar
+│   │   └── TerminalWindow.astro  # Terminal window component
 │   ├── layouts/               # Layout components
 │   │   ├── Layout.astro       # Main layout with SEO
 │   │   └── MarkdownPostLayout.astro  # Blog post layout
-│   └── pages/                 # Pages and blog posts
-│       ├── index.astro        # Homepage with blog listings
-│       └── posts/             # Blog posts (Markdown files)
+│   ├── lib/                   # Utility functions and libraries
+│   │   ├── posts.ts          # Post loading and filtering
+│   │   ├── utils.ts          # Utility functions
+│   │   ├── dateUtils.ts      # Date formatting utilities
+│   │   ├── tagFilter.ts      # Tag filtering logic
+│   │   ├── config.ts         # Site configuration
+│   │   └── types.ts          # TypeScript types
+│   ├── pages/                 # Pages and blog posts
+│   │   ├── index.astro        # Homepage with blog listings
+│   │   ├── blog.astro         # Blog listing page
+│   │   ├── 404.astro          # 404 error page
+│   │   ├── 500.astro          # 500 error page
+│   │   └── posts/             # Blog posts (Markdown files)
+│   └── styles/                # Main CSS entry point
+├── tests/
+│   └── e2e/                  # Playwright E2E tests
 ├── package.json
 ├── tsconfig.json
+├── astro.config.mjs
+├── CONTRIBUTING.md
 └── CLAUDE.md                  # Project documentation
 ```
 
