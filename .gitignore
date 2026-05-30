@@ -47,3 +47,6 @@ vendor/
 coverage/
 .cache/
 tmp/
+
+# cloudflare wrangler local state & adapter output
+.wrangler/
