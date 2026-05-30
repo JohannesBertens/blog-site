@@ -437,6 +437,40 @@ pre code {
   text-rendering: var(--text-rendering-optimize);
 }
 
+/* Shiki dual-theme support
+   Shiki emits --shiki-light / --shiki-dark custom properties per token.
+   Default to the dark theme, then switch to the light theme when the site is
+   in light mode (system preference without an explicit dark override, or an
+   explicit [data-theme="light"]). */
+.astro-code,
+.astro-code span {
+  color: var(--shiki-dark);
+  background-color: var(--shiki-dark-bg);
+  font-style: var(--shiki-dark-font-style);
+  font-weight: var(--shiki-dark-font-weight);
+  text-decoration: var(--shiki-dark-text-decoration);
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) .astro-code,
+  :root:not([data-theme="dark"]) .astro-code span {
+    color: var(--shiki-light);
+    background-color: var(--shiki-light-bg);
+    font-style: var(--shiki-light-font-style);
+    font-weight: var(--shiki-light-font-weight);
+    text-decoration: var(--shiki-light-text-decoration);
+  }
+}
+
+:root[data-theme="light"] .astro-code,
+:root[data-theme="light"] .astro-code span {
+  color: var(--shiki-light);
+  background-color: var(--shiki-light-bg);
+  font-style: var(--shiki-light-font-style);
+  font-weight: var(--shiki-light-font-weight);
+  text-decoration: var(--shiki-light-text-decoration);
+}
+
 /* Enhanced Syntax Highlighting */
 .token.comment {
   color: var(--code-comment);

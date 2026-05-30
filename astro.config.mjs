@@ -7,5 +7,14 @@ export default defineConfig({
   output: 'server',
   adapter: cloudflare({
     imageService: 'cloudflare'
-  })
+  }),
+  markdown: {
+    shikiConfig: {
+      themes: {
+        light: 'github-light',
+        dark: 'github-dark'
+      },
+      defaultColor: false
+    }
+  }
 });
