@@ -1,6 +1,4 @@
 ---
-export const prerender = false;
-
 // src/pages/blog.astro
 import Layout from '../layouts/Layout.astro';
 import BlogCard from '../components/BlogCard.astro';
@@ -41,47 +39,11 @@ const calculateReadingTime = (post: any) => {
   return `${minutes} min read`;
 };
 
-// Filter posts by tag
-let filteredPosts = sortedPosts;
-let currentTag = 'all';
-let isValidTag = false;
-
-if (Astro.url.searchParams.has('tag')) {
-  const rawTag = Astro.url.searchParams.get('tag');
-
-  // Proper validation and sanitization
-  if (rawTag && typeof rawTag === 'string') {
-    // Sanitize input: trim whitespace
-    currentTag = rawTag.trim();
-
-    // Validate that the tag exists in our posts
-    isValidTag = allTags.some(existingTag =>
-      existingTag.toLowerCase() === currentTag.toLowerCase()
-    );
-
-    if (isValidTag) {
-      // Case-insensitive filtering with error handling for malformed frontmatter
-      filteredPosts = sortedPosts.filter(post => {
-        const postTags = post.frontmatter.tags;
-        // Ensure tags is an array before calling includes
-        if (!Array.isArray(postTags)) {
-          return false;
-        }
-        return postTags.some(tag =>
-          typeof tag === 'string' && tag.toLowerCase() === currentTag.toLowerCase()
-        );
-      });
-
-      // Update currentTag to the actual tag casing from our data for display
-      const actualTag = allTags.find(tag =>
-        tag.toLowerCase() === currentTag.toLowerCase()
-      );
-      if (actualTag) {
-        currentTag = actualTag;
-      }
-    }
-  }
-}
+// Helper: lowercase string tags for a post
+const postTagList = (post: any): string[] => {
+  const t = post.frontmatter.tags;
+  return Array.isArray(t) ? t.filter((x: any) => typeof x === 'string') : [];
+};
 ---
 
 <Layout title="Blog - Johannes Developer" currentPage="blog">
@@ -100,25 +62,21 @@ if (Astro.url.searchParams.has('tag')) {
               <div class="tags-filter">
                 <a
                   href="/"
-                  class={`tag-filter ${currentTag === 'all' ? 'active' : ''}`}
+                  class="tag-filter active"
+                  data-tag="all"
                 >
                   <span class="tag-prefix">all</span>
                   <span class="tag-count">({sortedPosts.length})</span>
                 </a>
                 {allTags.map(tag => {
-                  const count = sortedPosts.filter(post => {
-                    const postTags = post.frontmatter.tags;
-                    if (!Array.isArray(postTags)) {
-                      return false;
-                    }
-                    return postTags.some(postTag =>
-                      typeof postTag === 'string' && postTag.toLowerCase() === tag.toLowerCase()
-                    );
-                  }).length;
+                  const count = sortedPosts.filter(post =>
+                    postTagList(post).some(postTag => postTag.toLowerCase() === tag.toLowerCase())
+                  ).length;
                   return (
                     <a
-                      href={`/?tag=${tag}`}
-                      class={`tag-filter ${currentTag === tag ? 'active' : ''}`}
+                      href={`/?tag=${encodeURIComponent(tag)}`}
+                      class="tag-filter"
+                      data-tag={tag}
                     >
                       <span class="tag-prefix">#{tag}</span>
                       <span class="tag-count">({count})</span>
@@ -134,46 +92,138 @@ if (Astro.url.searchParams.has('tag')) {
           <!-- Posts Grid -->
           <div class="blog-posts">
             <div class="posts-header">
-              <h2 class="posts-title">
-                {currentTag === 'all' ? 'All Posts' : `Posts tagged: ${currentTag}`}
+              <h2 class="posts-title" id="posts-title">
+                All Posts
               </h2>
               <div class="posts-count">
-                {filteredPosts.length} {filteredPosts.length === 1 ? 'post' : 'posts'}
+                <span id="posts-count-num">{sortedPosts.length}</span> <span id="posts-count-label">{sortedPosts.length === 1 ? 'post' : 'posts'}</span>
               </div>
             </div>
 
-            <div class="posts-grid">
-              {filteredPosts.map((post) => (
-                <BlogCard
-                  title={post.frontmatter.title}
-                  description={post.frontmatter.description}
-                  pubDate={new Date(post.frontmatter.pubDate)}
-                  url={post.url ?? '#'}
-                  tags={post.frontmatter.tags}
-                  readingTime={calculateReadingTime(post)}
-                />
+            <div class="posts-grid" id="posts-grid">
+              {sortedPosts.map((post) => (
+                <div class="post-item" data-tags={postTagList(post).join('|')}>
+                  <BlogCard
+                    title={post.frontmatter.title}
+                    description={post.frontmatter.description}
+                    pubDate={new Date(post.frontmatter.pubDate)}
+                    url={post.url ?? '#'}
+                    tags={post.frontmatter.tags}
+                    readingTime={calculateReadingTime(post)}
+                  />
+                </div>
               ))}
             </div>
 
-            {filteredPosts.length === 0 && (
-              <div class="empty-state">
-                <div class="empty-icon">{!isValidTag && currentTag !== 'all' ? '⚠️' : '📭'}</div>
-                <h3>{!isValidTag && currentTag !== 'all' ? 'Unknown tag' : 'No posts found'}</h3>
-                <p>
-                  {!isValidTag && currentTag !== 'all'
-                    ? `The tag "${currentTag}" doesn't exist in any posts. Try selecting a different tag.`
-                    : 'No posts match the current filter. Try selecting a different tag.'
-                  }
-                </p>
-                <a href="/" class="reset-filter">Clear filter</a>
-              </div>
-            )}
+            <div class="empty-state" id="empty-state" hidden>
+              <div class="empty-icon" id="empty-icon">📭</div>
+              <h3 id="empty-title">No posts found</h3>
+              <p id="empty-text">
+                No posts match the current filter. Try selecting a different tag.
+              </p>
+              <a href="/" class="reset-filter" data-tag="all">Clear filter</a>
+            </div>
           </div>
         </div>
       </div>
     </section>
   </main>
 </Layout>
+
+<script>
+  function applyFilter(tag: string) {
+    const normalized = (tag || 'all').trim();
+    const isAll = normalized.toLowerCase() === 'all' || normalized === '';
+
+    const items = Array.from(document.querySelectorAll<HTMLElement>('.post-item'));
+    let visibleCount = 0;
+    let tagExists = isAll;
+    let displayTag = normalized;
+
+    items.forEach((item) => {
+      const tags = (item.dataset.tags || '').split('|').filter(Boolean);
+      const match = isAll || tags.some((t) => t.toLowerCase() === normalized.toLowerCase());
+      if (!isAll) {
+        const matchedTag = tags.find((t) => t.toLowerCase() === normalized.toLowerCase());
+        if (matchedTag) {
+          tagExists = true;
+          displayTag = matchedTag;
+        }
+      }
+      item.hidden = !match;
+      if (match) visibleCount++;
+    });
+
+    // Update active state on filter links
+    document.querySelectorAll<HTMLElement>('.tag-filter').forEach((link) => {
+      const linkTag = link.dataset.tag || 'all';
+      const active = isAll
+        ? linkTag.toLowerCase() === 'all'
+        : linkTag.toLowerCase() === normalized.toLowerCase();
+      link.classList.toggle('active', active);
+    });
+
+    // Update header
+    const title = document.getElementById('posts-title');
+    if (title) title.textContent = isAll ? 'All Posts' : `Posts tagged: ${displayTag}`;
+
+    const countNum = document.getElementById('posts-count-num');
+    const countLabel = document.getElementById('posts-count-label');
+    if (countNum) countNum.textContent = String(visibleCount);
+    if (countLabel) countLabel.textContent = visibleCount === 1 ? 'post' : 'posts';
+
+    // Empty state
+    const empty = document.getElementById('empty-state');
+    const grid = document.getElementById('posts-grid');
+    if (empty && grid) {
+      const unknownTag = !isAll && !tagExists;
+      const show = visibleCount === 0;
+      empty.hidden = !show;
+      grid.hidden = show;
+      if (show) {
+        const icon = document.getElementById('empty-icon');
+        const eTitle = document.getElementById('empty-title');
+        const eText = document.getElementById('empty-text');
+        if (icon) icon.textContent = unknownTag ? '⚠️' : '📭';
+        if (eTitle) eTitle.textContent = unknownTag ? 'Unknown tag' : 'No posts found';
+        if (eText) {
+          eText.textContent = unknownTag
+            ? `The tag "${normalized}" doesn't exist in any posts. Try selecting a different tag.`
+            : 'No posts match the current filter. Try selecting a different tag.';
+        }
+      }
+    }
+  }
+
+  function getTagFromUrl(): string {
+    return new URLSearchParams(window.location.search).get('tag') || 'all';
+  }
+
+  function init() {
+    applyFilter(getTagFromUrl());
+
+    // Intercept filter clicks to update without full navigation
+    document.querySelectorAll<HTMLAnchorElement>('.tag-filter, .reset-filter').forEach((link) => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const tag = link.dataset.tag || 'all';
+        const url = tag.toLowerCase() === 'all'
+          ? window.location.pathname
+          : `${window.location.pathname}?tag=${encodeURIComponent(tag)}`;
+        window.history.pushState({ tag }, '', url);
+        applyFilter(tag);
+      });
+    });
+
+    window.addEventListener('popstate', () => applyFilter(getTagFromUrl()));
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+</script>
 
 <style>
   .blog-main {
