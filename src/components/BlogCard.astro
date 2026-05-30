@@ -4,14 +4,14 @@
 
 interface Props {
   title: string;
-  description: string;
+  description?: string;
   pubDate: Date;
   url: string;
   tags?: string[];
   readingTime?: string;
 }
 
-const { title, description, pubDate, url, tags = [], readingTime } = Astro.props;
+const { title, description = '', pubDate, url, tags = [], readingTime } = Astro.props;
 
 const formatDate = (date: Date) => {
   const year = date.getFullYear();
@@ -65,7 +65,7 @@ const getRelativeTime = (date: Date) => {
     {tags.length > 0 && (
       <div class="card-tags">
         {tags.map(tag => (
-          <span class="tag" key={tag}>
+          <span class="tag">
             <span class="tag-prefix">#</span>
             <span class="tag-text">{tag}</span>
           </span>

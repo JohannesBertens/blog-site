@@ -1,19 +1,120 @@
 ---
 // Terminal-inspired Navigation Component
 // Accepts currentPage prop for active state styling
+interface Props {
+  currentPage?: string;
+}
 const { currentPage = '' } = Astro.props;
 ---
 
 <!-- Terminal-style Navigation -->
-<nav class="navigation fade-in-down transition-all">
+<nav class="navigation fade-in-down transition-all" data-current-page={currentPage}>
   <div class="navigation-container">
     <!-- Terminal prompt branding -->
     <a href="/" class="nav-brand">
       <div class="nav-brand-icon">$</div>
       <span class="terminal-prompt">cd ~/jreb/blog</span>
     </a>
+
+    <!-- Theme toggle -->
+    <button
+      type="button"
+      class="theme-toggle"
+      aria-label="Toggle color theme"
+      aria-pressed="false"
+      title="Toggle light/dark theme"
+    >
+      <span class="theme-toggle-icon" aria-hidden="true"></span>
+      <span class="theme-toggle-label"></span>
+    </button>
   </div>
 </nav>
+
+<style>
+  .theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-1) var(--space-3);
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    cursor: pointer;
+    transition: color var(--duration-200) var(--ease-in-out),
+                border-color var(--duration-200) var(--ease-in-out),
+                background-color var(--duration-200) var(--ease-in-out);
+  }
+
+  .theme-toggle:hover {
+    color: var(--accent-green);
+    border-color: var(--accent-green);
+  }
+
+  .theme-toggle-icon {
+    font-size: 1em;
+    line-height: 1;
+  }
+</style>
+
+<script>
+  // Theme toggle: system default with manual override persisted in localStorage
+  const THEME_KEY = 'theme';
+  const toggle = document.querySelector('.theme-toggle');
+  const icon = toggle?.querySelector('.theme-toggle-icon');
+  const label = toggle?.querySelector('.theme-toggle-label');
+  const themeColorMeta = document.querySelector('meta[name="theme-color"]');
+  const mql = window.matchMedia('(prefers-color-scheme: light)');
+
+  const getStored = () => {
+    try {
+      return localStorage.getItem(THEME_KEY);
+    } catch (e) {
+      return null;
+    }
+  };
+
+  const systemTheme = () => (mql.matches ? 'light' : 'dark');
+
+  const currentTheme = () =>
+    document.documentElement.getAttribute('data-theme') || systemTheme();
+
+  const render = (theme: string) => {
+    if (icon) icon.textContent = theme === 'light' ? '☀' : '☾';
+    if (label) label.textContent = theme === 'light' ? 'light' : 'dark';
+    if (toggle) toggle.setAttribute('aria-pressed', theme === 'light' ? 'true' : 'false');
+    if (themeColorMeta) {
+      themeColorMeta.setAttribute('content', theme === 'light' ? '#ffffff' : '#0d1117');
+    }
+  };
+
+  const applyTheme = (theme: string, persist: boolean) => {
+    document.documentElement.setAttribute('data-theme', theme);
+    if (persist) {
+      try {
+        localStorage.setItem(THEME_KEY, theme);
+      } catch (e) {}
+    }
+    render(theme);
+  };
+
+  // Sync the UI with the theme set by the inline head script
+  render(currentTheme());
+
+  toggle?.addEventListener('click', () => {
+    const next = currentTheme() === 'light' ? 'dark' : 'light';
+    applyTheme(next, true);
+  });
+
+  // Follow live system changes only when the user hasn't chosen explicitly
+  mql.addEventListener('change', () => {
+    if (!getStored()) {
+      applyTheme(systemTheme(), false);
+    }
+  });
+</script>
 
 <script>
   // Mobile navigation functionality
@@ -28,7 +129,7 @@ const { currentPage = '' } = Astro.props;
 
     // Close menu when clicking outside
     document.addEventListener('click', (e) => {
-      if (!navToggle.contains(e.target) && !navMenu.contains(e.target)) {
+      if (!navToggle.contains(e.target as Node) && !navMenu.contains(e.target as Node)) {
         navToggle.classList.remove('active');
         navMenu.classList.remove('active');
       }

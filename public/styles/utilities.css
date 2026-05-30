@@ -712,17 +712,11 @@
   line-height: var(--reading-line-height);
 }
 
-/* Terminal glow effects */
-.glow-green {
-  box-shadow: 0 0 20px rgba(63, 185, 80, 0.5);
-}
-
-.glow-cyan {
-  box-shadow: 0 0 20px rgba(57, 197, 207, 0.5);
-}
-
+/* Subtle elevation utilities (formerly terminal glows) */
+.glow-green,
+.glow-cyan,
 .glow-blue {
-  box-shadow: 0 0 20px rgba(88, 166, 255, 0.5);
+  box-shadow: var(--shadow-md);
 }
 
 /* Code formatting */
@@ -826,7 +820,7 @@
 .hover\:scale-105:hover { transform: scale(1.05); }
 .hover\:scale-110:hover { transform: scale(1.1); }
 .hover\:lift:hover { transform: translateY(-2px); }
-.hover\:glow:hover { box-shadow: 0 0 20px rgba(63, 185, 80, 0.3); }
+.hover\:glow:hover { box-shadow: var(--shadow-md); }
 .hover\:text-green:hover { color: var(--accent-green); }
 .hover\:text-cyan:hover { color: var(--accent-cyan); }
 .hover\:bg-secondary:hover { background-color: var(--bg-secondary); }

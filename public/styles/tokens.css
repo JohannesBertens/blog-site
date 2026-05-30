@@ -38,6 +38,14 @@
   --border-accent: var(--accent-green); /* Accent borders for highlights */
   --border-focus: var(--accent-cyan);   /* Focus outlines, active states */
 
+  /* Semantic Tints & Surfaces (theme-aware translucent accent fills) */
+  --tint-green: rgba(63, 185, 80, 0.1);   /* Success / link tint */
+  --tint-cyan: rgba(57, 197, 207, 0.1);   /* Emphasis tint */
+  --tint-blue: rgba(88, 166, 255, 0.1);   /* Info tint */
+  --tint-yellow: rgba(210, 153, 34, 0.1); /* Warning tint */
+  --tint-red: rgba(248, 81, 73, 0.1);     /* Error tint */
+  --surface-nav: rgba(22, 27, 34, 0.95);  /* Sticky nav background */
+
   /* -------------------------------------------------------------------------
      Typography System
      Developer-friendly fonts with fluid scaling
@@ -316,17 +324,109 @@
 }
 
 /* -------------------------------------------------------------------------
-   Dark mode override tokens (if needed in future)
+   Light Theme Tokens
+   Applied automatically when the system prefers light (unless the user has
+   explicitly chosen dark via [data-theme="dark"]), and whenever the user
+   explicitly chooses light via [data-theme="light"].
    ------------------------------------------------------------------------- */
 
 @media (prefers-color-scheme: light) {
-  :root {
-    /* Light mode tokens - for future implementation */
+  :root:not([data-theme="dark"]) {
+    /* Backgrounds */
     --bg-primary: #ffffff;
-    --bg-secondary: #f8fafc;
-    --bg-tertiary: #f1f5f9;
-    --text-primary: #1e293b;
-    --text-secondary: #64748b;
-    --text-muted: #94a3b8;
+    --bg-secondary: #f6f8fa;
+    --bg-tertiary: #eaeef2;
+    --bg-overlay: #ffffff;
+    --bg-inverse: #0d1117;
+
+    /* Accents (darkened for contrast on light backgrounds) */
+    --accent-green: #1a7f37;
+    --accent-blue: #0969da;
+    --accent-cyan: #1b7c83;
+    --accent-yellow: #9a6700;
+    --accent-red: #cf222e;
+    --accent-purple: #8250df;
+    --accent-orange: #bc4c00;
+
+    /* Text */
+    --text-primary: #1f2328;
+    --text-secondary: #59636e;
+    --text-muted: #818b98;
+    --text-inverse: #ffffff;
+
+    /* Borders */
+    --border-primary: #d1d9e0;
+    --border-secondary: #e2e8f0;
+
+    /* Code & syntax */
+    --code-bg: #f6f8fa;
+    --code-border: #d1d9e0;
+    --code-inline-bg: #eaeef2;
+
+    /* Tints & surfaces */
+    --tint-green: rgba(26, 127, 55, 0.1);
+    --tint-cyan: rgba(27, 124, 131, 0.1);
+    --tint-blue: rgba(9, 105, 218, 0.1);
+    --tint-yellow: rgba(154, 103, 0, 0.1);
+    --tint-red: rgba(207, 34, 46, 0.1);
+    --surface-nav: rgba(255, 255, 255, 0.95);
+
+    /* Scrollbars */
+    --scrollbar-thumb: #d1d9e0;
+    --scrollbar-thumb-hover: #818b98;
+
+    /* Shadows (softer on light backgrounds) */
+    --shadow-sm: 0 1px 2px 0 rgba(31, 35, 40, 0.04);
+    --shadow: 0 1px 3px 0 rgba(31, 35, 40, 0.08), 0 1px 2px 0 rgba(31, 35, 40, 0.06);
+    --shadow-md: 0 4px 6px -1px rgba(31, 35, 40, 0.08), 0 2px 4px -1px rgba(31, 35, 40, 0.05);
+    --shadow-lg: 0 10px 15px -3px rgba(31, 35, 40, 0.08), 0 4px 6px -2px rgba(31, 35, 40, 0.04);
+    --shadow-xl: 0 20px 25px -5px rgba(31, 35, 40, 0.08), 0 10px 10px -5px rgba(31, 35, 40, 0.03);
+    --shadow-2xl: 0 25px 50px -12px rgba(31, 35, 40, 0.18);
   }
+}
+
+/* Explicit user override to light (regardless of system preference) */
+:root[data-theme="light"] {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f6f8fa;
+  --bg-tertiary: #eaeef2;
+  --bg-overlay: #ffffff;
+  --bg-inverse: #0d1117;
+
+  --accent-green: #1a7f37;
+  --accent-blue: #0969da;
+  --accent-cyan: #1b7c83;
+  --accent-yellow: #9a6700;
+  --accent-red: #cf222e;
+  --accent-purple: #8250df;
+  --accent-orange: #bc4c00;
+
+  --text-primary: #1f2328;
+  --text-secondary: #59636e;
+  --text-muted: #818b98;
+  --text-inverse: #ffffff;
+
+  --border-primary: #d1d9e0;
+  --border-secondary: #e2e8f0;
+
+  --code-bg: #f6f8fa;
+  --code-border: #d1d9e0;
+  --code-inline-bg: #eaeef2;
+
+  --tint-green: rgba(26, 127, 55, 0.1);
+  --tint-cyan: rgba(27, 124, 131, 0.1);
+  --tint-blue: rgba(9, 105, 218, 0.1);
+  --tint-yellow: rgba(154, 103, 0, 0.1);
+  --tint-red: rgba(207, 34, 46, 0.1);
+  --surface-nav: rgba(255, 255, 255, 0.95);
+
+  --scrollbar-thumb: #d1d9e0;
+  --scrollbar-thumb-hover: #818b98;
+
+  --shadow-sm: 0 1px 2px 0 rgba(31, 35, 40, 0.04);
+  --shadow: 0 1px 3px 0 rgba(31, 35, 40, 0.08), 0 1px 2px 0 rgba(31, 35, 40, 0.06);
+  --shadow-md: 0 4px 6px -1px rgba(31, 35, 40, 0.08), 0 2px 4px -1px rgba(31, 35, 40, 0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(31, 35, 40, 0.08), 0 4px 6px -2px rgba(31, 35, 40, 0.04);
+  --shadow-xl: 0 20px 25px -5px rgba(31, 35, 40, 0.08), 0 10px 10px -5px rgba(31, 35, 40, 0.03);
+  --shadow-2xl: 0 25px 50px -12px rgba(31, 35, 40, 0.18);
 }

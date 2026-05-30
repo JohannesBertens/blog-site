@@ -5,8 +5,10 @@ export const prerender = true;
 
 import Layout from './Layout.astro';
 import Metadata from '../components/Metadata.astro';
+import type { MarkdownLayoutProps } from 'astro';
+import type { PostModule } from '../types';
 
-interface Props {
+type Props = MarkdownLayoutProps<{
   title: string;
   description?: string;
   pubDate: Date | string;
@@ -15,7 +17,7 @@ interface Props {
   tags?: string[];
   readingTime?: string;
   wordCount?: number;
-}
+}>;
 
 const { frontmatter } = Astro.props;
 const {
@@ -46,7 +48,7 @@ const formatDate = (date: Date) => {
 };
 
 // Get all posts for related posts functionality
-const allPostModules = import.meta.glob('../pages/posts/*.md', { eager: true });
+const allPostModules = import.meta.glob<PostModule>('../pages/posts/*.md', { eager: true });
 const allPosts = Object.values(allPostModules);
 const currentPostUrl = Astro.url.pathname;
 
@@ -67,7 +69,7 @@ const relatedPosts = allPosts
     if (sharedTagsA !== sharedTagsB) {
       return sharedTagsB - sharedTagsA;
     }
-    return b.pubDate - a.pubDate;
+    return b.pubDate.valueOf() - a.pubDate.valueOf();
   })
   .slice(0, 3); // Get top 3 related posts
 ---
@@ -357,16 +359,16 @@ const relatedPosts = allPosts
   }
 
   .like-btn:hover {
-    background: rgba(248, 113, 113, 0.1);
-    border-color: #f87171;
-    color: #f87171;
+    background: var(--tint-red);
+    border-color: var(--accent-red);
+    color: var(--accent-red);
     transform: scale(1.05);
   }
 
   .like-btn.liked {
-    background: rgba(248, 113, 113, 0.2);
-    border-color: #f87171;
-    color: #f87171;
+    background: var(--tint-red);
+    border-color: var(--accent-red);
+    color: var(--accent-red);
   }
 
   .like-icon {
@@ -465,7 +467,7 @@ const relatedPosts = allPosts
     font-family: var(--font-mono);
     font-size: var(--fluid-text-xs);
     color: var(--accent-cyan);
-    background: rgba(6, 182, 212, 0.1);
+    background: var(--tint-cyan);
     padding: var(--space-1) var(--space-2);
     border-radius: 0.25rem;
   }
@@ -646,6 +648,7 @@ const relatedPosts = allPosts
   function generateTableOfContents() {
     const headings = document.querySelectorAll('.content-wrapper h2, .content-wrapper h3, .content-wrapper h4');
     const tocNav = document.getElementById('table-of-contents');
+    if (!tocNav) return;
 
     if (headings.length === 0) {
       tocNav.innerHTML = '<p class="no-toc">No headings found</p>';
@@ -682,8 +685,8 @@ const relatedPosts = allPosts
         link.classList.add('active');
 
         // Scroll to heading
-        const targetId = link.getAttribute('href').substring(1);
-        const targetHeading = document.getElementById(targetId);
+        const targetId = link.getAttribute('href')?.substring(1);
+        const targetHeading = targetId ? document.getElementById(targetId) : null;
         if (targetHeading) {
           targetHeading.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
@@ -698,7 +701,7 @@ const relatedPosts = allPosts
     const headings = document.querySelectorAll('.content-wrapper h2, .content-wrapper h3, .content-wrapper h4');
     const tocLinks = document.querySelectorAll('.toc-link');
 
-    let currentHeading = null;
+    let currentHeading: Element | null = null;
     headings.forEach(heading => {
       const rect = heading.getBoundingClientRect();
       if (rect.top <= 100) {
@@ -707,7 +710,7 @@ const relatedPosts = allPosts
     });
 
     if (currentHeading) {
-      const currentId = currentHeading.id;
+      const currentId = (currentHeading as Element).id;
       tocLinks.forEach(link => {
         link.classList.remove('active');
         if (link.getAttribute('href') === `#${currentId}`) {
@@ -724,10 +727,10 @@ const relatedPosts = allPosts
     const likeButton = document.getElementById('like-button');
     const likeCount = document.getElementById('like-count');
 
-    if (!likeButton) return;
+    if (!likeButton || !likeCount) return;
 
     let liked = localStorage.getItem(`liked-${window.location.pathname}`) === 'true';
-    let likes = parseInt(likeCount.textContent);
+    let likes = parseInt(likeCount.textContent || '0');
 
     if (liked) {
       likeButton.classList.add('liked');
@@ -746,7 +749,7 @@ const relatedPosts = allPosts
         localStorage.setItem(`liked-${window.location.pathname}`, 'true');
       }
 
-      likeCount.textContent = likes;
+      likeCount.textContent = String(likes);
     });
   }
 
@@ -756,7 +759,7 @@ const relatedPosts = allPosts
 
     shareButtons.forEach(button => {
       button.addEventListener('click', () => {
-        const platform = button.dataset.platform;
+        const platform = (button as HTMLElement).dataset.platform;
         const url = encodeURIComponent(window.location.href);
         const title = encodeURIComponent(document.title);
 

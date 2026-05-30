@@ -19,7 +19,7 @@
   top: 0;
   z-index: var(--z-sticky);
   backdrop-filter: blur(10px);
-  background: rgba(22, 27, 34, 0.95);
+  background: var(--surface-nav);
   transition: all var(--duration-200) var(--ease-in-out);
 }
 
@@ -89,24 +89,9 @@
   overflow: hidden;
 }
 
-.nav-link::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(63, 185, 80, 0.1), transparent);
-  transition: left var(--duration-500) var(--ease-in-out);
-}
-
-.nav-link:hover::before {
-  left: 100%;
-}
-
 .nav-link:hover {
   color: var(--accent-green);
-  background: rgba(63, 185, 80, 0.05);
+  background: var(--tint-green);
   border-color: var(--accent-green);
   transform: translateY(-1px);
 }
@@ -352,22 +337,6 @@
   cursor: pointer;
   transition: all var(--duration-200) var(--ease-in-out);
   position: relative;
-  overflow: hidden;
-}
-
-.btn::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(63, 185, 80, 0.1), transparent);
-  transition: left var(--duration-500) var(--ease-in-out);
-}
-
-.btn:hover::before {
-  left: 100%;
 }
 
 .btn:hover {
@@ -475,25 +444,25 @@
 
 /* Badge variants */
 .badge-success {
-  background: rgba(63, 185, 80, 0.1);
+  background: var(--tint-green);
   border-color: var(--accent-green);
   color: var(--accent-green);
 }
 
 .badge-info {
-  background: rgba(57, 197, 207, 0.1);
+  background: var(--tint-cyan);
   border-color: var(--accent-cyan);
   color: var(--accent-cyan);
 }
 
 .badge-warning {
-  background: rgba(210, 153, 34, 0.1);
+  background: var(--tint-yellow);
   border-color: var(--accent-yellow);
   color: var(--accent-yellow);
 }
 
 .badge-error {
-  background: rgba(248, 81, 73, 0.1);
+  background: var(--tint-red);
   border-color: var(--accent-red);
   color: var(--accent-red);
 }
@@ -513,28 +482,12 @@
   color: var(--text-secondary);
   transition: all var(--duration-200) var(--ease-in-out);
   position: relative;
-  overflow: hidden;
-}
-
-.tag::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(63, 185, 80, 0.1), transparent);
-  transition: left var(--duration-500) var(--ease-in-out);
-}
-
-.tag:hover::before {
-  left: 100%;
 }
 
 .tag:hover {
   border-color: var(--accent-green);
   transform: translateY(-1px);
-  box-shadow: 0 2px 8px rgba(63, 185, 80, 0.2);
+  box-shadow: var(--shadow-sm);
 }
 
 .tag-prefix {
@@ -633,7 +586,7 @@
 
 /* Alert variants */
 .alert-success {
-  background: rgba(63, 185, 80, 0.1);
+  background: var(--tint-green);
   border-color: var(--accent-green);
 }
 
@@ -642,7 +595,7 @@
 }
 
 .alert-info {
-  background: rgba(57, 197, 207, 0.1);
+  background: var(--tint-cyan);
   border-color: var(--accent-cyan);
 }
 
@@ -651,7 +604,7 @@
 }
 
 .alert-warning {
-  background: rgba(210, 153, 34, 0.1);
+  background: var(--tint-yellow);
   border-color: var(--accent-yellow);
 }
 
@@ -660,7 +613,7 @@
 }
 
 .alert-error {
-  background: rgba(248, 81, 73, 0.1);
+  background: var(--tint-red);
   border-color: var(--accent-red);
 }
 
