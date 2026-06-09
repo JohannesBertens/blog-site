@@ -91,21 +91,6 @@ const { title, description, currentPage = '' } = Astro.props;
 
     <!-- Scripts for enhanced functionality -->
     <script>
-      // Add smooth scroll behavior for anchor links
-      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (this: HTMLAnchorElement, e) {
-          e.preventDefault();
-          const href = this.getAttribute('href');
-          const target = href ? document.querySelector(href) : null;
-          if (target) {
-            target.scrollIntoView({
-              behavior: 'smooth',
-              block: 'start'
-            });
-          }
-        });
-      });
-
       // Performance monitoring in development
       if (window.location.hostname === 'localhost') {
         window.addEventListener('load', () => {
