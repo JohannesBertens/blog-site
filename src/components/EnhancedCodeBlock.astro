@@ -63,14 +63,7 @@ const displayCode = maxLines && codeLines.length > maxLines
           <span class="file-extension">.{getFileExtension(language)}</span>
         )}
       </div>
-      <div class="code-actions">
-        {copyable && (
-          <button class="copy-btn" data-code={encodeURIComponent(code)} data-target={codeId}>
-            <span class="copy-icon">📋</span>
-            <span class="copy-text">Copy</span>
-          </button>
-        )}
-      </div>
+
     </div>
   )}
 
@@ -85,6 +78,12 @@ const displayCode = maxLines && codeLines.length > maxLines
         {filename || language || 'terminal'}
       </div>
       <div class="terminal-actions">
+        {copyable && (
+          <button class="copy-btn" data-code={encodeURIComponent(code)} data-target={codeId}>
+            <span class="copy-icon">📋</span>
+            <span class="copy-text">Copy</span>
+          </button>
+        )}
         {maxLines && codeLines.length > maxLines && (
           <span class="truncated-indicator" title={`${codeLines.length} total lines, showing ${maxLines}`}>
             +{codeLines.length - maxLines} lines
@@ -108,12 +107,6 @@ const displayCode = maxLines && codeLines.length > maxLines
           <span class="stat-text">{language}</span>
         </span>
       </div>
-      {copyable && (
-        <button class="copy-btn copy-btn-footer" data-code={encodeURIComponent(code)} data-target={codeId}>
-          <span class="copy-icon">📋</span>
-          <span class="copy-text">Copy code</span>
-        </button>
-      )}
     </div>
   </div>
 </div>
@@ -177,11 +170,6 @@ const displayCode = maxLines && codeLines.length > maxLines
     border: 1px solid var(--accent-cyan);
   }
 
-  .code-actions {
-    display: flex;
-    gap: var(--space-2);
-  }
-
   .copy-btn {
     display: flex;
     align-items: center;
@@ -209,11 +197,6 @@ const displayCode = maxLines && codeLines.length > maxLines
     color: var(--accent-green);
     background: var(--tint-green);
     border-color: var(--accent-green);
-  }
-
-  .copy-btn-footer {
-    padding: var(--space-2) var(--space-4);
-    font-size: var(--text-xs);
   }
 
   .code-terminal {
@@ -390,10 +373,6 @@ const displayCode = maxLines && codeLines.length > maxLines
     }
 
     .code-stats {
-      justify-content: center;
-    }
-
-    .copy-btn-footer {
       justify-content: center;
     }
 
