@@ -33,11 +33,7 @@ const formatDate = (date: Date) => {
   return `${year}-${month}-${day}`;
 };
 
-const formatViews = (count: number) => {
-  if (count >= 1000000) return `${(count / 1000000).toFixed(1)}M`;
-  if (count >= 1000) return `${(count / 1000).toFixed(1)}K`;
-  return count.toString();
-};
+
 ---
 
 <div class="metadata-container">
@@ -104,7 +100,7 @@ const formatViews = (count: number) => {
           <span class="meta-icon">👁️</span>
           <div class="meta-content">
             <span class="meta-label">Views</span>
-            <span class="meta-value">{formatViews(views)} views</span>
+            <span class="meta-value">{views} views</span>
           </div>
         </div>
       )}
