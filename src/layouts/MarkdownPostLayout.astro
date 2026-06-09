@@ -7,6 +7,7 @@ import Layout from './Layout.astro';
 import Metadata from '../components/Metadata.astro';
 import type { MarkdownLayoutProps, MarkdownHeading } from 'astro';
 import type { PostModule } from '../types';
+import { formatDate } from '../utils/format';
 
 type Props = MarkdownLayoutProps<{
   title: string;
@@ -39,13 +40,7 @@ const lastUpdated = updatedDate ? (typeof updatedDate === 'string' ? new Date(up
 const safePublishDate = isNaN(publishDate.getTime()) ? new Date() : publishDate;
 const safeLastUpdated = lastUpdated && !isNaN(lastUpdated.getTime()) ? lastUpdated : undefined;
 
-// Format date as yyyy-mm-dd
-const formatDate = (date: Date) => {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
-};
+
 
 // Extract headings from Astro.props for build-time TOC generation
 const { headings = [] } = Astro.props;
@@ -62,8 +57,9 @@ const tocItems: TocItem[] = (headings || []).filter(
 );
 
 // Get all posts for related posts functionality
-const allPostModules = import.meta.glob<PostModule>('../pages/posts/*.md', { eager: true });
-const allPosts = Object.values(allPostModules);
+const allPostModules = import.meta.glob<PostModule>('../pages/posts/*.md', { eager: false });
+const allPostLoaders = Object.values(allPostModules);
+const allPosts = await Promise.all(allPostLoaders.map(loader => loader()));
 const currentPostUrl = Astro.url.pathname;
 
 // Find related posts (posts with similar tags)
@@ -367,46 +363,7 @@ const relatedPosts = allPosts
     font-size: 1.1em;
   }
 
-  .like-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-2);
-    padding: var(--space-3) var(--space-6);
-    background: var(--bg-tertiary);
-    border: 1px solid var(--border-primary);
-    border-radius: 9999px;
-    color: var(--text-secondary);
-    font-family: var(--font-mono);
-    font-size: var(--fluid-text-sm);
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
 
-  .like-btn:hover {
-    background: var(--tint-red);
-    border-color: var(--accent-red);
-    color: var(--accent-red);
-    transform: scale(1.05);
-  }
-
-  .like-btn.liked {
-    background: var(--tint-red);
-    border-color: var(--accent-red);
-    color: var(--accent-red);
-  }
-
-  .like-icon {
-    font-size: 1.2em;
-    transition: transform 0.2s ease;
-  }
-
-  .like-btn:hover .like-icon {
-    transform: scale(1.2);
-  }
-
-  .like-count {
-    font-weight: var(--font-semibold);
-  }
 
   .related-posts {
     margin-top: var(--section-gap);
@@ -694,36 +651,7 @@ const relatedPosts = allPosts
     }
   }
 
-  // Like button functionality
-  function setupLikeButton() {
-    const likeButton = document.getElementById('like-button');
-    const likeCount = document.getElementById('like-count');
 
-    if (!likeButton || !likeCount) return;
-
-    let liked = localStorage.getItem(`liked-${window.location.pathname}`) === 'true';
-    let likes = parseInt(likeCount.textContent || '0');
-
-    if (liked) {
-      likeButton.classList.add('liked');
-    }
-
-    likeButton.addEventListener('click', () => {
-      if (liked) {
-        liked = false;
-        likes--;
-        likeButton.classList.remove('liked');
-        localStorage.removeItem(`liked-${window.location.pathname}`);
-      } else {
-        liked = true;
-        likes++;
-        likeButton.classList.add('liked');
-        localStorage.setItem(`liked-${window.location.pathname}`, 'true');
-      }
-
-      likeCount.textContent = String(likes);
-    });
-  }
 
   // Share functionality
   function setupShareButtons() {
@@ -760,7 +688,6 @@ const relatedPosts = allPosts
   document.addEventListener('DOMContentLoaded', () => {
     // TOC is generated at build time — just activate scroll-spy
     updateActiveTocLink();
-    setupLikeButton();
     setupShareButtons();
 
     window.addEventListener('scroll', () => {

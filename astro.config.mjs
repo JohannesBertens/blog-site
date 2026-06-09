@@ -4,6 +4,7 @@ import { defineConfig } from 'astro/config';
 // https://astro.build/config
 export default defineConfig({
   output: 'static',
+  compressHTML: true,
   markdown: {
     shikiConfig: {
       themes: {
@@ -11,6 +12,14 @@ export default defineConfig({
         dark: 'github-dark'
       },
       defaultColor: false
+    }
+  },
+  build: {
+    inlineStylesheets: 'auto'
+  },
+  vite: {
+    build: {
+      cssMinify: 'esbuild'
     }
   }
 });
