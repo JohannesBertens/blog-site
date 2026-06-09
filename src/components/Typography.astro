@@ -51,32 +51,12 @@ const getClasses = () => {
 };
 ---
 
-<astro:component>
-  <!-- Dynamic component rendering based on type -->
-  {getTagName() === 'div' ? (
-    <div class={getClasses()}>{children}</div>
-  ) : getTagName() === 'code' ? (
-    <code class={getClasses()}>{children}</code>
-  ) : getTagName() === 'span' ? (
-    <span class={getClasses()}>{children}</span>
-  ) : getTagName() === 'p' ? (
-    <p class={getClasses()}>{children}</p>
-  ) : getTagName() === 'h1' ? (
-    <h1 class={getClasses()}>{children}</h1>
-  ) : getTagName() === 'h2' ? (
-    <h2 class={getClasses()}>{children}</h2>
-  ) : getTagName() === 'h3' ? (
-    <h3 class={getClasses()}>{children}</h3>
-  ) : getTagName() === 'h4' ? (
-    <h4 class={getClasses()}>{children}</h4>
-  ) : getTagName() === 'h5' ? (
-    <h5 class={getClasses()}>{children}</h5>
-  ) : getTagName() === 'h6' ? (
-    <h6 class={getClasses()}>{children}</h6>
-  ) : (
-    <div class={getClasses()}>{children}</div>
-  )}
-</astro:component>
+{
+  const Tag = getTagName();
+  <Tag class={getClasses()}>
+    {children}
+  </Tag>
+}
 
 <style>
   /* Typography Component Styles */
