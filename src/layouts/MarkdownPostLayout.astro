@@ -57,9 +57,8 @@ const tocItems: TocItem[] = (headings || []).filter(
 );
 
 // Get all posts for related posts functionality
-const allPostModules = import.meta.glob<PostModule>('../pages/posts/*.md', { eager: false });
-const allPostLoaders = Object.values(allPostModules);
-const allPosts = await Promise.all(allPostLoaders.map(loader => loader()));
+const allPostModules = import.meta.glob<PostModule>('../pages/posts/*.md', { eager: true });
+const allPosts = Object.values(allPostModules);
 const currentPostUrl = Astro.url.pathname;
 
 // Find related posts (posts with similar tags)

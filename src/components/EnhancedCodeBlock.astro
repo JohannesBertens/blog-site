@@ -50,6 +50,7 @@ const getFileExtension = (lang: string) => {
 };
 
 // Truncate code if maxLines is specified
+// Truncate code if maxLines is specified (display only — copy copies full code)
 const displayCode = maxLines && codeLines.length > maxLines
   ? codeLines.slice(0, maxLines).join('\n') + '\n...'
   : code;
@@ -86,7 +87,7 @@ const displayCode = maxLines && codeLines.length > maxLines
               <span class="copy-icon">📋</span>
               <span class="copy-text">Copy</span>
             </button>
-            <template id={codeId + '-code'}>{displayCode}</template>
+            <template id={codeId + '-code'}>{code}</template>
           </>
         )}
         {maxLines && codeLines.length > maxLines && (
