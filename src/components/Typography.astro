@@ -20,24 +20,39 @@ const {
   class: className = ''
 } = Astro.props;
 
+// Whitelist of allowed HTML tag names for safe dynamic rendering
+const ALLOWED_TAGS = new Set(['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'div', 'code', 'span', 'p']);
+
 // Determine the appropriate HTML tag based on type and level
-const getTagName = () => {
+const getTagName = (): string => {
+  let tag: string;
   switch (type) {
     case 'heading':
-      return `h${Math.min(Math.max(level, 1), 6)}`;
+      tag = `h${Math.min(Math.max(level, 1), 6)}`;
+      break;
     case 'subheading':
-      return `h${Math.min(Math.max(level + 1, 2), 6)}`;
+      tag = `h${Math.min(Math.max(level + 1, 2), 6)}`;
+      break;
     case 'terminal':
-      return 'div';
+      tag = 'div';
+      break;
     case 'code':
-      return 'code';
+      tag = 'code';
+      break;
     case 'status':
-      return 'span';
+      tag = 'span';
+      break;
     case 'lead':
-      return 'p';
+      tag = 'p';
+      break;
     default:
-      return 'div';
+      tag = 'div';
   }
+  // Validate against whitelist to prevent injection or unexpected values
+  if (!ALLOWED_TAGS.has(tag)) {
+    tag = 'div';
+  }
+  return tag;
 };
 
 // Determine CSS classes based on props
@@ -51,32 +66,12 @@ const getClasses = () => {
 };
 ---
 
-<astro:component>
-  <!-- Dynamic component rendering based on type -->
-  {getTagName() === 'div' ? (
-    <div class={getClasses()}>{children}</div>
-  ) : getTagName() === 'code' ? (
-    <code class={getClasses()}>{children}</code>
-  ) : getTagName() === 'span' ? (
-    <span class={getClasses()}>{children}</span>
-  ) : getTagName() === 'p' ? (
-    <p class={getClasses()}>{children}</p>
-  ) : getTagName() === 'h1' ? (
-    <h1 class={getClasses()}>{children}</h1>
-  ) : getTagName() === 'h2' ? (
-    <h2 class={getClasses()}>{children}</h2>
-  ) : getTagName() === 'h3' ? (
-    <h3 class={getClasses()}>{children}</h3>
-  ) : getTagName() === 'h4' ? (
-    <h4 class={getClasses()}>{children}</h4>
-  ) : getTagName() === 'h5' ? (
-    <h5 class={getClasses()}>{children}</h5>
-  ) : getTagName() === 'h6' ? (
-    <h6 class={getClasses()}>{children}</h6>
-  ) : (
-    <div class={getClasses()}>{children}</div>
-  )}
-</astro:component>
+{
+  const Tag = getTagName();
+  <Tag class={getClasses()}>
+    {children}
+  </Tag>
+}
 
 <style>
   /* Typography Component Styles */

@@ -2,6 +2,8 @@
 // Enhanced Code Block Component with Line Numbers and Syntax Highlighting
 // Terminal-inspired code blocks with advanced features
 
+import { nextId } from '../utils/counter';
+
 interface Props {
   code: string;
   language?: string;
@@ -25,8 +27,8 @@ const {
 // Split code into lines for line numbering
 const codeLines = code.split('\n');
 
-// Generate a unique ID for this code block
-const codeId = `code-${Math.random().toString(36).substring(2, 11)}`;
+// Stable deterministic ID for SSR — shared counter ensures uniqueness across instances
+const codeId = `code-${nextId()}`;
 
 // Format file extension for display
 const getFileExtension = (lang: string) => {
@@ -63,14 +65,7 @@ const displayCode = maxLines && codeLines.length > maxLines
           <span class="file-extension">.{getFileExtension(language)}</span>
         )}
       </div>
-      <div class="code-actions">
-        {copyable && (
-          <button class="copy-btn" data-code={encodeURIComponent(code)} data-target={codeId}>
-            <span class="copy-icon">📋</span>
-            <span class="copy-text">Copy</span>
-          </button>
-        )}
-      </div>
+
     </div>
   )}
 
@@ -85,6 +80,15 @@ const displayCode = maxLines && codeLines.length > maxLines
         {filename || language || 'terminal'}
       </div>
       <div class="terminal-actions">
+        {copyable && (
+          <>
+            <button class="copy-btn" data-target={codeId} data-template={codeId + '-code'}>
+              <span class="copy-icon">📋</span>
+              <span class="copy-text">Copy</span>
+            </button>
+            <template id={codeId + '-code'}>{displayCode}</template>
+          </>
+        )}
         {maxLines && codeLines.length > maxLines && (
           <span class="truncated-indicator" title={`${codeLines.length} total lines, showing ${maxLines}`}>
             +{codeLines.length - maxLines} lines
@@ -108,12 +112,6 @@ const displayCode = maxLines && codeLines.length > maxLines
           <span class="stat-text">{language}</span>
         </span>
       </div>
-      {copyable && (
-        <button class="copy-btn copy-btn-footer" data-code={encodeURIComponent(code)} data-target={codeId}>
-          <span class="copy-icon">📋</span>
-          <span class="copy-text">Copy code</span>
-        </button>
-      )}
     </div>
   </div>
 </div>
@@ -177,11 +175,6 @@ const displayCode = maxLines && codeLines.length > maxLines
     border: 1px solid var(--accent-cyan);
   }
 
-  .code-actions {
-    display: flex;
-    gap: var(--space-2);
-  }
-
   .copy-btn {
     display: flex;
     align-items: center;
@@ -209,11 +202,6 @@ const displayCode = maxLines && codeLines.length > maxLines
     color: var(--accent-green);
     background: var(--tint-green);
     border-color: var(--accent-green);
-  }
-
-  .copy-btn-footer {
-    padding: var(--space-2) var(--space-4);
-    font-size: var(--text-xs);
   }
 
   .code-terminal {
@@ -356,22 +344,7 @@ const displayCode = maxLines && codeLines.length > maxLines
     font-family: var(--font-mono);
   }
 
-  /* Syntax highlighting colors */
-  .token.comment { color: var(--code-comment); font-style: italic; }
-  .token.keyword { color: var(--code-keyword); font-weight: var(--font-semibold); }
-  .token.string { color: var(--code-string); }
-  .token.number { color: var(--code-number); }
-  .token.function { color: var(--code-function); }
-  .token.operator { color: var(--code-operator); }
-  .token.punctuation { color: var(--code-punctuation); }
-  .token.variable { color: var(--code-variable); }
-  .token.class-name { color: var(--code-class-name); }
-  .token.tag { color: var(--code-tag); }
-  .token.attr-name { color: var(--code-attr-name); }
-  .token.attr-value { color: var(--code-attr-value); }
-  .token.property { color: var(--accent-cyan); }
-  .token.boolean { color: var(--accent-blue); }
-  .token.null { color: var(--accent-purple); }
+  /* Syntax highlighting handled by base.css tokens */
 
   /* Responsive adjustments */
   @media (max-width: 640px) {
@@ -382,10 +355,6 @@ const displayCode = maxLines && codeLines.length > maxLines
     }
 
     .code-title {
-      justify-content: center;
-    }
-
-    .code-actions {
       justify-content: center;
     }
 
@@ -408,32 +377,13 @@ const displayCode = maxLines && codeLines.length > maxLines
       justify-content: center;
     }
 
-    .copy-btn-footer {
-      justify-content: center;
-    }
-
     .line-numbers .language-highlight > *::before {
       width: var(--space-4);
       font-size: 0.75em;
     }
   }
 
-  /* Loading animation for code blocks */
-  .enhanced-code-block.loading::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, var(--tint-green), transparent);
-    animation: code-loading 1.5s infinite;
-  }
 
-  @keyframes code-loading {
-    0% { left: -100%; }
-    100% { left: 100%; }
-  }
 </style>
 
 <script>
@@ -446,7 +396,9 @@ const displayCode = maxLines && codeLines.length > maxLines
         e.preventDefault();
 
         const btnEl = button as HTMLElement;
-        const code = decodeURIComponent(btnEl.dataset.code || '');
+        const templateId = btnEl.dataset.template;
+        const templateEl = templateId ? document.getElementById(templateId) as HTMLTemplateElement : null;
+        const code = templateEl?.content?.textContent?.trim() || '';
         const targetId = btnEl.dataset.target;
         const setText = (el: Element | null, text: string) => {
           const textEl = el?.querySelector('.copy-text');
@@ -487,8 +439,9 @@ const displayCode = maxLines && codeLines.length > maxLines
 
           try {
             // execCommand is deprecated but kept as a fallback for older browsers
-            const legacyExec = (document as any)['execCommand'];
-            legacyExec.call(document, 'copy');
+            const legacyExec: ((commandId: string, a?: boolean, b?: string) => boolean) | undefined =
+              (document as Document & { execCommand?: (...args: [string, boolean?, string?]) => boolean }).execCommand;
+            legacyExec?.('copy');
             button.classList.add('copied');
             setText(button, 'Copied!');
 
