@@ -85,10 +85,13 @@ const displayCode = maxLines && codeLines.length > maxLines
       </div>
       <div class="terminal-actions">
         {copyable && (
-          <button class="copy-btn" data-code={encodeURIComponent(code)} data-target={codeId}>
-            <span class="copy-icon">📋</span>
-            <span class="copy-text">Copy</span>
-          </button>
+          <>
+            <button class="copy-btn" data-target={codeId} data-template={codeId + '-code'}>
+              <span class="copy-icon">📋</span>
+              <span class="copy-text">Copy</span>
+            </button>
+            <template id={codeId + '-code'}>{displayCode}</template>
+          </>
         )}
         {maxLines && codeLines.length > maxLines && (
           <span class="truncated-indicator" title={`${codeLines.length} total lines, showing ${maxLines}`}>
@@ -416,7 +419,9 @@ const displayCode = maxLines && codeLines.length > maxLines
         e.preventDefault();
 
         const btnEl = button as HTMLElement;
-        const code = decodeURIComponent(btnEl.dataset.code || '');
+        const templateId = btnEl.dataset.template;
+        const templateEl = templateId ? document.getElementById(templateId) as HTMLTemplateElement : null;
+        const code = templateEl?.content?.textContent?.trim() || '';
         const targetId = btnEl.dataset.target;
         const setText = (el: Element | null, text: string) => {
           const textEl = el?.querySelector('.copy-text');
