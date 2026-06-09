@@ -195,16 +195,6 @@ table::-webkit-scrollbar-thumb:hover {
   }
 }
 
-/* Reduced motion support */
-@media (prefers-reduced-motion: reduce) {
-  ::-webkit-scrollbar-thumb {
-    transition: none;
-  }
-
-  html {
-    scroll-behavior: auto;
-  }
-}
 
 /* Mobile optimization */
 @media (max-width: 768px) {
