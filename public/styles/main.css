@@ -26,62 +26,6 @@
    Styles that don't fit into specific modules but are needed globally
    ============================================================================= */
 
-/* Custom scrollbar styling for terminal aesthetic */
-::-webkit-scrollbar {
-  width: var(--scrollbar-width);
-  height: var(--scrollbar-width);
-}
-
-::-webkit-scrollbar-track {
-  background: var(--scrollbar-track);
-  border: 1px solid var(--border-primary);
-  border-radius: var(--radius);
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--scrollbar-thumb);
-  border: 1px solid var(--border-primary);
-  border-radius: var(--radius);
-  transition: all var(--duration-200) var(--ease-in-out);
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--scrollbar-thumb-hover);
-  border-color: var(--accent-cyan);
-}
-
-::-webkit-scrollbar-corner {
-  background: var(--scrollbar-track);
-}
-
-/* Firefox scrollbar support */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
-}
-
-/* Terminal-style scrollbar for code blocks */
-.terminal-scrollbar::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-.terminal-scrollbar::-webkit-scrollbar-track {
-  background: var(--code-bg);
-  border-radius: var(--radius-sm);
-}
-
-.terminal-scrollbar::-webkit-scrollbar-thumb {
-  background: var(--accent-green);
-  border-radius: var(--radius-sm);
-  opacity: 0.5;
-}
-
-.terminal-scrollbar::-webkit-scrollbar-thumb:hover {
-  opacity: 1;
-  background: var(--accent-cyan);
-}
-
 /* Global focus styles for better accessibility */
 :focus-visible {
   outline: var(--focus-width) solid var(--border-focus);

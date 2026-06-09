@@ -3,8 +3,6 @@
    Foundational styles for all HTML elements using design tokens
    ============================================================================= */
 
-
-
 /* =============================================================================
    HTML & Body Base Styles
    ============================================================================= */
@@ -17,21 +15,7 @@ html {
   text-rendering: optimizeLegibility;
 }
 
-body {
-  font-family: var(--font-sans);
-  font-size: var(--text-base);
-  font-weight: var(--font-normal);
-  line-height: var(--leading-normal);
-  color: var(--text-primary);
-  background-color: var(--bg-primary);
-  min-height: 80vh;
-  overflow-x: hidden;
-  text-rendering: var(--text-rendering-optimize);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  font-feature-settings: var(--font-features-body);
-  letter-spacing: var(--reading-letter-spacing);
-}
+/* body styles defined in reset.css (canonical location) */
 
 /* =============================================================================
    Typography Base Styles

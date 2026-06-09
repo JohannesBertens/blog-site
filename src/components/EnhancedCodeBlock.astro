@@ -50,6 +50,7 @@ const getFileExtension = (lang: string) => {
 };
 
 // Truncate code if maxLines is specified
+// Truncate code if maxLines is specified (display only — copy copies full code)
 const displayCode = maxLines && codeLines.length > maxLines
   ? codeLines.slice(0, maxLines).join('\n') + '\n...'
   : code;
@@ -86,7 +87,7 @@ const displayCode = maxLines && codeLines.length > maxLines
               <span class="copy-icon">📋</span>
               <span class="copy-text">Copy</span>
             </button>
-            <template id={codeId + '-code'}>{displayCode}</template>
+            <template id={codeId + '-code'}>{code}</template>
           </>
         )}
         {maxLines && codeLines.length > maxLines && (
@@ -98,7 +99,17 @@ const displayCode = maxLines && codeLines.length > maxLines
     </div>
 
     <div class="code-content" id={codeId}>
-      <pre class="code-pre"><code class={`language-${language} language-highlight`}>{displayCode}</code></pre>
+      {
+        showLineNumbers ? (
+          <pre class="code-pre"><code class={`language-${language} language-highlight`}>
+            {displayCode.split('\n').map((line, i) => (
+              <span class="code-line">{line || ' '}</span>
+            ))}
+          </code></pre>
+        ) : (
+          <pre class="code-pre"><code class={`language-${language} language-highlight`}>{displayCode}</code></pre>
+        )
+      }
     </div>
 
     <div class="code-footer">
@@ -290,14 +301,14 @@ const displayCode = maxLines && codeLines.length > maxLines
     position: relative;
   }
 
-  .line-numbers .language-highlight > * {
+  .line-numbers .code-line {
     counter-increment: line;
     display: block;
     position: relative;
     min-height: var(--code-line-height);
   }
 
-  .line-numbers .language-highlight > *::before {
+  .line-numbers .code-line::before {
     content: counter(line);
     position: absolute;
     left: calc(-1 * var(--space-8));
@@ -377,7 +388,7 @@ const displayCode = maxLines && codeLines.length > maxLines
       justify-content: center;
     }
 
-    .line-numbers .language-highlight > *::before {
+    .line-numbers .code-line::before {
       width: var(--space-4);
       font-size: 0.75em;
     }
