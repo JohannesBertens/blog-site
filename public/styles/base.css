@@ -3,8 +3,7 @@
    Foundational styles for all HTML elements using design tokens
    ============================================================================= */
 
-/* Import design tokens */
-@import './tokens.css';
+
 
 /* =============================================================================
    HTML & Body Base Styles
