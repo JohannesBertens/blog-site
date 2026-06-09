@@ -2,6 +2,8 @@
 // Enhanced Code Block Component with Line Numbers and Syntax Highlighting
 // Terminal-inspired code blocks with advanced features
 
+import { nextId } from '../utils/counter';
+
 interface Props {
   code: string;
   language?: string;
@@ -25,9 +27,8 @@ const {
 // Split code into lines for line numbering
 const codeLines = code.split('\n');
 
-// Stable deterministic ID for SSR (no crypto.randomUUID which causes SSR/client mismatch)
-let _codeBlockCounter = 0;
-const codeId = `code-${++_codeBlockCounter}`;
+// Stable deterministic ID for SSR — shared counter ensures uniqueness across instances
+const codeId = `code-${nextId()}`;
 
 // Format file extension for display
 const getFileExtension = (lang: string) => {
