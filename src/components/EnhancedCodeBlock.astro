@@ -12,6 +12,12 @@ interface Props {
   maxLines?: number;
 }
 
+// Stable counter-based ID for consistent hydration across server/client
+const EnhancedCodeBlockCounter = {
+  _count: 0,
+  next() { return ++this._count; }
+};
+
 const {
   code,
   language = 'bash',
@@ -25,8 +31,8 @@ const {
 // Split code into lines for line numbering
 const codeLines = code.split('\n');
 
-// Generate a unique ID for this code block
-const codeId = `code-${Math.random().toString(36).substring(2, 11)}`;
+// Use stable counter-based ID for consistent hydration
+const codeId = `code-${EnhancedCodeBlockCounter.next()}`;
 
 // Format file extension for display
 const getFileExtension = (lang: string) => {
